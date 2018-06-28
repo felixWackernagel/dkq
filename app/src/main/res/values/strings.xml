@@ -3,6 +3,7 @@
 
     <string name="quiz_number">Quiz %1$d</string>
     <string name="question_number">Frage %1$d</string>
+    <string name="crash_toast_text">DKQ hatte ein Problem und wurde geschlossen.</string>
 
     <!-- Notifications -->
     <string name="next_quiz_title">Neues DKQ</string>

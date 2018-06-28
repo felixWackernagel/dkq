@@ -2,6 +2,11 @@ package de.wackernagel.dkq;
 
 import android.app.Activity;
 import android.app.Application;
+import android.provider.SyncStateContract;
+
+import org.acra.ACRA;
+import org.acra.config.ACRAConfiguration;
+import org.acra.config.ConfigurationBuilder;
 
 import javax.inject.Inject;
 
@@ -27,6 +32,12 @@ public class DkqApplication extends Application implements HasActivityInjector {
                 .retrofitModule( new RetrofitModule( this ) )
                 .build()
                 .inject( this );
+
+        final ACRAConfiguration config = new ConfigurationBuilder( this )
+                .setMailTo( "dkq@felixwackernagel.de" )
+                .setResToastText( R.string.crash_toast_text )
+                .build();
+        ACRA.init(this, config, false);
     }
 
     @Override
