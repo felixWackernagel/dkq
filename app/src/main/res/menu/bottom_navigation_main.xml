@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_quizzes"
+        android:icon="@drawable/baseline_question_answer_black_24"
+        android:title="@string/bottom_navigation_quizzes"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_news"
+        android:icon="@drawable/baseline_email_black_24"
+        android:title="@string/bottom_navigation_news"
+        android:enabled="false"
+        app:showAsAction="ifRoom" />
+</menu>

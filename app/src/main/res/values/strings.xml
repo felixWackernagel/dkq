@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">DKQ</string>
+
+    <string name="quiz_number">Quiz %1$d</string>
+    <string name="question_number">Frage %1$d</string>
+
+    <!-- Notifications -->
+    <string name="next_quiz_title">Neues DKQ</string>
+    <string name="next_quiz_description">%1$d nächstes Quiz steht fest.</string>
+
+    <!-- Login -->
+    <string name="username">Benutzer</string>
+    <string name="password">Passwort</string>
+    <string name="login_button">Anmelden</string>
+    <string name="error_required">Pflichtfeld</string>
+    <string name="error_login">Benutzer und/oder Passwort sind inkorrekt</string>
+
+    <!-- Menus -->
+    <string name="action_open_preferences">Einstellungen</string>
+    <string name="bottom_navigation_quizzes">Quizzes</string>
+    <string name="bottom_navigation_news">News</string>
+
+    <!-- Preferences -->
+    <string name="pref_category_ui">Oberfläche</string>
+    <string name="pref_login_screen_title">Anmeldung anzeigen</string>
+    <string name="pref_login_screen_summary">Mit dieser Option kann das Anmeldeformular beim Start der App deaktiviert werden.</string>
+    <string name="pref_notification_enabled_title">Benachrichtigungen aktiv</string>
+    <string name="pref_notification_enabled_summary">Erhalte Benachrichtigungen bei Quiz updates.</string>
+    <string name="pref_sounds_enabled_title">Töne aktiv</string>
+    <string name="pref_sounds_enabled_summary">Töne können mit dieser Option stumm geschalten werden.</string>
+
+</resources>

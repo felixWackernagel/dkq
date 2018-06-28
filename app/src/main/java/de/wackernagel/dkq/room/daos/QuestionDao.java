@@ -1,0 +1,38 @@
+package de.wackernagel.dkq.room.daos;
+
+import android.arch.lifecycle.LiveData;
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
+
+import java.util.List;
+
+import de.wackernagel.dkq.room.entities.Question;
+import de.wackernagel.dkq.room.entities.Quiz;
+
+import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
+
+@Dao
+public interface QuestionDao {
+
+    @Query( "SELECT * FROM questions WHERE quizId = :quizId" )
+    LiveData<List<Question>> loadQuestionsFromQuiz( long quizId );
+
+    @Query( "SELECT * FROM questions WHERE id = :questionId" )
+    LiveData<Question> loadQuestion(long questionId);
+
+    @Query( "SELECT * FROM questions WHERE quizId = :quizId AND number = :questionNumber" )
+    Question loadQuestionByQuizAndNumber( long quizId, int questionNumber );
+
+    @Insert( onConflict = REPLACE)
+    long insertQuestion(Question question);
+
+    @Update( onConflict = REPLACE)
+    int updateQuestion(Question question);
+
+    @Delete
+    int deleteQuestion(Question question);
+
+}
