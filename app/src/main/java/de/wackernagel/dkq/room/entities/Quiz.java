@@ -19,6 +19,12 @@ public class Quiz {
     public int version;
     public String lastUpdate;
 
+    public boolean isInvalid() {
+        return id == 0 && number == 0 && address == null && location == null && quizMaster == null &&
+                quizDate == null && version == 0 && longitude == 0.0D && latitude == 0.0D && published == 0 &&
+                lastUpdate == null;
+    }
+
     @Override
     public String toString() {
         return "Quiz{" +

@@ -133,14 +133,17 @@ public class QuizzesListFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(QuizViewHolder holder, int position) {
-            final Quiz quiz = items[position];
+            if( position != RecyclerView.NO_POSITION ) {
+                final Quiz quiz = items[position];
 
-            holder.name.setText( holder.itemView.getContext().getString( R.string.quiz_number, quiz.number ) );
+                holder.name.setText( holder.itemView.getContext().getString( R.string.quiz_number, quiz.number ) );
 
-            final Date today = new Date();
-            final Date quizDate = DateUtils.joomlaDateToJavaDate( quiz.quizDate, today );
-            holder.date.setVisibility( quizDate.after( today ) ? View.VISIBLE : View.GONE );
-            holder.date.setText( formatter.format( quizDate ) );
+                final Date today = new Date();
+                final Date quizDate = DateUtils.joomlaDateToJavaDate( quiz.quizDate, today );
+                holder.date.setVisibility( quizDate.after( today ) ? View.VISIBLE : View.GONE );
+                holder.date.setText( formatter.format( quizDate ) );
+            }
+
         }
 
         @Override

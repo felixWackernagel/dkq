@@ -87,7 +87,9 @@ public class DkqRepository {
         return new NetworkBoundResource<Quiz,Quiz>() {
             @Override
             protected void saveCallResult(@NonNull Quiz item) {
-                quizDao.insertQuiz(item);
+                if( !item.isInvalid() ) {
+                    quizDao.insertQuiz(item);
+                }
             }
 
             @Override
@@ -148,9 +150,5 @@ public class DkqRepository {
                 return webservice.getQuestionsFromQuiz( quizId );
             }
         }.getAsLiveData();
-    }
-
-    public LiveData<Question> loadQuestion( long questionId ) {
-        return questionDao.loadQuestion(questionId);
     }
 }
