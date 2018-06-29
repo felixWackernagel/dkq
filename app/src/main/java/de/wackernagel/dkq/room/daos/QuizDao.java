@@ -16,7 +16,7 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface QuizDao {
 
-    @Query( "SELECT * FROM quizzes" )
+    @Query( "SELECT * FROM quizzes ORDER BY number DESC" )
     LiveData<List<Quiz>> loadQuizzes();
 
     @Query( "SELECT * FROM quizzes WHERE id = :quizId" )

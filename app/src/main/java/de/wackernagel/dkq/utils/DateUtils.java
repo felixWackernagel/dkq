@@ -15,8 +15,8 @@ public class DateUtils {
      * @return Converted date or fallback
      */
     public static Date joomlaDateToJavaDate( final String dateTime, final Date fallback ) {
-        if( dateTime.length() != 19 ) {
-            Log.d( "DKQ", "Wrong dateTime format. ." );
+        if( dateTime == null || dateTime.length() != 19 ) {
+            Log.d( "DKQ", "Wrong dateTime format." );
             return fallback;
         }
 

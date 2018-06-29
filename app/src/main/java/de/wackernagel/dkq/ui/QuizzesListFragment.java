@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -115,7 +114,7 @@ public class QuizzesListFragment extends Fragment {
                 public void onClick(View view) {
                     int position = getAdapterPosition();
                     Quiz quiz = adapter.items[position];
-                    view.getContext().startActivity(new Intent( view.getContext(), QuizActivity.class ).putExtra("quizId", quiz.id) );
+                    view.getContext().startActivity(new Intent( view.getContext(), QuizActivity.class ).putExtra("quizId", quiz.id).putExtra("quizNumber", quiz.number) );
                 }
             });
         }

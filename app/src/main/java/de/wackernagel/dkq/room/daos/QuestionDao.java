@@ -17,20 +17,17 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface QuestionDao {
 
-    @Query( "SELECT * FROM questions WHERE quizId = :quizId" )
+    @Query( "SELECT * FROM questions WHERE quizId = :quizId ORDER BY number ASC" )
     LiveData<List<Question>> loadQuestionsFromQuiz( long quizId );
-
-    @Query( "SELECT * FROM questions WHERE id = :questionId" )
-    LiveData<Question> loadQuestion(long questionId);
 
     @Query( "SELECT * FROM questions WHERE quizId = :quizId AND number = :questionNumber" )
     Question loadQuestionByQuizAndNumber( long quizId, int questionNumber );
 
     @Insert( onConflict = REPLACE)
-    long insertQuestion(Question question);
+    void insertQuestion(Question question);
 
     @Update( onConflict = REPLACE)
-    int updateQuestion(Question question);
+    void updateQuestion(Question question);
 
     @Delete
     int deleteQuestion(Question question);

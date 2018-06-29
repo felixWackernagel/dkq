@@ -18,11 +18,11 @@ public class QuestionsViewModel extends ViewModel {
         this.repository = repository;
     }
 
-    public LiveData<Resource<List<Question>>> loadQuestions( long quizId) {
-        return repository.loadQuestions( quizId );
+    public LiveData<Resource<List<Question>>> loadQuestions( long quizId, int quizNumber) {
+        return repository.loadQuestions( quizId, quizNumber );
     }
 
-    public LiveData<Resource<Quiz>> loadQuiz( long quizId) {
-        return repository.loadQuiz( quizId );
+    public LiveData<Resource<Quiz>> loadQuiz( final long quizId, final int quizNumber) {
+        return repository.loadQuiz( quizId, quizNumber );
     }
 }

@@ -19,6 +19,11 @@ public class Question {
     public int version;
     public String lastUpdate;
 
+    public boolean isInvalid() {
+        return id == 0L && quizId == 0L && number == 0 && question == null && answer == null
+                && published == 0 && version == 0 && lastUpdate == null;
+    }
+
     @Override
     public String toString() {
         return "Question{" +

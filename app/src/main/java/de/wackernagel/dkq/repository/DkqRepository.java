@@ -44,20 +44,7 @@ public class DkqRepository {
             protected void saveCallResult(@NonNull List<Quiz> items) {
                 int quizzesInFuture = 0;
                 for( Quiz onlineQuiz : items ) {
-                    final Quiz existingQuiz = quizDao.loadQuizByNumber( onlineQuiz.number );
-                    final boolean isNew = existingQuiz == null;
-                    if( isNew ) {
-                        Log.i("DKQ", "Insert new quiz " + onlineQuiz.number);
-                        quizDao.insertQuiz( onlineQuiz );
-                        quizzesInFuture += (DateUtils.joomlaDateToJavaDate( onlineQuiz.quizDate, new Date() ).after( new Date() ) ? 1 : 0 );
-                    } else if( existingQuiz.version < onlineQuiz.version ) {
-                        Log.i("DKQ", "Update quiz " + onlineQuiz.number + " from version " + existingQuiz.version + " to " + onlineQuiz.version);
-                        onlineQuiz.id = existingQuiz.id; // update is ID based so copy existing quiz ID to new one
-                        quizDao.updateQuiz( onlineQuiz );
-                        quizzesInFuture += (!existingQuiz.quizDate.equals( onlineQuiz.quizDate ) && DateUtils.joomlaDateToJavaDate( onlineQuiz.quizDate, new Date() ).after( new Date() ) ? 1 : 0);
-                    } else {
-                        Log.i("DKQ", "No changes on Quiz " + onlineQuiz.number);
-                    }
+                    quizzesInFuture += saveQuiz( onlineQuiz );
                 }
                 if( quizzesInFuture > 0 ) {
                     NotificationReceiver.forNextQuiz( context, context.getString(R.string.next_quiz_title), context.getString(R.string.next_quiz_description, quizzesInFuture) );
@@ -83,13 +70,37 @@ public class DkqRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<Quiz>> loadQuiz( final long quizId ) {
+    private int saveQuiz( final Quiz onlineQuiz ) {
+        if( onlineQuiz.isInvalid() ) {
+            return 0;
+        }
+        final Quiz existingQuiz = quizDao.loadQuizByNumber( onlineQuiz.number );
+        final boolean isNew = existingQuiz == null;
+        if( isNew ) {
+            if( onlineQuiz.published == 1 ) {
+                Log.i("DKQ", "Insert new quiz " + onlineQuiz.number);
+                quizDao.insertQuiz(onlineQuiz);
+                return DateUtils.joomlaDateToJavaDate(onlineQuiz.quizDate, new Date()).after(new Date()) ? 1 : 0;
+            }
+        } else if( onlineQuiz.published == 0 ) {
+            Log.i("DKQ", "Remove existing quiz " + onlineQuiz.number);
+            quizDao.deleteQuiz( existingQuiz );
+        } else if( existingQuiz.version < onlineQuiz.version ) {
+            Log.i("DKQ", "Update quiz " + onlineQuiz.number + " from version " + existingQuiz.version + " to " + onlineQuiz.version);
+            onlineQuiz.id = existingQuiz.id; // update is ID based so copy existing quiz ID to new one
+            quizDao.updateQuiz( onlineQuiz );
+            return !existingQuiz.quizDate.equals( onlineQuiz.quizDate ) && DateUtils.joomlaDateToJavaDate( onlineQuiz.quizDate, new Date() ).after( new Date() ) ? 1 : 0;
+        } else {
+            Log.i("DKQ", "No changes on Quiz " + onlineQuiz.number);
+        }
+        return 0;
+    }
+
+    public LiveData<Resource<Quiz>> loadQuiz( final long quizId, final int quizNumber ) {
         return new NetworkBoundResource<Quiz,Quiz>() {
             @Override
             protected void saveCallResult(@NonNull Quiz item) {
-                if( !item.isInvalid() ) {
-                    quizDao.insertQuiz(item);
-                }
+                saveQuiz( item );
             }
 
             @Override
@@ -106,22 +117,30 @@ public class DkqRepository {
             @NonNull
             @Override
             protected LiveData<ApiResponse<Quiz>> createCall() {
-                return webservice.getQuiz(quizId);
+                return webservice.getQuiz(quizNumber);
             }
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<List<Question>>> loadQuestions( final long quizId ) {
+    public LiveData<Resource<List<Question>>> loadQuestions( final long quizId, final long quizNumber ) {
         return new NetworkBoundResource<List<Question>,List<Question>>() {
             @Override
             protected void saveCallResult(@NonNull List<Question> items) {
                 for( Question onlineQuestion : items ) {
+                    if( onlineQuestion.isInvalid() ) {
+                        continue;
+                    }
                     final Question existingQuestion = questionDao.loadQuestionByQuizAndNumber( quizId, onlineQuestion.number );
                     final boolean isNew = existingQuestion == null;
                     if( isNew ) {
-                        Log.i("DKQ", "Insert new question " + onlineQuestion.number);
-                        onlineQuestion.quizId = quizId;
-                        questionDao.insertQuestion( onlineQuestion );
+                        if( onlineQuestion.published == 1 ) {
+                            Log.i("DKQ", "Insert new question " + onlineQuestion.number);
+                            onlineQuestion.quizId = quizId;
+                            questionDao.insertQuestion(onlineQuestion);
+                        }
+                    } else if( onlineQuestion.published == 0 ) {
+                        Log.i("DKQ", "Delete existing question " + onlineQuestion.number);
+                        questionDao.deleteQuestion( existingQuestion );
                     } else if( existingQuestion.version < onlineQuestion.version ) {
                         Log.i("DKQ", "Update question " + onlineQuestion.number + " from version " + existingQuestion.version + " to " + onlineQuestion.version);
                         onlineQuestion.id = existingQuestion.id; // update is ID based so copy existing quiz ID to new one
@@ -147,7 +166,7 @@ public class DkqRepository {
             @NonNull
             @Override
             protected LiveData<ApiResponse<List<Question>>> createCall() {
-                return webservice.getQuestionsFromQuiz( quizId );
+                return webservice.getQuestionsFromQuiz( quizNumber );
             }
         }.getAsLiveData();
     }

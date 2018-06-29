@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -35,10 +34,11 @@ public class QuestionsListFragment extends Fragment {
     private RecyclerView recyclerView;
     private QuestionAdapter adapter;
 
-    public static QuestionsListFragment newInstance( long quizId ) {
+    public static QuestionsListFragment newInstance( long quizId, int quizNumber ) {
         final QuestionsListFragment fragment = new QuestionsListFragment();
         final Bundle arguments = new Bundle();
-        arguments.putLong( "quiz", quizId );
+        arguments.putLong( "quizId", quizId );
+        arguments.putInt( "quizNumber", quizNumber );
         fragment.setArguments( arguments );
         return fragment;
     }
@@ -72,7 +72,7 @@ public class QuestionsListFragment extends Fragment {
                     true ) );
 
             final QuestionsViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(QuestionsViewModel.class);
-            viewModel.loadQuestions( getArguments().getLong("quiz", 0 ) ).observe(this, new Observer<Resource<List<Question>>>() {
+            viewModel.loadQuestions( getArguments().getLong("quizId", 0 ), getArguments().getInt("quizNumber", 0 ) ).observe(this, new Observer<Resource<List<Question>>>() {
                 @Override
                 public void onChanged(@Nullable Resource<List<Question>> questions) {
                 if( questions != null ) {
