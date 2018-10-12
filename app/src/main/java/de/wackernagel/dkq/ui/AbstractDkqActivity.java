@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -18,14 +18,11 @@ public abstract class AbstractDkqActivity extends AppCompatActivity {
     public static BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final int notificationId = intent.getIntExtra(NOTIFICATION_TYPE, 0);
-            if( notificationId == NOTIFICATION_TYPE_NEXT_QUIZ ) {
-                String message = intent.getStringExtra( NOTIFICATION_CONTENT );
-                if( TextUtils.isEmpty( message ) ) {
-                    message = intent.getStringExtra( NOTIFICATION_TITLE );
-                }
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            String message = intent.getStringExtra( NOTIFICATION_CONTENT );
+            if( TextUtils.isEmpty( message ) ) {
+                message = intent.getStringExtra( NOTIFICATION_TITLE );
             }
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
             if( isOrderedBroadcast() ) {
                 abortBroadcast();

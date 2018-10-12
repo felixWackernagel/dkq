@@ -1,24 +1,45 @@
 package de.wackernagel.dkq.ui;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.text.HtmlCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
+import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.R;
+import de.wackernagel.dkq.viewmodels.MainViewModel;
 
 public class MainActivity extends AbstractDkqActivity implements HasSupportFragmentInjector, BottomNavigationView.OnNavigationItemSelectedListener {
+
+    static Intent createLaunchIntent( final Context context ) {
+        return new Intent( context, MainActivity.class );
+    }
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
@@ -32,8 +53,84 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar( toolbar );
 
+        final ActionBar actionBar = getSupportActionBar();
+        if( actionBar != null ) {
+            actionBar.setDisplayHomeAsUpEnabled( true );
+            actionBar.setHomeButtonEnabled( true );
+        }
+
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener( this );
+
+        final DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
+        final NavigationView navigationView = findViewById( R.id.navigationView );
+        navigationView.setNavigationItemSelectedListener( new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected( @NonNull final MenuItem menuItem) {
+                drawerLayout.setTag(R.id.drawerLayout, menuItem.getItemId());
+                drawerLayout.closeDrawers();
+                return true;
+            }
+        });
+
+        final ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle( this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close ) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed( drawerView );
+
+                navigationView.setCheckedItem(R.id.drawer_item_main);
+
+                Object itemId = drawerLayout.getTag( R.id.drawerLayout );
+                drawerLayout.setTag( R.id.drawerLayout, null );
+                if( itemId != null ) {
+                    switch ( (int) itemId ) {
+                        case R.id.drawer_item_ranking:
+                            break;
+
+                        case R.id.drawer_item_about:
+                            break;
+
+                        case R.id.drawer_preferences:
+                            startActivity( PreferencesActivity.createLaunchIntent( getApplicationContext() ) );
+                            break;
+
+                        case R.id.drawer_item_development:
+                            startActivity( DevelopmentActivity.createLaunchIntent( getApplicationContext() ) );
+                            break;
+
+                        case R.id.drawer_item_main:
+                        default:
+                            break;
+                    }
+                }
+            }
+        };
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
+        final MainViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(MainViewModel.class);
+        viewModel.installUpdateChecker();
+        if(viewModel.isNewAppVersion()) {
+            new AlertDialog.Builder( this )
+                    .setTitle(R.string.changelog_title)
+                    .setMessage(HtmlCompat.fromHtml( getResources().getString(R.string.changelog_message), HtmlCompat.FROM_HTML_MODE_COMPACT))
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.close_word, null)
+                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            int currentVersionCode;
+                            try {
+                                currentVersionCode = getApplication().getPackageManager().getPackageInfo( getApplication().getPackageName(), 0).versionCode;
+                            } catch (PackageManager.NameNotFoundException e) {
+                                currentVersionCode = 0;
+                            }
+                            DkqPreferences.setLastVersionCode( getApplication(), currentVersionCode );
+                        }
+                    })
+                    .create()
+                    .show();
+        }
 
         if( savedInstanceState == null ) {
             getSupportFragmentManager().beginTransaction()
@@ -43,21 +140,12 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate( R.menu.main_menu, menu );
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch( item.getItemId() ) {
-            case R.id.action_open_preferences:
-                startActivity( new Intent( getApplicationContext(), PreferencesActivity.class ) );
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+    public void onBackPressed() {
+        final DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
+        if( drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -65,9 +153,9 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
     public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_news:
-                Fragment fragment = getSupportFragmentManager().findFragmentByTag("quizzes");
-                if( fragment != null )
-                    getSupportFragmentManager().beginTransaction().remove( fragment ).commit();
+                getSupportFragmentManager().beginTransaction()
+                        .replace( R.id.container, MessagesListFragment.newInstance(), "messages" )
+                        .commit();
                 return true;
 
             case R.id.action_quizzes:

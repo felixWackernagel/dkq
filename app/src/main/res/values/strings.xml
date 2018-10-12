@@ -1,13 +1,48 @@
 <resources>
-    <string name="app_name">DKQ</string>
-
     <string name="quiz_number">Quiz %1$d</string>
     <string name="question_number">Frage %1$d</string>
+    <string name="message_number">Nachricht %1$d</string>
     <string name="crash_toast_text">DKQ hatte ein Problem und wurde geschlossen.</string>
+    <string name="ok_word">OK</string>
+    <string name="close_word">Schließen</string>
+
+    <string name="changelog_title">Was gibts neues?</string>
+    <string name="changelog_message"><![CDATA[
+        <b>Version 2.0</b><br><br>
+        <b>NEU</b> Erhaltet Nachrichten rund ums DKQ.<br>
+        <b>NEU</b> Info zu Neuheiten in der App.<br>
+        <b>NEU</b> Daten werden nun auch im Hintergrund geladen.<br>
+    ]]></string>
+
+    <!-- Messages -->
+    <string name="no_messages">Keine News zum DKQ</string>
+
+    <!-- Quizze -->
+    <string name="no_quizzes">Keine Quizze vorhanden</string>
+
+    <!-- Quesstions -->
+    <string name="no_questions">Keine Fragen vorhanden</string>
+
+    <!-- Drawer -->
+    <string name="drawer_main">Kneipe</string>
+    <string name="drawer_about">Über DKQ</string>
+    <string name="drawer_ranking">Rangliste</string>
+    <string name="drawer_development">Entwicklung</string>
+    <string name="drawer_preferences">Einstellungen</string>
+    <string name="drawer_open">Navigation öffnen</string>
+    <string name="drawer_close">Navigation schließen</string>
 
     <!-- Notifications -->
-    <string name="next_quiz_title">Neues DKQ</string>
-    <string name="next_quiz_description">%1$d nächstes Quiz steht fest.</string>
+    <string name="next_quiz_title">Es gibt neue Termine zum DKQ</string>
+    <plurals name="next_quiz_description">
+        <item quantity="one">Das nächste Quiz steht fest.</item>
+        <item quantity="other">%1$d neue Quizze stehen bereits fest.</item>
+    </plurals>
+    <string name="new_messages_title">Es gibt Neuigkeiten vom DKQ</string>
+    <plurals name="new_messages_description">
+        <item quantity="one">Du hast eine neue Nachricht erhalten.</item>
+        <item quantity="other">Du hast %1$d neue Nachrichten erhalten.</item>
+    </plurals>
 
     <!-- Login -->
     <string name="username">Benutzer</string>
@@ -17,9 +52,8 @@
     <string name="error_login">Benutzer und/oder Passwort sind inkorrekt</string>
 
     <!-- Menus -->
-    <string name="action_open_preferences">Einstellungen</string>
     <string name="bottom_navigation_quizzes">Quizzes</string>
-    <string name="bottom_navigation_news">News</string>
+    <string name="bottom_navigation_news">Nachrichten</string>
 
     <!-- Preferences -->
     <string name="pref_category_ui">Oberfläche</string>
@@ -29,5 +63,13 @@
     <string name="pref_notification_enabled_summary">Erhalte Benachrichtigungen bei Quiz updates.</string>
     <string name="pref_sounds_enabled_title">Töne aktiv</string>
     <string name="pref_sounds_enabled_summary">Töne können mit dieser Option stumm geschalten werden.</string>
+
+    <!-- Development -->
+    <string name="create_sample_messages">Beispiel Nachrichten anlegen</string>
+    <string name="drop_all_messages">Alle Nachrichten löschen</string>
+    <string name="test_single_quiz_notification">Ein neues Quiz (Notification)</string>
+    <string name="test_many_quiz_notification">Viele neue Quizze (Notification)</string>
+    <string name="test_single_message_notification">Eine neue Nachricht (Notification)</string>
+    <string name="test_many_message_notification">Viele neue Nachrichten (Notification)</string>
 
 </resources>

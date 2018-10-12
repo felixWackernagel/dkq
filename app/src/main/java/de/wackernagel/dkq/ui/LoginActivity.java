@@ -2,10 +2,6 @@ package de.wackernagel.dkq.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,6 +9,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.R;
 
@@ -90,15 +91,13 @@ public class LoginActivity extends AppCompatActivity {
         final String error = getString( R.string.error_required );
         if( TextUtils.isEmpty( editText.getText().toString() ) ) {
             input.setError( error );
-        } else if( error.equals( input.getError() ) ) {
+        } else if( TextUtils.equals( error, input.getError() ) ) {
             input.setError( null );
         }
     }
 
     private void openMainActivity() {
-        final Intent intent = new Intent( this, MainActivity.class );
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity( intent );
+        startActivity( MainActivity.createLaunchIntent( this ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK) );
         finish();
     }
 }

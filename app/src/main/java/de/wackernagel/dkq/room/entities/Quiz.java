@@ -1,8 +1,8 @@
 package de.wackernagel.dkq.room.entities;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Index;
-import android.arch.persistence.room.PrimaryKey;
+import androidx.room.Entity;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
 
 @Entity( tableName = "quizzes", indices = { @Index( value = { "number" }, unique = true ) } )
 public class Quiz {

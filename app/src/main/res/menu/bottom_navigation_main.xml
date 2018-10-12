@@ -12,6 +12,5 @@
         android:id="@+id/action_news"
         android:icon="@drawable/baseline_email_black_24"
         android:title="@string/bottom_navigation_news"
-        android:enabled="false"
         app:showAsAction="ifRoom" />
 </menu>

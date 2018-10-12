@@ -1,6 +1,6 @@
 package de.wackernagel.dkq.webservice;
 
-import android.arch.lifecycle.LiveData;
+import androidx.lifecycle.LiveData;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;

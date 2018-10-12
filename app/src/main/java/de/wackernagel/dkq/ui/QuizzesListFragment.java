@@ -1,14 +1,8 @@
 package de.wackernagel.dkq.ui;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +15,25 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Quiz;
+import de.wackernagel.dkq.ui.widgets.EmptyAwareRecyclerView;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GridGutterDecoration;
+import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
 import de.wackernagel.dkq.viewmodels.QuizzesViewModel;
 import de.wackernagel.dkq.webservice.Resource;
 
@@ -34,10 +41,11 @@ public class QuizzesListFragment extends Fragment {
     @Inject
     ViewModelProvider.Factory viewModelFactory;
 
-    private RecyclerView recyclerView;
+    private EmptyAwareRecyclerView recyclerView;
+    private TextView emptyView;
     private QuizAdapter adapter;
 
-    public static QuizzesListFragment newInstance() {
+    static QuizzesListFragment newInstance() {
         final QuizzesListFragment fragment = new QuizzesListFragment();
         fragment.setArguments( new Bundle() );
         return fragment;
@@ -53,6 +61,7 @@ public class QuizzesListFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById( R.id.recyclerView );
+        emptyView = view.findViewById( R.id.emptyView );
     }
 
     @Override
@@ -61,9 +70,18 @@ public class QuizzesListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         if( recyclerView != null ) {
-            adapter = new QuizAdapter();
+
+            final SlideUpAlphaAnimator animator = new SlideUpAlphaAnimator().withInterpolator( new FastOutSlowInInterpolator() );
+            animator.setAddDuration( 400 );
+            animator.setChangeDuration( 400 );
+            animator.setMoveDuration( 400 );
+            animator.setRemoveDuration( 400 );
+
+            adapter = new QuizAdapter( new QuizItemCallback() );
             recyclerView.setLayoutManager( new GridLayoutManager( getContext(), 1 ) );
             recyclerView.setHasFixedSize( true );
+            recyclerView.setEmptyView( emptyView );
+            recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );
             recyclerView.addItemDecoration( new GridGutterDecoration(
                     DeviceUtils.dpToPx(16, getContext()),
@@ -76,22 +94,7 @@ public class QuizzesListFragment extends Fragment {
                 @Override
                 public void onChanged(@Nullable Resource<List<Quiz>> quizzes) {
                 if( quizzes != null ) {
-                    switch (quizzes.status) {
-                        case ERROR:
-                            //Toast.makeText(QuizzesListFragment.this.getContext(), "Error " + quizzes.message, Toast.LENGTH_SHORT).show();
-                            break;
-
-                        case LOADING:
-                            break;
-
-                        case SUCCESS:
-                            break;
-                    }
-                    if( quizzes.data == null ) {
-                        adapter.setItems( new Quiz[0]);
-                    } else {
-                        adapter.setItems(quizzes.data.toArray(new Quiz[quizzes.data.size()]));
-                    }
+                    adapter.submitList( quizzes.data );
                 }
                 }
             });
@@ -109,21 +112,28 @@ public class QuizzesListFragment extends Fragment {
             this.adapter = adapter;
             name = itemView.findViewById( R.id.name );
             date = itemView.findViewById( R.id.date );
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    Quiz quiz = adapter.items[position];
-                    view.getContext().startActivity(new Intent( view.getContext(), QuizActivity.class ).putExtra("quizId", quiz.id).putExtra("quizNumber", quiz.number) );
-                }
-            });
         }
     }
 
-    static class QuizAdapter extends RecyclerView.Adapter<QuizViewHolder> {
-        private Quiz[] items;
+    static class QuizItemCallback extends DiffUtil.ItemCallback<Quiz> {
 
+        @Override
+        public boolean areItemsTheSame(@NonNull Quiz oldItem, @NonNull Quiz newItem) {
+            return oldItem.id == newItem.id;
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Quiz oldItem, @NonNull Quiz newItem) {
+            return oldItem.number == newItem.number && TextUtils.equals( oldItem.quizDate, newItem.quizDate);
+        }
+    }
+
+    static class QuizAdapter extends ListAdapter<Quiz, QuizViewHolder> {
         private SimpleDateFormat formatter = new SimpleDateFormat( "EEEE',' dd. MMMM yyyy - HH:mm", Locale.getDefault() );
+
+        QuizAdapter(@NonNull DiffUtil.ItemCallback<Quiz> diffCallback) {
+            super(diffCallback);
+        }
 
         @Override
         public QuizViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -133,7 +143,7 @@ public class QuizzesListFragment extends Fragment {
         @Override
         public void onBindViewHolder(QuizViewHolder holder, int position) {
             if( position != RecyclerView.NO_POSITION ) {
-                final Quiz quiz = items[position];
+                final Quiz quiz = getItem( position );
 
                 holder.name.setText( holder.itemView.getContext().getString( R.string.quiz_number, quiz.number ) );
 
@@ -141,18 +151,14 @@ public class QuizzesListFragment extends Fragment {
                 final Date quizDate = DateUtils.joomlaDateToJavaDate( quiz.quizDate, today );
                 holder.date.setVisibility( quizDate.after( today ) ? View.VISIBLE : View.GONE );
                 holder.date.setText( formatter.format( quizDate ) );
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final Context context = view.getContext();
+                        context.startActivity( QuizActivity.createLaunchIntent( context, quiz.id, quiz.number ) );
+                    }
+                });
             }
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return items != null ? items.length : 0;
-        }
-
-        void setItems(Quiz[] items) {
-            this.items = items;
-            notifyDataSetChanged();
         }
     }
 }

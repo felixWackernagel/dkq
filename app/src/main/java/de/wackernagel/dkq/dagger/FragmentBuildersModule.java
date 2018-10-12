@@ -2,6 +2,7 @@ package de.wackernagel.dkq.dagger;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
+import de.wackernagel.dkq.ui.MessagesListFragment;
 import de.wackernagel.dkq.ui.QuestionsListFragment;
 import de.wackernagel.dkq.ui.QuizzesListFragment;
 
@@ -13,5 +14,8 @@ public abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract QuestionsListFragment contributeQuestionsListFragment();
+
+    @ContributesAndroidInjector
+    abstract MessagesListFragment contributeMessagesListFragment();
 
 }

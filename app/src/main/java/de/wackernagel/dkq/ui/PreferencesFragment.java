@@ -1,7 +1,7 @@
 package de.wackernagel.dkq.ui;
 
 import android.os.Bundle;
-import android.support.v7.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceFragmentCompat;
 
 import de.wackernagel.dkq.R;
 

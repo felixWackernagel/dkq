@@ -4,12 +4,12 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.support.annotation.NonNull;
-import android.support.v4.content.SharedPreferencesCompat;
-import android.support.v7.preference.PreferenceManager;
 
 import java.util.Date;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 public final class PreferenceUtils {
 
@@ -157,7 +157,7 @@ public final class PreferenceUtils {
     }
 
     private static void apply(@NonNull final Editor editor) {
-        SharedPreferencesCompat.EditorCompat.getInstance().apply( editor );
+        editor.apply();
     }
 
 }

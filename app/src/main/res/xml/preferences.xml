@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <android.support.v7.preference.PreferenceCategory
+    <androidx.preference.PreferenceCategory
         android:title="@string/pref_category_ui" />
 
-    <android.support.v7.preference.CheckBoxPreference
+    <androidx.preference.CheckBoxPreference
         android:key="show_login_screen"
         android:title="@string/pref_login_screen_title"
         android:summary="@string/pref_login_screen_summary"
         android:defaultValue="true" />
 
-    <android.support.v7.preference.CheckBoxPreference
+    <androidx.preference.CheckBoxPreference
         android:key="notification_enabled"
         android:title="@string/pref_notification_enabled_title"
         android:summary="@string/pref_notification_enabled_summary"
         android:defaultValue="true" />
 
-    <android.support.v7.preference.CheckBoxPreference
+    <androidx.preference.CheckBoxPreference
         android:key="sounds_enabled"
         android:title="@string/pref_sounds_enabled_title"
         android:summary="@string/pref_sounds_enabled_summary"
         android:defaultValue="true" />
 
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>

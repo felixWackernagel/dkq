@@ -19,12 +19,29 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.MainActivity"/>
-        <activity android:name=".ui.PreferencesActivity" android:theme="@style/PreferencesTheme">
+        <activity android:name=".ui.PreferencesActivity"
+            android:label="@string/drawer_preferences"
+            android:theme="@style/PreferencesTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity" />
         </activity>
-        <activity android:name=".ui.QuizActivity" />
+        <activity android:name=".ui.QuizActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
+        <activity android:name=".ui.MessageDetailsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
+        <activity android:name=".ui.DevelopmentActivity"
+            android:label="@string/drawer_development">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
 
         <receiver android:name=".receiver.NotificationReceiver" android:exported="false">
             <intent-filter>

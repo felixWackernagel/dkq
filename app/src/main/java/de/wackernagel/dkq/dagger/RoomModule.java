@@ -1,12 +1,12 @@
 package de.wackernagel.dkq.dagger;
 
 import android.app.Application;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.persistence.db.SupportSQLiteDatabase;
-import android.arch.persistence.room.Room;
-import android.arch.persistence.room.RoomDatabase;
-import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.annotation.NonNull;
 
 import java.util.concurrent.Executors;
 
@@ -17,6 +17,7 @@ import dagger.Provides;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.AppDatabase;
 import de.wackernagel.dkq.room.SampleCreator;
+import de.wackernagel.dkq.room.daos.MessageDao;
 import de.wackernagel.dkq.room.daos.QuestionDao;
 import de.wackernagel.dkq.room.daos.QuizDao;
 import de.wackernagel.dkq.webservice.Webservice;
@@ -25,6 +26,14 @@ import de.wackernagel.dkq.viewmodels.ViewModelFactory;
 @Module
 public class RoomModule {
 
+    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS `messages` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `number` INTEGER NOT NULL, `title` TEXT, `content` TEXT, `image` TEXT, `version` INTEGER NOT NULL, `lastUpdate` TEXT, `read` INTEGER NOT NULL)");
+            database.execSQL("CREATE UNIQUE INDEX `index_messages_number` ON `messages` (`number`)");
+        }
+    };
+
     private final AppDatabase database;
     private final Application application;
 
@@ -32,6 +41,7 @@ public class RoomModule {
         this.application = application;
         this.database = Room
                 .databaseBuilder( application, AppDatabase.class, "dkq.db" )
+                .addMigrations( MIGRATION_1_2 )
                 .addCallback(new RoomDatabase.Callback() {
                     @Override
                     public void onCreate(@NonNull SupportSQLiteDatabase db) {
@@ -48,8 +58,8 @@ public class RoomModule {
 
     @Provides
     @Singleton
-    DkqRepository provideDkqRepository(final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao ) {
-        return new DkqRepository( application.getApplicationContext(), webservice, quizDao, questionDao );
+    DkqRepository provideDkqRepository(final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao ) {
+        return new DkqRepository( application.getApplicationContext(), webservice, quizDao, questionDao, messageDao );
     }
 
     @Provides
@@ -66,13 +76,25 @@ public class RoomModule {
 
     @Provides
     @Singleton
+    MessageDao provideMessageDao( final AppDatabase database ) {
+        return database.messageDao();
+    }
+
+    @Provides
+    @Singleton
     AppDatabase provideAppDatabase() {
         return database;
     }
 
     @Provides
     @Singleton
-    ViewModelProvider.Factory providerViewModelFactory( final DkqRepository repository ) {
-        return new ViewModelFactory( repository );
+    Application provideApplication() {
+        return application;
+    }
+
+    @Provides
+    @Singleton
+    ViewModelProvider.Factory providerViewModelFactory( final DkqRepository repository, final Application application ) {
+        return new ViewModelFactory( repository, application );
     }
 }

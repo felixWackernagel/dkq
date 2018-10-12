@@ -45,7 +45,7 @@ public class RetrofitModule {
         }
 
         final Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://felixwackernagel.de/")
+                .baseUrl("http://felixwackernagel.de/index.php/dkq/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(new LiveDataCallAdapterFactory())
                 .client(client.build())

@@ -16,4 +16,12 @@ public class DkqPreferences {
     public static boolean soundsEnabled( final Context context ) {
         return PreferenceUtils.getBoolean( context, "sounds_enabled", true );
     }
+
+    public static int getLastVersionCode( final Context context ) {
+        return PreferenceUtils.getInt( context, "last_version_code", 0 );
+    }
+
+    public static void setLastVersionCode( final Context context, final int versionCode ) {
+        PreferenceUtils.setInt( context, "last_version_code", versionCode );
+    }
 }
