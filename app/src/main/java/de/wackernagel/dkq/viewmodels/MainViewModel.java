@@ -28,7 +28,7 @@ public class MainViewModel extends AndroidViewModel {
         workManager.enqueueUniquePeriodicWork(
                 "dkqUpdateChecker",
                 ExistingPeriodicWorkPolicy.REPLACE,
-                new PeriodicWorkRequest.Builder(UpdateWorker.class, 10, TimeUnit.MINUTES).setConstraints(
+                new PeriodicWorkRequest.Builder(UpdateWorker.class, 1, TimeUnit.DAYS).setConstraints(
                         new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
                 ).build()
         );

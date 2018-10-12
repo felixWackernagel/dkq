@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import de.wackernagel.dkq.dagger.workerinjector.AndroidWorkerInjection;
-import de.wackernagel.dkq.receiver.NotificationReceiver;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.Quiz;
@@ -35,7 +34,6 @@ public class UpdateWorker extends Worker {
         if( repository != null ) {
             updateQuizzes();
             updateMessages();
-            NotificationReceiver.forNewMessages(getApplicationContext(), 1);
         }
         return Worker.Result.SUCCESS;
     }
