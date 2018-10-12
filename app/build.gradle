@@ -23,7 +23,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             resValue "string", "app_name", "DKQ"
-            resValue "boolean", "development", "false"
+            resValue "bool", "development", "false"
         }
         debug{
             resValue "string", "app_name", "Debug DKQ"
