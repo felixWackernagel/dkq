@@ -1,13 +1,13 @@
 package de.wackernagel.dkq.webservice;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.Observer;
-import android.os.AsyncTask;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.Observer;
+import de.wackernagel.dkq.utils.AppExecutors;
 
 // ResultType: Type for the Resource data
 // RequestType: Type for the API response
@@ -39,8 +39,11 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
 
     private final MediatorLiveData<Resource<ResultType>> result = new MediatorLiveData<>();
 
+    private AppExecutors executors;
+
     @MainThread
-    public NetworkBoundResource() {
+    public NetworkBoundResource(final AppExecutors executors) {
+        this.executors = executors;
         result.setValue(Resource.<ResultType>loading(null));
         final LiveData<ResultType> dbSource = loadFromDb();
         result.addSource(dbSource, new Observer<ResultType>() {
@@ -94,27 +97,26 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
 
     @MainThread
     private void saveResultAndReInit( final ApiResponse<RequestType> response) {
-        new AsyncTask<Void, Void, Void>() {
-
+        executors.diskIO().execute( new Runnable() {
             @Override
-            protected Void doInBackground(Void... voids) {
+            public void run() {
                 saveCallResult(response.body);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                // we specially request a new live data,
-                // otherwise we will get immediately last cached value,
-                // which may not be updated with latest results received from network.
-                result.addSource(loadFromDb(), new Observer<ResultType>() {
+                executors.mainThread().execute(new Runnable() {
                     @Override
-                    public void onChanged(@Nullable ResultType newData) {
-                        result.setValue(Resource.success(newData));
+                    public void run() {
+                        // we specially request a new live data,
+                        // otherwise we will get immediately last cached value,
+                        // which may not be updated with latest results received from network.
+                        result.addSource(loadFromDb(), new Observer<ResultType>() {
+                            @Override
+                            public void onChanged(@Nullable ResultType newData) {
+                                result.setValue(Resource.success(newData));
+                            }
+                        });
                     }
                 });
             }
-        }.execute();
+        } );
     }
 
     // returns a LiveData that represents the resource, implemented

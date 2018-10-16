@@ -17,13 +17,15 @@ import de.wackernagel.dkq.dagger.DaggerApplicationComponent;
 import de.wackernagel.dkq.dagger.RetrofitModule;
 import de.wackernagel.dkq.dagger.RoomModule;
 import de.wackernagel.dkq.dagger.workerinjector.HasWorkerInjector;
+import de.wackernagel.dkq.utils.AppExecutors;
 
 public class DkqApplication extends Application implements HasActivityInjector, HasWorkerInjector {
 
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingActivityInjector;
 
-    @Inject DispatchingAndroidInjector<Worker> workerDispatchingAndroidInjector;
+    @Inject
+    DispatchingAndroidInjector<Worker> workerDispatchingAndroidInjector;
 
     @Override
     public void onCreate() {

@@ -19,6 +19,7 @@ import de.wackernagel.dkq.room.daos.QuizDao;
 import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
+import de.wackernagel.dkq.utils.AppExecutors;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.webservice.ApiResponse;
 import de.wackernagel.dkq.webservice.NetworkBoundResource;
@@ -28,14 +29,16 @@ import de.wackernagel.dkq.webservice.Webservice;
 public class DkqRepository {
 
     private final Context context;
+    private final AppExecutors executors;
     private final Webservice webservice;
     private final QuizDao quizDao;
     private final QuestionDao questionDao;
     private final MessageDao messageDao;
 
     @Inject
-    public DkqRepository( final Context context, final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao ) {
+    public DkqRepository(final Context context, final AppExecutors executors, final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao ) {
         this.context = context;
+        this.executors = executors;
         this.webservice = webservice;
         this.quizDao = quizDao;
         this.questionDao = questionDao;
@@ -43,7 +46,7 @@ public class DkqRepository {
     }
 
     public LiveData<Resource<List<Quiz>>> loadQuizzes() {
-        return new NetworkBoundResource<List<Quiz>,List<Quiz>>() {
+        return new NetworkBoundResource<List<Quiz>,List<Quiz>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Quiz> items) {
                 saveQuizzesWithNotification( items );
@@ -105,7 +108,7 @@ public class DkqRepository {
     }
 
     public LiveData<Resource<Quiz>> loadQuiz( final long quizId, final int quizNumber ) {
-        return new NetworkBoundResource<Quiz,Quiz>() {
+        return new NetworkBoundResource<Quiz,Quiz>(executors) {
             @Override
             protected void saveCallResult(@NonNull Quiz item) {
                 saveQuiz( item );
@@ -131,7 +134,7 @@ public class DkqRepository {
     }
 
     public LiveData<Resource<List<Question>>> loadQuestions( final long quizId, final long quizNumber ) {
-        return new NetworkBoundResource<List<Question>,List<Question>>() {
+        return new NetworkBoundResource<List<Question>,List<Question>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Question> items) {
                 for( Question onlineQuestion : items ) {
@@ -180,7 +183,7 @@ public class DkqRepository {
     }
 
     public LiveData<Resource<List<Message>>> loadMessages() {
-        return new NetworkBoundResource<List<Message>,List<Message>>() {
+        return new NetworkBoundResource<List<Message>,List<Message>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Message> items) {
                 saveMessagesWithNotification( items );
@@ -237,7 +240,7 @@ public class DkqRepository {
     }
 
     public LiveData<Resource<Message>> loadMessage( final long messageId, final int messageNumber ) {
-        return new NetworkBoundResource<Message, Message>() {
+        return new NetworkBoundResource<Message, Message>(executors) {
             @Override
             protected void saveCallResult(@NonNull Message item) {
                 saveMessage( item );

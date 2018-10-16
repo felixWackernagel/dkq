@@ -1,17 +1,17 @@
 package de.wackernagel.dkq.dagger;
 
 import android.app.Application;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import androidx.annotation.NonNull;
 
 import java.util.concurrent.Executors;
 
 import javax.inject.Singleton;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 import dagger.Module;
 import dagger.Provides;
 import de.wackernagel.dkq.repository.DkqRepository;
@@ -20,8 +20,9 @@ import de.wackernagel.dkq.room.SampleCreator;
 import de.wackernagel.dkq.room.daos.MessageDao;
 import de.wackernagel.dkq.room.daos.QuestionDao;
 import de.wackernagel.dkq.room.daos.QuizDao;
-import de.wackernagel.dkq.webservice.Webservice;
+import de.wackernagel.dkq.utils.AppExecutors;
 import de.wackernagel.dkq.viewmodels.ViewModelFactory;
+import de.wackernagel.dkq.webservice.Webservice;
 
 @Module
 public class RoomModule {
@@ -58,8 +59,8 @@ public class RoomModule {
 
     @Provides
     @Singleton
-    DkqRepository provideDkqRepository(final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao ) {
-        return new DkqRepository( application.getApplicationContext(), webservice, quizDao, questionDao, messageDao );
+    DkqRepository provideDkqRepository(final AppExecutors executors, final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao ) {
+        return new DkqRepository( application.getApplicationContext(), executors, webservice, quizDao, questionDao, messageDao );
     }
 
     @Provides
@@ -84,6 +85,12 @@ public class RoomModule {
     @Singleton
     AppDatabase provideAppDatabase() {
         return database;
+    }
+
+    @Provides
+    @Singleton
+    AppExecutors provideAppExecutors() {
+        return new AppExecutors();
     }
 
     @Provides
