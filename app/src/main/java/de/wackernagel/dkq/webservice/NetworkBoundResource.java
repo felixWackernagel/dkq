@@ -7,7 +7,7 @@ import androidx.annotation.WorkerThread;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
-import de.wackernagel.dkq.utils.AppExecutors;
+import de.wackernagel.dkq.AppExecutors;
 
 // ResultType: Type for the Resource data
 // RequestType: Type for the API response

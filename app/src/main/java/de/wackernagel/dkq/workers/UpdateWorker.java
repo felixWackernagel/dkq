@@ -2,6 +2,7 @@ package de.wackernagel.dkq.workers;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,6 +16,7 @@ import de.wackernagel.dkq.dagger.workerinjector.AndroidWorkerInjection;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.Quiz;
+import de.wackernagel.dkq.webservice.Webservice;
 import retrofit2.Response;
 
 public class UpdateWorker extends Worker {
@@ -22,6 +24,9 @@ public class UpdateWorker extends Worker {
 
     @Inject
     DkqRepository repository;
+
+    @Inject
+    Webservice webservice;
 
     public UpdateWorker( @NonNull final Context appContext, @NonNull final WorkerParameters workerParams ) {
         super(appContext, workerParams);
@@ -31,16 +36,16 @@ public class UpdateWorker extends Worker {
     @Override
     public Result doWork() {
         AndroidWorkerInjection.inject(this);
-        if( repository != null ) {
-            updateQuizzes();
-            updateMessages();
-        }
+
+        updateQuizzes();
+        updateMessages();
+
         return Worker.Result.SUCCESS;
     }
 
     private void updateQuizzes() {
         try {
-            final Response<List<Quiz>> response = repository.getWebService().getQuizzesList().execute();
+            final Response<List<Quiz>> response = webservice.getQuizzesList().execute();
             if( response != null && response.isSuccessful() && response.body() != null ) {
                 repository.saveQuizzesWithNotification( response.body() );
             }
@@ -51,7 +56,7 @@ public class UpdateWorker extends Worker {
 
     private void updateMessages() {
         try {
-            final Response<List<Message>> response = repository.getWebService().getMessagesList().execute();
+            final Response<List<Message>> response = webservice.getMessagesList().execute();
             if( response != null && response.isSuccessful() && response.body() != null ) {
                 repository.saveMessagesWithNotification( response.body() );
             }

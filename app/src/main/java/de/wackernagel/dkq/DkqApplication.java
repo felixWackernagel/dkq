@@ -17,7 +17,6 @@ import de.wackernagel.dkq.dagger.DaggerApplicationComponent;
 import de.wackernagel.dkq.dagger.RetrofitModule;
 import de.wackernagel.dkq.dagger.RoomModule;
 import de.wackernagel.dkq.dagger.workerinjector.HasWorkerInjector;
-import de.wackernagel.dkq.utils.AppExecutors;
 
 public class DkqApplication extends Application implements HasActivityInjector, HasWorkerInjector {
 
@@ -33,7 +32,7 @@ public class DkqApplication extends Application implements HasActivityInjector, 
 
         DaggerApplicationComponent
                 .builder()
-                .roomModule( new RoomModule( this ) )
+                .roomModule( new RoomModule( this, new AppExecutors() ) )
                 .retrofitModule( new RetrofitModule( this ) )
                 .build()
                 .inject( this );

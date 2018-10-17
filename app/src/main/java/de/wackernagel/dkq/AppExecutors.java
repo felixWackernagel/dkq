@@ -1,4 +1,4 @@
-package de.wackernagel.dkq.utils;
+package de.wackernagel.dkq;
 
 import android.os.Handler;
 import android.os.Looper;

@@ -1,17 +1,16 @@
 package de.wackernagel.dkq.repository;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import java.util.Date;
 import java.util.List;
-
-import javax.inject.Inject;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import de.wackernagel.dkq.AppExecutors;
 import de.wackernagel.dkq.receiver.NotificationReceiver;
 import de.wackernagel.dkq.room.daos.MessageDao;
 import de.wackernagel.dkq.room.daos.QuestionDao;
@@ -19,8 +18,8 @@ import de.wackernagel.dkq.room.daos.QuizDao;
 import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
-import de.wackernagel.dkq.utils.AppExecutors;
 import de.wackernagel.dkq.utils.DateUtils;
+import de.wackernagel.dkq.utils.RateLimiter;
 import de.wackernagel.dkq.webservice.ApiResponse;
 import de.wackernagel.dkq.webservice.NetworkBoundResource;
 import de.wackernagel.dkq.webservice.Resource;
@@ -35,7 +34,13 @@ public class DkqRepository {
     private final QuestionDao questionDao;
     private final MessageDao messageDao;
 
-    @Inject
+    private RateLimiter<String> rateLimiter = new RateLimiter<>(10, TimeUnit.MINUTES);
+    private static final String LIMITER_QUIZZES = "quizzes";
+    private static final String LIMITER_QUIZ = "quiz";
+    private static final String LIMITER_QUESTIONS = "questions";
+    private static final String LIMITER_MESSAGES = "messages";
+    private static final String LIMITER_MESSAGE = "message";
+
     public DkqRepository(final Context context, final AppExecutors executors, final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao ) {
         this.context = context;
         this.executors = executors;
@@ -54,7 +59,7 @@ public class DkqRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<Quiz> data) {
-                return true;
+                return data == null || data.isEmpty() || rateLimiter.shouldFetch(LIMITER_QUIZZES);
             }
 
             @NonNull
@@ -67,6 +72,11 @@ public class DkqRepository {
             @Override
             protected LiveData<ApiResponse<List<Quiz>>> createCall() {
                 return webservice.getQuizzes();
+            }
+
+            @Override
+            protected void onFetchFailed() {
+                rateLimiter.reset( LIMITER_QUIZZES );
             }
         }.getAsLiveData();
     }
@@ -116,7 +126,7 @@ public class DkqRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable Quiz data) {
-                return true;
+                return data == null || rateLimiter.shouldFetch( LIMITER_QUIZ + ":" + quizNumber );
             }
 
             @NonNull
@@ -129,6 +139,11 @@ public class DkqRepository {
             @Override
             protected LiveData<ApiResponse<Quiz>> createCall() {
                 return webservice.getQuiz(quizNumber);
+            }
+
+            @Override
+            protected void onFetchFailed() {
+                rateLimiter.reset( LIMITER_QUIZ + ":" + quizNumber );
             }
         }.getAsLiveData();
     }
@@ -165,7 +180,7 @@ public class DkqRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<Question> data) {
-                return true;
+                return data == null || data.isEmpty() || rateLimiter.shouldFetch( quizNumber + ":" + LIMITER_QUESTIONS );
             }
 
             @NonNull
@@ -179,6 +194,11 @@ public class DkqRepository {
             protected LiveData<ApiResponse<List<Question>>> createCall() {
                 return webservice.getQuestionsFromQuiz( quizNumber );
             }
+
+            @Override
+            protected void onFetchFailed() {
+                rateLimiter.reset( quizNumber + ":" + LIMITER_QUESTIONS );
+            }
         }.getAsLiveData();
     }
 
@@ -191,7 +211,7 @@ public class DkqRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<Message> data) {
-                return true;
+                return data == null || data.isEmpty() || rateLimiter.shouldFetch( LIMITER_MESSAGES );
             }
 
             @NonNull
@@ -204,6 +224,11 @@ public class DkqRepository {
             @Override
             protected LiveData<ApiResponse<List<Message>>> createCall() {
                 return webservice.getMessages();
+            }
+
+            @Override
+            protected void onFetchFailed() {
+                rateLimiter.reset( LIMITER_MESSAGES );
             }
         }.getAsLiveData();
     }
@@ -248,7 +273,7 @@ public class DkqRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable Message data) {
-                return true;
+                return data == null || rateLimiter.shouldFetch( LIMITER_MESSAGE + ":" + messageNumber );
             }
 
             @NonNull
@@ -262,64 +287,38 @@ public class DkqRepository {
             protected LiveData<ApiResponse<Message>> createCall() {
                 return webservice.getMessage( messageNumber );
             }
+
+            @Override
+            protected void onFetchFailed() {
+                rateLimiter.reset( LIMITER_MESSAGE + ":" + messageNumber );
+            }
         }.getAsLiveData();
     }
 
-    public void updateMessage( Message message ) {
-        new UpdateMessagesTask(messageDao).execute( message );
+    public void updateMessage(final Message message ) {
+        executors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                messageDao.updateMessage(message);
+            }
+        });
     }
 
-    public void insertMessages( Message... messages ) {
-        new InsertMessagesTask(messageDao).execute( messages );
+    public void insertMessages(final Message... messages ) {
+        executors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                messageDao.insertMessages( messages );
+            }
+        });
     }
 
     public void deleteAllMessages() {
-        new DeleteAllMessagesTask(messageDao).execute();
-    }
-
-    private static class InsertMessagesTask extends AsyncTask<Message, Void , Void> {
-        private final MessageDao dao;
-
-        InsertMessagesTask( MessageDao dao ) {
-            this.dao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(Message... messages) {
-            dao.insertMessages( messages );
-            return null;
-        }
-    }
-
-    private static class UpdateMessagesTask extends AsyncTask<Message, Void , Void> {
-        private final MessageDao dao;
-
-        UpdateMessagesTask( MessageDao dao ) {
-            this.dao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(Message... messages) {
-            dao.updateMessage( messages[0] );
-            return null;
-        }
-    }
-
-    private static class DeleteAllMessagesTask extends AsyncTask<Void, Void , Void> {
-        private final MessageDao dao;
-
-        DeleteAllMessagesTask( MessageDao dao ) {
-            this.dao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            dao.deleteAllMessages();
-            return null;
-        }
-    }
-
-    public Webservice getWebService() {
-        return webservice;
+        executors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                messageDao.deleteAllMessages();
+            }
+        });
     }
 }
