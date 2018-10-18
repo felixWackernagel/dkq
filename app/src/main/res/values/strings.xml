@@ -5,6 +5,7 @@
     <string name="crash_toast_text">DKQ hatte ein Problem und wurde geschlossen.</string>
     <string name="ok_word">OK</string>
     <string name="close_word">Schließen</string>
+    <string name="badge_new">NEU</string>
 
     <string name="changelog_title">Was gibts neues?</string>
     <string name="changelog_message"><![CDATA[

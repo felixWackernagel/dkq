@@ -9,13 +9,13 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 public class SixteenNineImageView extends ForegroundImageView {
 
-    public SixteenNineImageView(Context context, AttributeSet attrs) {
+    public SixteenNineImageView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-        int fourThreeHeight = makeMeasureSpec(getSize(widthSpec) * 9 / 16, EXACTLY);
+        final int fourThreeHeight = makeMeasureSpec(getSize(widthSpec) * 9 / 16, EXACTLY);
         super.onMeasure(widthSpec, fourThreeHeight);
     }
 

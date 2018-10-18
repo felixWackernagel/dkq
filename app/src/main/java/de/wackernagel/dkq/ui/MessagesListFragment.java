@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Message;
+import de.wackernagel.dkq.ui.widgets.BadgedSixteenNineImageView;
 import de.wackernagel.dkq.ui.widgets.EmptyAwareRecyclerView;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GlideUtils;
@@ -116,10 +117,9 @@ public class MessagesListFragment extends Fragment {
     static class MessageViewHolder extends RecyclerView.ViewHolder {
         final MessagesListFragment.MessageAdapter adapter;
 
-        ImageView image;
+        BadgedSixteenNineImageView image;
         TextView title;
         TextView content;
-        View line;
 
         MessageViewHolder(final MessagesListFragment.MessageAdapter adapter, View itemView) {
             super(itemView);
@@ -127,7 +127,6 @@ public class MessagesListFragment extends Fragment {
             image = itemView.findViewById( R.id.image );
             title = itemView.findViewById( R.id.title );
             content = itemView.findViewById( R.id.content );
-            line = itemView.findViewById( R.id.line );
         }
     }
 
@@ -150,7 +149,7 @@ public class MessagesListFragment extends Fragment {
                 GlideUtils.loadImage( holder.image, message.image );
                 holder.title.setText( message.title );
                 holder.content.setText( message.content );
-                holder.line.setVisibility( message.read == 0 ? View.VISIBLE : View.GONE );
+                holder.image.drawBadge( message.read == 0 );
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
