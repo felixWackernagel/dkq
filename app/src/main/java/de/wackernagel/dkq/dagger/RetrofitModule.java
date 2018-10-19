@@ -8,7 +8,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import de.wackernagel.dkq.BuildConfig;
-import de.wackernagel.dkq.room.AppDatabase;
 import de.wackernagel.dkq.utils.ConnectivityInterceptor;
 import de.wackernagel.dkq.webservice.LiveDataCallAdapterFactory;
 import de.wackernagel.dkq.webservice.Webservice;
@@ -30,18 +29,17 @@ public class RetrofitModule {
     @Singleton
     Webservice provideWebservice() {
         final OkHttpClient.Builder client = new OkHttpClient.Builder();
+        client.addInterceptor( new ConnectivityInterceptor( application ) );
 
         if (BuildConfig.DEBUG) {
             final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
                 @Override
-                public void log(String message) {
+                public void log( final String message ) {
                     Log.i("OkHttp", message);
                 }
             });
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            client.addInterceptor(interceptor)
-                .addInterceptor( new ConnectivityInterceptor( application ) )
-                .build();
+            client.addInterceptor(interceptor);
         }
 
         final Retrofit retrofit = new Retrofit.Builder()

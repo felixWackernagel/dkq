@@ -18,17 +18,17 @@
     <group android:id="@+id/navigation_sub_menu">
         <item
             android:id="@+id/drawer_preferences"
-            android:icon="@drawable/baseline_settings_black_48"
+            android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/drawer_preferences" />
         <item
             android:id="@+id/drawer_item_about"
-            android:icon="@drawable/baseline_error_black_48"
+            android:icon="@drawable/ic_error_black_24dp"
             android:title="@string/drawer_about"
             android:visible="false"/>
         <item
             android:id="@+id/drawer_item_development"
             android:title="@string/drawer_development"
-            android:icon="@drawable/baseline_build_black_48"
+            android:icon="@drawable/ic_build_black_24dp"
             android:visible="@bool/development"/>
     </group>
 </menu>

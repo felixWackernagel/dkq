@@ -53,8 +53,8 @@
     <string name="error_login">Benutzer und/oder Passwort sind inkorrekt</string>
 
     <!-- Menus -->
-    <string name="bottom_navigation_quizzes">Quizzes</string>
-    <string name="bottom_navigation_news">Nachrichten</string>
+    <string name="bottom_navigation_quizzes">Quizze</string>
+    <string name="bottom_navigation_news">Artikel</string>
 
     <!-- Preferences -->
     <string name="pref_category_ui">Oberfläche</string>

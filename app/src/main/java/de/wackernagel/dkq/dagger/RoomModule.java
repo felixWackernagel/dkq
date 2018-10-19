@@ -101,7 +101,7 @@ public class RoomModule {
 
     @Provides
     @Singleton
-    ViewModelProvider.Factory providerViewModelFactory( final DkqRepository repository, final Application application ) {
-        return new ViewModelFactory( repository, application );
+    ViewModelProvider.Factory providerViewModelFactory( final DkqRepository repository, final Application application, final AppExecutors executors ) {
+        return new ViewModelFactory( repository, application, executors );
     }
 }

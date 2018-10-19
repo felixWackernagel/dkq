@@ -4,13 +4,13 @@
 
     <item
         android:id="@+id/action_quizzes"
-        android:icon="@drawable/baseline_question_answer_black_24"
+        android:icon="@drawable/ic_assignment_black_24dp"
         android:title="@string/bottom_navigation_quizzes"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_news"
-        android:icon="@drawable/baseline_email_black_24"
+        android:icon="@drawable/ic_book_black_24dp"
         android:title="@string/bottom_navigation_news"
         app:showAsAction="ifRoom" />
 </menu>

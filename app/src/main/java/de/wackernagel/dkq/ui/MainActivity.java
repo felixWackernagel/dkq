@@ -3,7 +3,6 @@ package de.wackernagel.dkq.ui;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +21,7 @@ import androidx.core.text.HtmlCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import dagger.android.AndroidInjection;
@@ -30,6 +30,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.R;
+import de.wackernagel.dkq.utils.AppUtils;
 import de.wackernagel.dkq.viewmodels.MainViewModel;
 
 public class MainActivity extends AbstractDkqActivity implements HasSupportFragmentInjector, BottomNavigationView.OnNavigationItemSelectedListener {
@@ -110,33 +111,36 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
 
         final MainViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(MainViewModel.class);
         viewModel.installUpdateChecker();
-        if(viewModel.isNewAppVersion()) {
-            new AlertDialog.Builder( this )
-                    .setTitle(R.string.changelog_title)
-                    .setMessage(HtmlCompat.fromHtml( getResources().getString(R.string.changelog_message), HtmlCompat.FROM_HTML_MODE_COMPACT))
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.close_word, null)
-                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            int currentVersionCode;
-                            try {
-                                currentVersionCode = getApplication().getPackageManager().getPackageInfo( getApplication().getPackageName(), 0).versionCode;
-                            } catch (PackageManager.NameNotFoundException e) {
-                                currentVersionCode = 0;
-                            }
-                            DkqPreferences.setLastVersionCode( getApplication(), currentVersionCode );
-                        }
-                    })
-                    .create()
-                    .show();
-        }
+        viewModel.isNewAppVersion().observe( this, new Observer<Boolean>() {
+            @Override
+            public void onChanged( final Boolean newVersion ) {
+                if( newVersion != null && newVersion ) {
+                    showChangelog();
+                }
+            }
+        } );
 
         if( savedInstanceState == null ) {
             getSupportFragmentManager().beginTransaction()
                 .replace( R.id.container, QuizzesListFragment.newInstance(), "quizzes" )
                 .commit();
         }
+    }
+
+    private void showChangelog() {
+        new AlertDialog.Builder( this )
+            .setTitle(R.string.changelog_title)
+            .setMessage(HtmlCompat.fromHtml( getResources().getString(R.string.changelog_message), HtmlCompat.FROM_HTML_MODE_COMPACT))
+            .setCancelable(false)
+            .setPositiveButton(R.string.close_word, null)
+            .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    DkqPreferences.setLastVersionCode( getApplication(), AppUtils.getAppVersion( getApplication() ));
+                }
+            })
+            .create()
+            .show();
     }
 
     @Override

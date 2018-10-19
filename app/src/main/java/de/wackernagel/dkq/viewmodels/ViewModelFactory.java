@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import de.wackernagel.dkq.AppExecutors;
 import de.wackernagel.dkq.repository.DkqRepository;
 
 @Singleton
@@ -15,11 +16,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
     private final DkqRepository repository;
     private final Application application;
+    private final AppExecutors executors;
 
-    @Inject
-    public ViewModelFactory( final DkqRepository repository, final Application application ) {
+    public ViewModelFactory(final DkqRepository repository, final Application application, final AppExecutors executors) {
         this.repository = repository;
         this.application = application;
+        this.executors = executors;
     }
 
     @SuppressWarnings("unchecked")
@@ -36,7 +38,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if( modelClass.isAssignableFrom( MessageDetailsViewModel.class ) ) {
             return (T) new MessageDetailsViewModel( repository );
         } else if( modelClass.isAssignableFrom( MainViewModel.class ) ) {
-            return (T) new MainViewModel( application );
+            return (T) new MainViewModel( application, executors );
         }
         throw new IllegalArgumentException( "Unsupported ViewModel class." );
     }

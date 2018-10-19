@@ -1,30 +1,36 @@
 package de.wackernagel.dkq.viewmodels;
 
 import android.app.Application;
-import android.content.pm.PackageManager;
-import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
+import de.wackernagel.dkq.AppExecutors;
 import de.wackernagel.dkq.DkqPreferences;
+import de.wackernagel.dkq.utils.AppUtils;
 import de.wackernagel.dkq.workers.UpdateWorker;
 
 public class MainViewModel extends AndroidViewModel {
+    private final AppExecutors executors;
     private final WorkManager workManager;
+    private final MutableLiveData<Boolean> newAppVersion;
 
-    MainViewModel(final Application application) {
+    MainViewModel(final Application application, final AppExecutors executors) {
         super(application);
-        this.workManager = WorkManager.getInstance();
+        this.executors = executors;
+        workManager = WorkManager.getInstance();
+        newAppVersion = new MutableLiveData<>();
+        newAppVersion.setValue( Boolean.FALSE );
     }
 
     public void installUpdateChecker() {
-        Log.i("dkq", "Install update checker");
         workManager.enqueueUniquePeriodicWork(
                 "dkqUpdateChecker",
                 ExistingPeriodicWorkPolicy.REPLACE,
@@ -34,14 +40,21 @@ public class MainViewModel extends AndroidViewModel {
         );
     }
 
-    public boolean isNewAppVersion() {
-        int currentVersionCode;
-        try {
-            currentVersionCode = getApplication().getPackageManager().getPackageInfo( getApplication().getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            currentVersionCode = 0;
-        }
-        final int lastVersionCode = DkqPreferences.getLastVersionCode( getApplication() );
-        return currentVersionCode > lastVersionCode;
+    public LiveData<Boolean> isNewAppVersion() {
+        executors.diskIO().execute( new Runnable() {
+            @Override
+            public void run() {
+                final int actualVersion = AppUtils.getAppVersion( getApplication() );
+                final int previousVersion = DkqPreferences.getLastVersionCode( getApplication() );
+                final boolean isNewVersion = actualVersion > previousVersion;
+                executors.mainThread().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        newAppVersion.setValue( isNewVersion );
+                    }
+                });
+            }
+        } );
+        return newAppVersion;
     }
 }
