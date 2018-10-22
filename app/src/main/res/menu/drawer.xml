@@ -6,12 +6,10 @@
         <item
             android:id="@+id/drawer_item_main"
             android:checked="true"
-            android:icon="@drawable/ic_questions_black_48"
             android:title="@string/drawer_main" />
         <item
             android:id="@+id/drawer_item_ranking"
             android:checked="true"
-            android:icon="@drawable/ic_ranking_black_48"
             android:title="@string/drawer_ranking"
             android:visible="false"/>
     </group>
