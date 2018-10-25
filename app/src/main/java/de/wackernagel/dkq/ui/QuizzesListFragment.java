@@ -3,9 +3,11 @@ package de.wackernagel.dkq.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -29,7 +31,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Quiz;
-import de.wackernagel.dkq.ui.widgets.EmptyAwareRecyclerView;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GridGutterDecoration;
@@ -41,8 +42,9 @@ public class QuizzesListFragment extends Fragment {
     @Inject
     ViewModelProvider.Factory viewModelFactory;
 
-    private EmptyAwareRecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private TextView emptyView;
+    private ProgressBar progressBar;
     private QuizAdapter adapter;
 
     static QuizzesListFragment newInstance() {
@@ -62,6 +64,7 @@ public class QuizzesListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById( R.id.recyclerView );
         emptyView = view.findViewById( R.id.emptyView );
+        progressBar = view.findViewById(R.id.progressBar);
     }
 
     @Override
@@ -80,7 +83,6 @@ public class QuizzesListFragment extends Fragment {
             adapter = new QuizAdapter( new QuizItemCallback() );
             recyclerView.setLayoutManager( new GridLayoutManager( getContext(), 1 ) );
             recyclerView.setHasFixedSize( true );
-            recyclerView.setEmptyView( emptyView );
             recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );
             recyclerView.addItemDecoration( new GridGutterDecoration(
@@ -93,9 +95,22 @@ public class QuizzesListFragment extends Fragment {
             viewModel.loadQuizzes().observe(this, new Observer<Resource<List<Quiz>>>() {
                 @Override
                 public void onChanged(@Nullable Resource<List<Quiz>> quizzes) {
-                if( quizzes != null ) {
-                    adapter.submitList( quizzes.data );
-                }
+                    if( quizzes != null ) {
+                        Log.i("dkq", "Status=" + quizzes.status + ", Items=" + (quizzes.data != null ? quizzes.data.size() : "null" ));
+                        switch (quizzes.status) {
+                            case LOADING:
+                                progressBar.setVisibility( View.VISIBLE );
+                                emptyView.setVisibility( View.GONE );
+                                break;
+                            case ERROR:
+                            case SUCCESS:
+                                progressBar.setVisibility( View.GONE );
+                                emptyView.setVisibility( quizzes.data != null && quizzes.data.size() > 0 ? View.GONE : View.VISIBLE );
+                                break;
+                        }
+
+                        adapter.submitList( quizzes.data );
+                    }
                 }
             });
         }

@@ -3,10 +3,11 @@ package de.wackernagel.dkq.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -28,7 +29,6 @@ import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.ui.widgets.BadgedSixteenNineImageView;
-import de.wackernagel.dkq.ui.widgets.EmptyAwareRecyclerView;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GlideUtils;
 import de.wackernagel.dkq.utils.GridGutterDecoration;
@@ -40,8 +40,9 @@ public class MessagesListFragment extends Fragment {
     @Inject
     ViewModelProvider.Factory viewModelFactory;
 
-    private EmptyAwareRecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private TextView emptyView;
+    private ProgressBar progressBar;
     private MessageAdapter adapter;
 
     static MessagesListFragment newInstance() {
@@ -61,6 +62,7 @@ public class MessagesListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById( R.id.recyclerView );
         emptyView = view.findViewById( R.id.emptyView );
+        progressBar = view.findViewById(R.id.progressBar);
     }
 
     @Override
@@ -78,7 +80,6 @@ public class MessagesListFragment extends Fragment {
             adapter = new MessagesListFragment.MessageAdapter( new MessageItemCallback() );
             recyclerView.setLayoutManager( new GridLayoutManager( getContext(), 1 ) );
             recyclerView.setHasFixedSize( true );
-            recyclerView.setEmptyView( emptyView );
             recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );
             recyclerView.addItemDecoration( new GridGutterDecoration(
@@ -92,6 +93,18 @@ public class MessagesListFragment extends Fragment {
                 @Override
                 public void onChanged(@Nullable Resource<List<Message>> messages) {
                     if( messages != null ) {
+                        Log.i("dkq", "Status=" + messages.status + ", Items=" + (messages.data != null ? messages.data.size() : "null" ));
+                        switch (messages.status) {
+                            case LOADING:
+                                progressBar.setVisibility( View.VISIBLE );
+                                emptyView.setVisibility( View.GONE );
+                                break;
+                            case ERROR:
+                            case SUCCESS:
+                                progressBar.setVisibility( View.GONE );
+                                emptyView.setVisibility( messages.data != null && messages.data.size() > 0 ? View.GONE : View.VISIBLE );
+                                break;
+                        }
                         adapter.submitList( messages.data );
                     }
                 }

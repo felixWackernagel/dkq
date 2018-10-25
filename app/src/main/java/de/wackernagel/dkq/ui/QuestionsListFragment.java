@@ -3,9 +3,11 @@ package de.wackernagel.dkq.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -27,7 +29,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Question;
-import de.wackernagel.dkq.ui.widgets.EmptyAwareRecyclerView;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GridGutterDecoration;
 import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
@@ -42,8 +43,9 @@ public class QuestionsListFragment extends Fragment {
     @Inject
     ViewModelProvider.Factory viewModelFactory;
 
-    private EmptyAwareRecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private TextView emptyView;
+    private ProgressBar progressBar;
     private QuestionAdapter adapter;
 
     static QuestionsListFragment newInstance( final long quizId, final int quizNumber ) {
@@ -82,6 +84,7 @@ public class QuestionsListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById( R.id.recyclerView );
         emptyView = view.findViewById( R.id.emptyView );
+        progressBar = view.findViewById(R.id.progressBar);
     }
 
     @Override
@@ -100,7 +103,6 @@ public class QuestionsListFragment extends Fragment {
             adapter = new QuestionAdapter( new QuestionItemCallback() );
             recyclerView.setLayoutManager( new GridLayoutManager( getContext(), 1 ) );
             recyclerView.setHasFixedSize( true );
-            recyclerView.setEmptyView( emptyView );
             recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );
             recyclerView.addItemDecoration( new GridGutterDecoration(
@@ -114,6 +116,18 @@ public class QuestionsListFragment extends Fragment {
                 @Override
                 public void onChanged(@Nullable Resource<List<Question>> questions) {
                 if( questions != null ) {
+                    Log.i("dkq", "Status=" + questions.status + ", Items=" + (questions.data != null ? questions.data.size() : "null" ));
+                    switch (questions.status) {
+                        case LOADING:
+                            progressBar.setVisibility( View.VISIBLE );
+                            emptyView.setVisibility( View.GONE );
+                            break;
+                        case ERROR:
+                        case SUCCESS:
+                            progressBar.setVisibility( View.GONE );
+                            emptyView.setVisibility( questions.data != null && questions.data.size() > 0 ? View.GONE : View.VISIBLE );
+                            break;
+                    }
                     adapter.submitList( questions.data );
                 }
                 }
