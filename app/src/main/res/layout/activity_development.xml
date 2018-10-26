@@ -50,4 +50,10 @@
         android:text="@string/test_many_message_notification"
         android:onClick="testNotificationManyNewMessages"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/insert_sample_quiz"
+        android:onClick="insertSampleQuiz"/>
+
 </LinearLayout>

@@ -73,4 +73,9 @@ public class DevelopmentActivity extends AbstractDkqActivity {
         finish();
         NotificationReceiver.forNewMessages( this, 5 );
     }
+
+    public void insertSampleQuiz( View view ) {
+        final DevelopmentViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(DevelopmentViewModel.class);
+        viewModel.insertQuiz( SampleCreator.createFutureSampleQuiz() );
+    }
 }

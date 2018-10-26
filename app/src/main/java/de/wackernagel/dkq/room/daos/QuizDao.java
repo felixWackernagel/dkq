@@ -19,6 +19,12 @@ public interface QuizDao {
     @Query( "SELECT * FROM quizzes ORDER BY number DESC" )
     LiveData<List<Quiz>> loadQuizzes();
 
+    @Query( "SELECT * FROM quizzes WHERE datetime( quizDate ) < datetime( 'now' ) ORDER BY number DESC" )
+    LiveData<List<Quiz>> loadPastQuizzes();
+
+    @Query( "SELECT * FROM quizzes WHERE datetime( quizDate ) > datetime( 'now' ) ORDER BY number ASC LIMIT 1" )
+    LiveData<Quiz> loadNextQuiz();
+
     @Query( "SELECT * FROM quizzes WHERE id = :quizId" )
     LiveData<Quiz> loadQuiz( long quizId );
 

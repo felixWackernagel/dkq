@@ -21,6 +21,17 @@ public final class SampleCreator {
         };
     }
 
+    public static Quiz createFutureSampleQuiz() {
+        final Quiz quiz = new Quiz();
+        quiz.number = 999;
+        quiz.location = "Dorfpub, Hobbitstraße 20, 23456 Hobbingen";
+        quiz.quizDate = "2099-06-12 20:00:00";
+        quiz.quizMaster = "Bilbo Beutlin";
+        quiz.latitude = -37.872196;
+        quiz.longitude = 175.683205;
+        return quiz;
+    }
+
     private static long quiz( final AppDatabase database, final int number, final String location, final String quizDate, final String quizMaster, final double latitude, final double longitude ) {
         final Quiz quiz = new Quiz();
         quiz.number = number;

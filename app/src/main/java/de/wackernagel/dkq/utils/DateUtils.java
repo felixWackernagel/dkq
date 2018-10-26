@@ -7,7 +7,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import androidx.annotation.Nullable;
+
 public class DateUtils {
+
+    /**
+     * @param dateTime 'YYYY-MM-DD HH:MM:SS'
+     * @return Converted date or null
+     */
+    @Nullable
+    public static Date joomlaDateToJavaDate( final String dateTime) {
+        return joomlaDateToJavaDate( dateTime, null);
+    }
 
     /**
      * @param dateTime 'YYYY-MM-DD HH:MM:SS'

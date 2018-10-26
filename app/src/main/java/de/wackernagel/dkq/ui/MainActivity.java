@@ -6,9 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -17,6 +22,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.text.HtmlCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -30,8 +36,11 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.R;
+import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.utils.AppUtils;
+import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.viewmodels.MainViewModel;
+import de.wackernagel.dkq.webservice.Resource;
 
 public class MainActivity extends AbstractDkqActivity implements HasSupportFragmentInjector, BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -119,6 +128,24 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
                 }
             }
         } );
+        viewModel.loadNextQuiz().observe(this, new Observer<Resource<Quiz>>() {
+            @Override
+            public void onChanged( final Resource<Quiz> quiz ) {
+                if( quiz != null ) {
+                    if( quiz.data != null ) {
+                        final SimpleDateFormat formatter = new SimpleDateFormat( "dd. MMMM yyyy - HH:mm", Locale.getDefault() );
+                        final Date quizDate = DateUtils.joomlaDateToJavaDate( quiz.data.quizDate );
+                        final String formattedDate = quizDate != null ? formatter.format( quizDate ) : "?";
+
+                        final TextView toolbarCardViewText = findViewById(R.id.toolbarCardTextView);
+                        toolbarCardViewText.setText( getString( R.string.next_quiz, quiz.data.number, formattedDate) );
+                    }
+
+                    final CardView toolbarCardView = findViewById(R.id.toolbarCardView);
+                    toolbarCardView.setVisibility( quiz.data != null ? View.VISIBLE : View.GONE );
+                }
+            }
+        });
 
         if( savedInstanceState == null ) {
             getSupportFragmentManager().beginTransaction()

@@ -14,17 +14,22 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import de.wackernagel.dkq.AppExecutors;
 import de.wackernagel.dkq.DkqPreferences;
+import de.wackernagel.dkq.repository.DkqRepository;
+import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.utils.AppUtils;
+import de.wackernagel.dkq.webservice.Resource;
 import de.wackernagel.dkq.workers.UpdateWorker;
 
 public class MainViewModel extends AndroidViewModel {
     private final AppExecutors executors;
+    private final DkqRepository repository;
     private final WorkManager workManager;
     private final MutableLiveData<Boolean> newAppVersion;
 
-    MainViewModel(final Application application, final AppExecutors executors) {
+    MainViewModel(final Application application, final AppExecutors executors, final DkqRepository repository) {
         super(application);
         this.executors = executors;
+        this.repository = repository;
         workManager = WorkManager.getInstance();
         newAppVersion = new MutableLiveData<>();
         newAppVersion.setValue( Boolean.FALSE );
@@ -56,5 +61,9 @@ public class MainViewModel extends AndroidViewModel {
             }
         } );
         return newAppVersion;
+    }
+
+    public LiveData<Resource<Quiz>> loadNextQuiz() {
+        return repository.loadNextQuiz();
     }
 }

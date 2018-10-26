@@ -65,13 +65,44 @@ public class DkqRepository {
             @NonNull
             @Override
             protected LiveData<List<Quiz>> loadFromDb() {
-                return quizDao.loadQuizzes();
+                return quizDao.loadPastQuizzes();
             }
 
             @NonNull
             @Override
             protected LiveData<ApiResponse<List<Quiz>>> createCall() {
                 return webservice.getQuizzes();
+            }
+
+            @Override
+            protected void onFetchFailed() {
+                rateLimiter.reset( LIMITER_QUIZZES );
+            }
+        }.getAsLiveData();
+    }
+
+    public LiveData<Resource<Quiz>> loadNextQuiz() {
+        return new NetworkBoundResource<Quiz,Quiz>(executors) {
+            @Override
+            protected void saveCallResult(@NonNull Quiz item) {
+                // no-op
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable Quiz data) {
+                return false;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<Quiz> loadFromDb() {
+                return quizDao.loadNextQuiz();
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<Quiz>> createCall() {
+                return webservice.getQuiz( 0 );
             }
 
             @Override
@@ -320,5 +351,14 @@ public class DkqRepository {
                 messageDao.deleteAllMessages();
             }
         });
+    }
+
+    public void insertQuiz(final Quiz quiz ) {
+        executors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                quizDao.insertQuiz(quiz);
+            }
+        } );
     }
 }

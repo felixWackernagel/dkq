@@ -38,7 +38,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if( modelClass.isAssignableFrom( MessageDetailsViewModel.class ) ) {
             return (T) new MessageDetailsViewModel( repository );
         } else if( modelClass.isAssignableFrom( MainViewModel.class ) ) {
-            return (T) new MainViewModel( application, executors );
+            return (T) new MainViewModel( application, executors, repository );
         }
         throw new IllegalArgumentException( "Unsupported ViewModel class." );
     }
