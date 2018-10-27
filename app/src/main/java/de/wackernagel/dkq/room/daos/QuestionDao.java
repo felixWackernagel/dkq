@@ -29,6 +29,6 @@ public interface QuestionDao {
     void updateQuestion(Question question);
 
     @Delete
-    int deleteQuestion(Question question);
+    void deleteQuestion(Question question);
 
 }

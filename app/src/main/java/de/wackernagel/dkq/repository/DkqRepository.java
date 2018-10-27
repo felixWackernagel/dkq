@@ -361,4 +361,13 @@ public class DkqRepository {
             }
         } );
     }
+
+    public void deleteQuizzesByNumber( final int[] quizNumbers ) {
+        executors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                quizDao.deleteQuizzesByNumber( quizNumbers );
+            }
+        });
+    }
 }

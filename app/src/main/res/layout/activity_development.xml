@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.DevelopmentActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -14,46 +14,136 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <Button
-        android:layout_width="wrap_content"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/create_sample_messages"
-        android:onClick="createSampleMessages"/>
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/drop_all_messages"
-        android:onClick="dropSampleMessages"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/test_single_quiz_notification"
-        android:onClick="testNotificationOneNewQuiz"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/subheader_messages"
+                android:textSize="14sp"
+                android:letterSpacing="0.1"
+                android:fontFamily="sans-serif-medium"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/test_many_quiz_notification"
-        android:onClick="testNotificationManyNewQuizzes"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_sample_messages"
+                android:onClick="createSampleMessages"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:theme="@style/RaisedButton"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/test_single_message_notification"
-        android:onClick="testNotificationOneNewMessage"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/drop_all_messages"
+                android:onClick="dropSampleMessages"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:theme="@style/RaisedButton"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/test_many_message_notification"
-        android:onClick="testNotificationManyNewMessages"/>
+            <TextView
+                android:background="@drawable/divider_full_bleed_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="7dp"
+                android:text="@string/subheader_notifications"
+                android:textSize="14sp"
+                android:letterSpacing="0.1"
+                android:fontFamily="sans-serif-medium"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/insert_sample_quiz"
-        android:onClick="insertSampleQuiz"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_single_quiz_notification"
+                android:onClick="testNotificationOneNewQuiz"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:theme="@style/RaisedButton"/>
 
-</LinearLayout>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_many_quiz_notification"
+                android:onClick="testNotificationManyNewQuizzes"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:theme="@style/RaisedButton"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_single_message_notification"
+                android:onClick="testNotificationOneNewMessage"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:theme="@style/RaisedButton"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_many_message_notification"
+                android:onClick="testNotificationManyNewMessages"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:theme="@style/RaisedButton"/>
+
+            <TextView
+                android:background="@drawable/divider_full_bleed_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="7dp"
+                android:text="@string/subheader_quizzes"
+                android:textSize="14sp"
+                android:letterSpacing="0.1"
+                android:fontFamily="sans-serif-medium"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/insert_sample_quiz"
+                android:onClick="insertSampleQuiz"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:theme="@style/RaisedButton"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/delete_sample_quiz"
+                android:onClick="deleteSampleQuizzes"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/RaisedButton"/>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

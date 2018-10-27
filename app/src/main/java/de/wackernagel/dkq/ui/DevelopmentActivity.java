@@ -26,6 +26,8 @@ public class DevelopmentActivity extends AbstractDkqActivity {
     @Inject
     ViewModelProvider.Factory viewModelFactory;
 
+    private DevelopmentViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
@@ -40,17 +42,15 @@ public class DevelopmentActivity extends AbstractDkqActivity {
             actionBar.setDisplayHomeAsUpEnabled( true );
             actionBar.setHomeButtonEnabled(true);
         }
+
+        viewModel = ViewModelProviders.of( this, viewModelFactory ).get(DevelopmentViewModel.class);
     }
 
     public void createSampleMessages(View view) {
-        final DevelopmentViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(DevelopmentViewModel.class);
-        viewModel.insertMessages(
-                SampleCreator.createSampleMessages()
-        );
+        viewModel.insertMessages( SampleCreator.createSampleMessages() );
     }
 
     public void dropSampleMessages(View view) {
-        final DevelopmentViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(DevelopmentViewModel.class);
         viewModel.deleteAllMessages();
     }
 
@@ -75,7 +75,10 @@ public class DevelopmentActivity extends AbstractDkqActivity {
     }
 
     public void insertSampleQuiz( View view ) {
-        final DevelopmentViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(DevelopmentViewModel.class);
         viewModel.insertQuiz( SampleCreator.createFutureSampleQuiz() );
+    }
+
+    public void deleteSampleQuizzes( View view ) {
+        viewModel.deleteQuizzesByNumber( new int[]{ SampleCreator.createFutureSampleQuiz().number } );
     }
 }

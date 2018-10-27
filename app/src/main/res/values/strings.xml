@@ -74,5 +74,9 @@
     <string name="test_single_message_notification">Eine neue Nachricht (Notification)</string>
     <string name="test_many_message_notification">Viele neue Nachrichten (Notification)</string>
     <string name="insert_sample_quiz">Beispiel Quiz anlegen</string>
+    <string name="delete_sample_quiz">Beispiel Quiz löschen</string>
+    <string name="subheader_messages">Nachrichten</string>
+    <string name="subheader_notifications">Benachrichtigungen</string>
+    <string name="subheader_quizzes">Quizze</string>
 
 </resources>

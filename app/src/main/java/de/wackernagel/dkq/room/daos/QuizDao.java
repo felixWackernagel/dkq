@@ -1,23 +1,19 @@
 package de.wackernagel.dkq.room.daos;
 
+import java.util.List;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-
-import java.util.List;
-
 import de.wackernagel.dkq.room.entities.Quiz;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 
 @Dao
 public interface QuizDao {
-
-    @Query( "SELECT * FROM quizzes ORDER BY number DESC" )
-    LiveData<List<Quiz>> loadQuizzes();
 
     @Query( "SELECT * FROM quizzes WHERE datetime( quizDate ) < datetime( 'now' ) ORDER BY number DESC" )
     LiveData<List<Quiz>> loadPastQuizzes();
@@ -35,9 +31,12 @@ public interface QuizDao {
     long insertQuiz( Quiz quiz );
 
     @Update( onConflict = REPLACE)
-    int updateQuiz( Quiz quiz );
+    void updateQuiz( Quiz quiz );
 
     @Delete
-    int deleteQuiz( Quiz quiz );
+    void deleteQuiz( Quiz quiz );
+
+    @Query( "DELETE FROM quizzes WHERE number IN  (:quizNumbers)" )
+    void deleteQuizzesByNumber( final int[] quizNumbers );
 
 }

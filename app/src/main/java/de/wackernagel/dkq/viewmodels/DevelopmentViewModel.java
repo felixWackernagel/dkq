@@ -24,4 +24,8 @@ public class DevelopmentViewModel extends ViewModel {
     public void insertQuiz( Quiz quiz ) {
         repository.insertQuiz(quiz);
     }
+
+    public void deleteQuizzesByNumber( int[] quizNumbers ) {
+        repository.deleteQuizzesByNumber( quizNumbers );
+    }
 }
