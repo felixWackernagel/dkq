@@ -1,6 +1,5 @@
 package de.wackernagel.dkq.ui;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,7 +15,6 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.lifecycle.Observer;
@@ -29,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Question;
+import de.wackernagel.dkq.ui.widgets.CollapsibleCard;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GridGutterDecoration;
 import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
@@ -102,7 +101,6 @@ public class QuestionsListFragment extends Fragment {
 
             adapter = new QuestionAdapter( new QuestionItemCallback() );
             recyclerView.setLayoutManager( new GridLayoutManager( getContext(), 1 ) );
-            recyclerView.setHasFixedSize( true );
             recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );
             recyclerView.addItemDecoration( new GridGutterDecoration(
@@ -136,20 +134,19 @@ public class QuestionsListFragment extends Fragment {
     }
 
     static class QuestionViewHolder extends RecyclerView.ViewHolder {
-        final QuestionAdapter adapter;
         TextView name;
         TextView question;
+        CollapsibleCard answer;
 
-        QuestionViewHolder(final QuestionAdapter adapter, View itemView) {
+        QuestionViewHolder(final View itemView) {
             super(itemView);
-            this.adapter = adapter;
             name = itemView.findViewById( R.id.name );
             question = itemView.findViewById( R.id.question );
+            answer = itemView.findViewById( R.id.answer );
         }
     }
 
     static class QuestionItemCallback extends DiffUtil.ItemCallback<Question> {
-
         @Override
         public boolean areItemsTheSame(@NonNull Question oldItem, @NonNull Question newItem) {
             return oldItem.id == newItem.id;
@@ -169,7 +166,7 @@ public class QuestionsListFragment extends Fragment {
 
         @Override
         public QuestionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new QuestionViewHolder(this, LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_question, parent, false ) );
+            return new QuestionViewHolder( LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_question, parent, false ) );
         }
 
         @Override
@@ -177,20 +174,7 @@ public class QuestionsListFragment extends Fragment {
             final Question question = getItem(position);
             holder.name.setText( holder.itemView.getContext().getString( R.string.question_number, question.number ) );
             holder.question.setText( question.question );
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showMessageOKCancel( view.getContext(), question.answer );
-                }
-            });
-        }
-
-        private void showMessageOKCancel(final Context context, final String message) {
-            new AlertDialog.Builder( context )
-                    .setMessage(message)
-                    .setPositiveButton(R.string.ok_word, null)
-                    .create()
-                    .show();
+            holder.answer.setCardDescription( question.answer );
         }
     }
 }

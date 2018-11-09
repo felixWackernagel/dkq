@@ -7,6 +7,10 @@
     <string name="close_word">Schließen</string>
     <string name="badge_new">NEU</string>
     <string name="next_quiz">Quiz %1$d - %2$s Uhr</string>
+    <string name="answer">Antwort</string>
+
+    <string name="expanded">ausgeklappt</string>
+    <string name="collapsed">zusammengeklappt</string>
 
     <string name="changelog_title">Was gibts neues?</string>
     <string name="changelog_message"><![CDATA[

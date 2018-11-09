@@ -28,7 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Message;
-import de.wackernagel.dkq.ui.widgets.BadgedSixteenNineImageView;
+import de.wackernagel.dkq.ui.widgets.BadgedFourThreeImageView;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GlideUtils;
 import de.wackernagel.dkq.utils.GridGutterDecoration;
@@ -130,7 +130,7 @@ public class MessagesListFragment extends Fragment {
     static class MessageViewHolder extends RecyclerView.ViewHolder {
         final MessagesListFragment.MessageAdapter adapter;
 
-        BadgedSixteenNineImageView image;
+        BadgedFourThreeImageView image;
         TextView title;
         TextView content;
 

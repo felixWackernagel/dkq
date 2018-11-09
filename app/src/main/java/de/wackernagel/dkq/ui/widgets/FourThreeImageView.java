@@ -7,15 +7,15 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.getSize;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
-public class SixteenNineImageView extends ForegroundImageView {
+public class FourThreeImageView extends ForegroundImageView {
 
-    public SixteenNineImageView(final Context context, final AttributeSet attrs) {
+    public FourThreeImageView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
-        final int fourThreeHeight = makeMeasureSpec(getSize(widthSpec) * 9 / 16, EXACTLY);
+        final int fourThreeHeight = makeMeasureSpec(getSize(widthSpec) * 3 / 4, EXACTLY);
         super.onMeasure(widthSpec, fourThreeHeight);
     }
 

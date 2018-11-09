@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -139,10 +140,19 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
 
                         final TextView toolbarCardViewText = findViewById(R.id.toolbarCardTextView);
                         toolbarCardViewText.setText( getString( R.string.next_quiz, quiz.data.number, formattedDate) );
+
+                        final CardView toolbarCard = findViewById(R.id.toolbarCard);
+                        toolbarCard.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                final Context context = view.getContext();
+                                context.startActivity( QuizActivity.createLaunchIntent( context, quiz.data.id, quiz.data.number ) );
+                            }
+                        });
                     }
 
-                    final CardView toolbarCardView = findViewById(R.id.toolbarCardView);
-                    toolbarCardView.setVisibility( quiz.data != null ? View.VISIBLE : View.GONE );
+                    final LinearLayout infoLayout = findViewById(R.id.toolbarInfo);
+                    infoLayout.setVisibility( quiz.data != null ? View.VISIBLE : View.GONE );
                 }
             }
         });

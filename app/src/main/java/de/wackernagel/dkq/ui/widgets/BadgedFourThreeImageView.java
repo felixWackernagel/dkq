@@ -27,7 +27,7 @@ import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 import static android.graphics.Paint.SUBPIXEL_TEXT_FLAG;
 import static android.graphics.PorterDuff.Mode.CLEAR;
 
-public class BadgedSixteenNineImageView extends SixteenNineImageView {
+public class BadgedFourThreeImageView extends FourThreeImageView {
 
     private Drawable badge;
     private boolean drawBadge = true;
@@ -37,19 +37,19 @@ public class BadgedSixteenNineImageView extends SixteenNineImageView {
     private String badgeText = "";
     private int badgeColor = Color.WHITE;
 
-    public BadgedSixteenNineImageView( final Context context, final AttributeSet attrs) {
+    public BadgedFourThreeImageView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         init( context, attrs );
     }
 
     private void init( final Context context, final AttributeSet attrs) {
         if( attrs != null ) {
-            final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BadgedSixteenNineImageView, 0, 0);
-            badgeGravity = a.getInt(R.styleable.BadgedSixteenNineImageView_badgeGravity, badgeGravity );
-            badgePadding = a.getDimensionPixelSize(R.styleable.BadgedSixteenNineImageView_badgePadding, badgePadding);
-            final String text = a.getString(R.styleable.BadgedSixteenNineImageView_badgeText);
+            final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BadgedFourThreeImageView, 0, 0);
+            badgeGravity = a.getInt(R.styleable.BadgedFourThreeImageView_badgeGravity, badgeGravity );
+            badgePadding = a.getDimensionPixelSize(R.styleable.BadgedFourThreeImageView_badgePadding, badgePadding);
+            final String text = a.getString(R.styleable.BadgedFourThreeImageView_badgeText);
             badgeText = text != null ? text : badgeText;
-            badgeColor = a.getColor(R.styleable.BadgedSixteenNineImageView_badgeColor, badgeColor);
+            badgeColor = a.getColor(R.styleable.BadgedFourThreeImageView_badgeColor, badgeColor);
             a.recycle();
         }
         badge = new TextBadge(context, badgeText);

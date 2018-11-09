@@ -1,61 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".ui.MessageDetailsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <include layout="@layout/include_toolbar_colorized"/>
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="?attr/colorPrimary">
+
+            <de.wackernagel.dkq.ui.widgets.FourThreeImageView
+                android:id="@+id/image"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                tools:scaleType="centerCrop"
+                tools:src="@drawable/bar"
+                app:layout_collapseMode="parallax"/>
+
+            <include layout="@layout/include_toolbar_colorized" />
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <de.wackernagel.dkq.ui.widgets.SixteenNineImageView
-                android:id="@+id/image"
+            <de.wackernagel.dkq.ui.widgets.BaselineGridTextView
+                android:id="@+id/lastUpdate"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                tools:src="@drawable/bar"
-                tools:scaleType="centerCrop"/>
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="0dp"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/textSecondary"
+                android:textSize="10sp"
+                android:textStyle="normal"
+                app:textAllCaps="true"
+                tools:text="@string/demo_date" />
 
-            <TextView
+            <de.wackernagel.dkq.ui.widgets.BaselineGridTextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/textPrimary"
-                android:textSize="20sp"
-                tools:text="@string/demo_title"
-                android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/textPrimary"
+                android:textSize="24sp"
+                android:textStyle="normal"
+                tools:text="@string/demo_title" />
 
-            <TextView
+            <de.wackernagel.dkq.ui.widgets.BaselineGridTextView
                 android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/textPrimary"
-                android:textSize="16sp"
-                tools:text="@string/demo_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="16dp"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/textSecondary"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                tools:text="@string/demo_content" />
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
