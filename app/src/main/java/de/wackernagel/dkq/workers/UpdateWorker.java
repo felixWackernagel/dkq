@@ -2,16 +2,19 @@ package de.wackernagel.dkq.workers;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.TextView;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.dagger.workerinjector.AndroidWorkerInjection;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.entities.Message;
@@ -36,6 +39,7 @@ public class UpdateWorker extends Worker {
     @Override
     public Result doWork() {
         AndroidWorkerInjection.inject(this);
+        DkqPreferences.setLastUpdateWorkerExecutionTime( getApplicationContext(), new SimpleDateFormat( "dd. MMMM yyyy - HH:mm", Locale.getDefault() ).format( new Date() ) );
 
         updateQuizzes();
         updateMessages();

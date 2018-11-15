@@ -25,10 +25,8 @@
                 <LinearLayout
                     android:id="@+id/toolbarInfo"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    tools:visibility="visible">
+                    android:layout_height="@dimen/toolbar_height_main"
+                    android:orientation="vertical">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/toolbarCard"
@@ -37,11 +35,11 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
-                        android:layout_marginTop="64dp"
+                        android:layout_marginTop="@dimen/toolbar_height_plus_small_space"
                         android:foreground="?selectableItemBackground">
 
                         <TextView
-                            android:id="@+id/toolbarCardTextView"
+                            android:id="@+id/nextQuizTextView"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
                             android:drawableStart="@drawable/ic_notifications_black_24dp"

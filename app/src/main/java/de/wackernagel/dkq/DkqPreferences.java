@@ -24,4 +24,12 @@ public class DkqPreferences {
     public static void setLastVersionCode( final Context context, final int versionCode ) {
         PreferenceUtils.setInt( context, "last_version_code", versionCode );
     }
+
+    public static String getLastUpdateWorkerExecutionTime( final Context context ) {
+        return PreferenceUtils.getString( context, "last_update_worker_execution_time", "not executed");
+    }
+
+    public static void setLastUpdateWorkerExecutionTime( final Context context, final String readableTime ) {
+        PreferenceUtils.setString( context, "last_update_worker_execution_time", readableTime);
+    }
 }

@@ -4,14 +4,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Window;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import static de.wackernagel.dkq.receiver.NotificationReceiver.NOTIFICATION_CONTENT;
 import static de.wackernagel.dkq.receiver.NotificationReceiver.NOTIFICATION_TITLE;
-import static de.wackernagel.dkq.receiver.NotificationReceiver.NOTIFICATION_TYPE;
-import static de.wackernagel.dkq.receiver.NotificationReceiver.NOTIFICATION_TYPE_NEXT_QUIZ;
 
 public abstract class AbstractDkqActivity extends AppCompatActivity {
 
@@ -29,6 +31,13 @@ public abstract class AbstractDkqActivity extends AppCompatActivity {
             }
         }
     };
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        // Placeholder UI
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     protected void onResume() {

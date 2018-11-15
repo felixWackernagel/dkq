@@ -16,7 +16,7 @@ import com.bumptech.glide.request.target.Target;
 
 import androidx.annotation.Nullable;
 import de.wackernagel.dkq.R;
-import de.wackernagel.dkq.ui.GlideApp;
+import de.wackernagel.dkq.GlideApp;
 
 import static de.wackernagel.dkq.utils.AnimUtils.getFastOutSlowInInterpolator;
 

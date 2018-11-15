@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Quiz;
+import de.wackernagel.dkq.room.entities.QuizListItem;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GridGutterDecoration;
@@ -92,9 +93,9 @@ public class QuizzesListFragment extends Fragment {
                     true ) );
 
             final QuizzesViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(QuizzesViewModel.class);
-            viewModel.loadQuizzes().observe(this, new Observer<Resource<List<Quiz>>>() {
+            viewModel.loadQuizzes().observe(this, new Observer<Resource<List<QuizListItem>>>() {
                 @Override
-                public void onChanged(@Nullable Resource<List<Quiz>> quizzes) {
+                public void onChanged(@Nullable Resource<List<QuizListItem>> quizzes) {
                     if( quizzes != null ) {
                         Log.i("dkq", "Status=" + quizzes.status + ", Items=" + (quizzes.data != null ? quizzes.data.size() : "null" ));
                         switch (quizzes.status) {
@@ -120,33 +121,30 @@ public class QuizzesListFragment extends Fragment {
         final QuizAdapter adapter;
 
         TextView name;
-        TextView date;
+        TextView questionsHint;
 
         QuizViewHolder(final QuizAdapter adapter, View itemView) {
             super(itemView);
             this.adapter = adapter;
             name = itemView.findViewById( R.id.name );
-            date = itemView.findViewById( R.id.date );
+            questionsHint = itemView.findViewById( R.id.questionsHint);
         }
     }
 
-    static class QuizItemCallback extends DiffUtil.ItemCallback<Quiz> {
-
+    static class QuizItemCallback extends DiffUtil.ItemCallback<QuizListItem> {
         @Override
-        public boolean areItemsTheSame(@NonNull Quiz oldItem, @NonNull Quiz newItem) {
+        public boolean areItemsTheSame(@NonNull QuizListItem oldItem, @NonNull QuizListItem newItem) {
             return oldItem.id == newItem.id;
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull Quiz oldItem, @NonNull Quiz newItem) {
-            return oldItem.number == newItem.number && TextUtils.equals( oldItem.quizDate, newItem.quizDate);
+        public boolean areContentsTheSame(@NonNull QuizListItem oldItem, @NonNull QuizListItem newItem) {
+            return oldItem.number == newItem.number && oldItem.questionCount == newItem.questionCount;
         }
     }
 
-    static class QuizAdapter extends ListAdapter<Quiz, QuizViewHolder> {
-        private SimpleDateFormat formatter = new SimpleDateFormat( "EEEE',' dd. MMMM yyyy - HH:mm", Locale.getDefault() );
-
-        QuizAdapter(@NonNull DiffUtil.ItemCallback<Quiz> diffCallback) {
+    static class QuizAdapter extends ListAdapter<QuizListItem, QuizViewHolder> {
+        QuizAdapter(@NonNull DiffUtil.ItemCallback<QuizListItem> diffCallback) {
             super(diffCallback);
         }
 
@@ -158,14 +156,10 @@ public class QuizzesListFragment extends Fragment {
         @Override
         public void onBindViewHolder(QuizViewHolder holder, int position) {
             if( position != RecyclerView.NO_POSITION ) {
-                final Quiz quiz = getItem( position );
+                final QuizListItem quiz = getItem( position );
 
                 holder.name.setText( holder.itemView.getContext().getString( R.string.quiz_number, quiz.number ) );
-
-                final Date today = new Date();
-                final Date quizDate = DateUtils.joomlaDateToJavaDate( quiz.quizDate, today );
-                holder.date.setVisibility( quizDate.after( today ) ? View.VISIBLE : View.GONE );
-                holder.date.setText( formatter.format( quizDate ) );
+                holder.questionsHint.setText( holder.itemView.getContext().getString( R.string.questions_hint, quiz.questionCount) );
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

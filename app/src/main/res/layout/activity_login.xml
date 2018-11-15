@@ -66,4 +66,15 @@
         android:layout_marginTop="8dp"
         android:theme="@style/RaisedButton"/>
 
+    <Button
+        android:id="@+id/registerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register_button"
+        android:onClick="register"
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp"
+        android:theme="@style/FlatButton"
+        style="@style/Widget.AppCompat.Button.Borderless"/>
+
 </LinearLayout>

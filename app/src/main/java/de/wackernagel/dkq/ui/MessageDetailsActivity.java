@@ -72,7 +72,6 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
         if( actionBar != null ) {
             actionBar.setDisplayHomeAsUpEnabled( true );
             actionBar.setHomeButtonEnabled(true);
-            //actionBar.setTitle( getString(R.string.message_number, getMessageNumber()) );
             actionBar.setTitle( "" );
         }
 

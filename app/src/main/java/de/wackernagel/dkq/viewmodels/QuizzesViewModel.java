@@ -18,6 +18,7 @@ import androidx.work.WorkManager;
 import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.entities.Quiz;
+import de.wackernagel.dkq.room.entities.QuizListItem;
 import de.wackernagel.dkq.webservice.Resource;
 import de.wackernagel.dkq.workers.UpdateWorker;
 
@@ -29,7 +30,7 @@ public class QuizzesViewModel extends ViewModel {
         this.repository = repository;
     }
 
-    public LiveData<Resource<List<Quiz>>> loadQuizzes() {
+    public LiveData<Resource<List<QuizListItem>>> loadQuizzes() {
         return repository.loadQuizzes();
     }
 }

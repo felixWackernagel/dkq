@@ -9,6 +9,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 import de.wackernagel.dkq.room.entities.Quiz;
+import de.wackernagel.dkq.room.entities.QuizListItem;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 
@@ -17,6 +18,15 @@ public interface QuizDao {
 
     @Query( "SELECT * FROM quizzes WHERE datetime( quizDate ) < datetime( 'now' ) ORDER BY number DESC" )
     LiveData<List<Quiz>> loadPastQuizzes();
+
+    // get quiz with id, number and the count of all questions to each quiz
+    @Query( "SELECT quizzes.id, quizzes.number, COUNT(questions.quizId) AS questionCount " +
+            "FROM quizzes " +
+            "LEFT JOIN questions ON quizzes.id = questions.quizId " +
+            "WHERE datetime( quizzes.quizDate ) < datetime( 'now' ) " +
+            "GROUP BY quizzes.id " +
+            "ORDER BY quizzes.number DESC" )
+    LiveData<List<QuizListItem>> loadQuizzesForList();
 
     @Query( "SELECT * FROM quizzes WHERE datetime( quizDate ) > datetime( 'now' ) ORDER BY number ASC LIMIT 1" )
     LiveData<Quiz> loadNextQuiz();

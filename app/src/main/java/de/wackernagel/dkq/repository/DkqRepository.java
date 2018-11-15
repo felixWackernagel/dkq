@@ -18,6 +18,7 @@ import de.wackernagel.dkq.room.daos.QuizDao;
 import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
+import de.wackernagel.dkq.room.entities.QuizListItem;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.RateLimiter;
 import de.wackernagel.dkq.webservice.ApiResponse;
@@ -50,22 +51,22 @@ public class DkqRepository {
         this.messageDao = messageDao;
     }
 
-    public LiveData<Resource<List<Quiz>>> loadQuizzes() {
-        return new NetworkBoundResource<List<Quiz>,List<Quiz>>(executors) {
+    public LiveData<Resource<List<QuizListItem>>> loadQuizzes() {
+        return new NetworkBoundResource<List<QuizListItem>,List<Quiz>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Quiz> items) {
                 saveQuizzesWithNotification( items );
             }
 
             @Override
-            protected boolean shouldFetch(@Nullable List<Quiz> data) {
+            protected boolean shouldFetch(@Nullable List<QuizListItem> data) {
                 return data == null || data.isEmpty() || rateLimiter.shouldFetch(LIMITER_QUIZZES);
             }
 
             @NonNull
             @Override
-            protected LiveData<List<Quiz>> loadFromDb() {
-                return quizDao.loadPastQuizzes();
+            protected LiveData<List<QuizListItem>> loadFromDb() {
+                return quizDao.loadQuizzesForList();
             }
 
             @NonNull

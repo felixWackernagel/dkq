@@ -1,5 +1,6 @@
 package de.wackernagel.dkq.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,12 +13,19 @@ import android.widget.TextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.R;
 
 public class LoginActivity extends AppCompatActivity {
+
+    @NonNull
+    static Intent createLaunchIntent( final Context context ) {
+        return new Intent( context, LoginActivity.class );
+    }
 
     private TextInputLayout usernameContainer;
     private TextInputEditText usernameField;
@@ -58,10 +66,6 @@ public class LoginActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        if( !DkqPreferences.showLoginScreen( this ) ) {
-            openMainActivity();
-        }
     }
 
     public void login( @Nullable final View view ) {
@@ -99,5 +103,13 @@ public class LoginActivity extends AppCompatActivity {
     private void openMainActivity() {
         startActivity( MainActivity.createLaunchIntent( this ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK) );
         finish();
+    }
+
+    public void register( final View view) {
+        new AlertDialog.Builder( this )
+                .setMessage(R.string.no_registration_text)
+                .setPositiveButton(R.string.close_word, null)
+                .create()
+                .show();
     }
 }

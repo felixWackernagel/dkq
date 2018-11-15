@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -45,6 +44,7 @@ import de.wackernagel.dkq.webservice.Resource;
 
 public class MainActivity extends AbstractDkqActivity implements HasSupportFragmentInjector, BottomNavigationView.OnNavigationItemSelectedListener {
 
+    @NonNull
     static Intent createLaunchIntent( final Context context ) {
         return new Intent( context, MainActivity.class );
     }
@@ -133,13 +133,13 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
             @Override
             public void onChanged( final Resource<Quiz> quiz ) {
                 if( quiz != null ) {
+                    final TextView nextQuizTextView = findViewById(R.id.nextQuizTextView);
                     if( quiz.data != null ) {
                         final SimpleDateFormat formatter = new SimpleDateFormat( "dd. MMMM yyyy - HH:mm", Locale.getDefault() );
                         final Date quizDate = DateUtils.joomlaDateToJavaDate( quiz.data.quizDate );
                         final String formattedDate = quizDate != null ? formatter.format( quizDate ) : "?";
 
-                        final TextView toolbarCardViewText = findViewById(R.id.toolbarCardTextView);
-                        toolbarCardViewText.setText( getString( R.string.next_quiz, quiz.data.number, formattedDate) );
+                        nextQuizTextView.setText( getString( R.string.next_quiz, quiz.data.number, formattedDate) );
 
                         final CardView toolbarCard = findViewById(R.id.toolbarCard);
                         toolbarCard.setOnClickListener(new View.OnClickListener() {
@@ -149,10 +149,9 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
                                 context.startActivity( QuizActivity.createLaunchIntent( context, quiz.data.id, quiz.data.number ) );
                             }
                         });
+                    } else {
+                        nextQuizTextView.setText( getString( R.string.next_quiz_unschedule ) );
                     }
-
-                    final LinearLayout infoLayout = findViewById(R.id.toolbarInfo);
-                    infoLayout.setVisibility( quiz.data != null ? View.VISIBLE : View.GONE );
                 }
             }
         });

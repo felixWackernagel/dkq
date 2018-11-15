@@ -1,0 +1,23 @@
+<resources>
+
+    <style name="MainAppTheme" parent="AppTheme">
+        <item name="android:windowTitleSize">@dimen/toolbar_height_main</item>
+        <item name="android:windowTitleStyle">@style/CustomWindowTitle</item>
+        <item name="android:windowTitleBackgroundStyle">@style/CustomWindowTitleBackground</item>
+        <item name="android:windowNoTitle">false</item>
+    </style>
+
+    <style name="CustomWindowTitleBackground">
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="CustomWindowTitle">
+        <item name="android:singleLine">true</item>
+        <item name="android:textAppearance">@style/CustomWindowTitleText</item>
+    </style>
+
+    <style name="CustomWindowTitleText">
+        <item name="android:textColor">@android:color/transparent</item>
+    </style>
+
+</resources>

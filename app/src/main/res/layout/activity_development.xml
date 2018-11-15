@@ -23,7 +23,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="8dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -139,8 +140,28 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
                 android:theme="@style/RaisedButton"/>
+
+            <TextView
+                android:background="@drawable/divider_full_bleed_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="7dp"
+                android:text="@string/subheader_timestamps"
+                android:textSize="14sp"
+                android:letterSpacing="0.1"
+                android:fontFamily="sans-serif-medium"/>
+
+            <TextView
+                android:id="@+id/timestamps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"/>
 
         </LinearLayout>
 

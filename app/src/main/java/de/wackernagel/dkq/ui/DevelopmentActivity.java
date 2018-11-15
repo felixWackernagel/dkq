@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -12,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import dagger.android.AndroidInjection;
+import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.receiver.NotificationReceiver;
 import de.wackernagel.dkq.room.SampleCreator;
@@ -42,6 +44,9 @@ public class DevelopmentActivity extends AbstractDkqActivity {
             actionBar.setDisplayHomeAsUpEnabled( true );
             actionBar.setHomeButtonEnabled(true);
         }
+
+        final TextView timestamps = findViewById(R.id.timestamps);
+        timestamps.setText( getString( R.string.timestamps_text, DkqPreferences.getLastUpdateWorkerExecutionTime( getApplicationContext() ) ) );
 
         viewModel = ViewModelProviders.of( this, viewModelFactory ).get(DevelopmentViewModel.class);
     }

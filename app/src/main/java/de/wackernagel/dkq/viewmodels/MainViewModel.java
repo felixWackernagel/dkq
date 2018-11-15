@@ -36,13 +36,13 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void installUpdateChecker() {
-        workManager.enqueueUniquePeriodicWork(
-                "dkqUpdateChecker",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                new PeriodicWorkRequest.Builder(UpdateWorker.class, 1, TimeUnit.DAYS).setConstraints(
-                        new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-                ).build()
-        );
+//        workManager.enqueueUniquePeriodicWork(
+//                "dkqUpdateChecker",
+//                ExistingPeriodicWorkPolicy.REPLACE,
+//                new PeriodicWorkRequest.Builder(UpdateWorker.class, 1, TimeUnit.DAYS).setConstraints(
+//                        new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+//                ).build()
+//        );
     }
 
     public LiveData<Boolean> isNewAppVersion() {
