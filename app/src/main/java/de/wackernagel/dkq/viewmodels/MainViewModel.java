@@ -36,20 +36,20 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void installUpdateChecker() {
-//        workManager.enqueueUniquePeriodicWork(
-//                "dkqUpdateChecker",
-//                ExistingPeriodicWorkPolicy.REPLACE,
-//                new PeriodicWorkRequest.Builder(UpdateWorker.class, 1, TimeUnit.DAYS).setConstraints(
-//                        new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-//                ).build()
-//        );
+        workManager.enqueueUniquePeriodicWork(
+                "dkqUpdateChecker",
+                ExistingPeriodicWorkPolicy.KEEP,
+                new PeriodicWorkRequest.Builder(UpdateWorker.class, 1, TimeUnit.DAYS).setConstraints(
+                        new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+                ).build()
+        );
     }
 
     public LiveData<Boolean> isNewAppVersion() {
         executors.diskIO().execute( new Runnable() {
             @Override
             public void run() {
-                final int actualVersion = AppUtils.getAppVersion( getApplication() );
+                final int actualVersion = AppUtils.getAppVersionCode( getApplication() );
                 final int previousVersion = DkqPreferences.getLastVersionCode( getApplication() );
                 final boolean isNewVersion = actualVersion > previousVersion;
                 executors.mainThread().execute(new Runnable() {

@@ -172,7 +172,7 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
             .setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    DkqPreferences.setLastVersionCode( getApplication(), AppUtils.getAppVersion( getApplication() ));
+                    DkqPreferences.setLastVersionCode( getApplicationContext(), AppUtils.getAppVersionCode( getApplicationContext() ));
                 }
             })
             .create()
@@ -191,17 +191,23 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
 
     @Override
     public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
+        final Fragment currentFragment = getSupportFragmentManager().findFragmentById( R.id.container );
+
         switch (item.getItemId()) {
             case R.id.action_news:
-                getSupportFragmentManager().beginTransaction()
-                        .replace( R.id.container, MessagesListFragment.newInstance(), "messages" )
-                        .commit();
+                if( !( currentFragment instanceof MessagesListFragment ) ) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container, MessagesListFragment.newInstance(), "messages")
+                            .commit();
+                }
                 return true;
 
             case R.id.action_quizzes:
-                getSupportFragmentManager().beginTransaction()
-                        .replace( R.id.container, QuizzesListFragment.newInstance(), "quizzes" )
-                        .commit();
+                if( !( currentFragment instanceof QuizzesListFragment ) ) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container, QuizzesListFragment.newInstance(), "quizzes")
+                            .commit();
+                }
                 return true;
         }
         return true;

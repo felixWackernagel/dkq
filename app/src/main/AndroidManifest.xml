@@ -53,5 +53,10 @@
                 <action android:name="dkq.notification" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".receiver.AppUpdatedReceiver" >
+            <intent-filter >
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

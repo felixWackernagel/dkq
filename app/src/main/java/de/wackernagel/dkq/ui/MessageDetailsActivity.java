@@ -2,8 +2,12 @@ package de.wackernagel.dkq.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -101,6 +105,18 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
         final TextView content = findViewById(R.id.content);
 
         GlideUtils.loadImage( image, message.image );
+        if( !TextUtils.isEmpty( message.image ) ) {
+            final Intent viewImageIntent = new Intent(Intent.ACTION_VIEW);
+            viewImageIntent.setDataAndType(Uri.parse(message.image), "image/*");
+            if (getPackageManager().queryIntentActivities(viewImageIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0) {
+                image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        v.getContext().startActivity(viewImageIntent);
+                    }
+                });
+            }
+        }
 
         final Date lastUpdateDate = DateUtils.joomlaDateToJavaDate( message.lastUpdate );
         if( lastUpdateDate != null ) {

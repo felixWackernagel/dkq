@@ -1,13 +1,14 @@
 package de.wackernagel.dkq.utils;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.pm.PackageManager;
 
 public class AppUtils {
 
-    public static int getAppVersion( final Application application ) {
+    public static int getAppVersionCode(final Context context ) {
         try {
-            return application.getPackageManager().getPackageInfo( application.getPackageName(), 0).versionCode;
+            return context.getPackageManager().getPackageInfo( context.getPackageName(), 0).versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             return 0;
         }
