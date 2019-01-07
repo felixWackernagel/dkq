@@ -13,4 +13,10 @@
         android:icon="@drawable/ic_book_black_24dp"
         android:title="@string/bottom_navigation_news"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_quizzers"
+        android:icon="@drawable/ic_group_black_24dp"
+        android:title="@string/bottom_navigation_quizzers"
+        app:showAsAction="ifRoom" />
 </menu>

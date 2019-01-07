@@ -11,6 +11,14 @@ import androidx.annotation.Nullable;
 
 public class DateUtils {
 
+    public static boolean notEquals( final String date, final String otherDate ) {
+        return !equals( date, otherDate );
+    }
+
+    public static boolean equals( final String date, final String otherDate ) {
+        return TextUtils.equals( date, otherDate );
+    }
+
     /**
      * @param dateTime 'YYYY-MM-DD HH:MM:SS'
      * @return Converted date or null

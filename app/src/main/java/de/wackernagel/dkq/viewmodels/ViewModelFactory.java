@@ -2,12 +2,10 @@ package de.wackernagel.dkq.viewmodels;
 
 import android.app.Application;
 
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
-
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import de.wackernagel.dkq.AppExecutors;
 import de.wackernagel.dkq.repository.DkqRepository;
 
@@ -39,6 +37,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new MessageDetailsViewModel( repository );
         } else if( modelClass.isAssignableFrom( MainViewModel.class ) ) {
             return (T) new MainViewModel( application, executors, repository );
+        } else if( modelClass.isAssignableFrom( QuizzersViewModel.class ) ) {
+            return (T) new QuizzersViewModel( repository );
         }
         throw new IllegalArgumentException( "Unsupported ViewModel class." );
     }

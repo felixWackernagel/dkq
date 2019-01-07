@@ -7,11 +7,6 @@
             android:id="@+id/drawer_item_main"
             android:checked="true"
             android:title="@string/drawer_main" />
-        <item
-            android:id="@+id/drawer_item_ranking"
-            android:checked="true"
-            android:title="@string/drawer_ranking"
-            android:visible="false"/>
     </group>
     <group android:id="@+id/navigation_sub_menu">
         <item

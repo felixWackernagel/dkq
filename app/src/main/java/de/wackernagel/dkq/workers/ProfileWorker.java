@@ -23,6 +23,6 @@ public class ProfileWorker extends Worker {
     @Override
     public Result doWork() {
         AndroidWorkerInjection.inject(this);
-        return Result.SUCCESS;
+        return Result.success();
     }
 }

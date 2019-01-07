@@ -1,35 +1,43 @@
 package de.wackernagel.dkq.webservice;
 
-import androidx.lifecycle.LiveData;
-
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
+import de.wackernagel.dkq.room.entities.Quizzer;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface Webservice {
-    @GET("v1/quizzes")
+    String VERSION = "v3";
+
+    @GET(VERSION + "/quizzes")
     LiveData<ApiResponse<List<Quiz>>> getQuizzes();
 
-    @GET("v1/quizzes")
+    @GET(VERSION + "/quizzes")
     Call<List<Quiz>> getQuizzesList();
 
-    @GET("v1/quizzes/{quizNumber}")
+    @GET(VERSION + "/quizzes/{quizNumber}")
     LiveData<ApiResponse<Quiz>> getQuiz( @Path("quizNumber") long quizNumber );
 
-    @GET("v1/quizzes/{quizNumber}/questions")
+    @GET(VERSION + "/quizzes/{quizNumber}/questions")
     LiveData<ApiResponse<List<Question>>> getQuestionsFromQuiz( @Path("quizNumber") long quizNumber );
 
-    @GET("v1/messages")
+    @GET(VERSION + "/messages")
     LiveData<ApiResponse<List<Message>>> getMessages();
 
-    @GET("v1/messages")
+    @GET(VERSION + "/messages")
     Call<List<Message>> getMessagesList();
 
-    @GET("v1/messages/{messageNumber}")
+    @GET(VERSION + "/messages/{messageNumber}")
     LiveData<ApiResponse<Message>> getMessage( @Path("messageNumber") long messageNumber );
+
+    @GET(VERSION + "/quizzers")
+    LiveData<ApiResponse<List<Quizzer>>> getQuizzers();
+
+    @GET(VERSION + "/quizzers/{quizzerNumber}")
+    LiveData<ApiResponse<Quizzer>> getQuizzer( @Path("quizzerNumber") long quizzerNumber );
 }

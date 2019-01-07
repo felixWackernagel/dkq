@@ -16,9 +16,6 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface QuizDao {
 
-    @Query( "SELECT * FROM quizzes WHERE datetime( quizDate ) < datetime( 'now' ) ORDER BY number DESC" )
-    LiveData<List<Quiz>> loadPastQuizzes();
-
     // get quiz with id, number and the count of all questions to each quiz
     @Query( "SELECT quizzes.id, quizzes.number, COUNT(questions.quizId) AS questionCount " +
             "FROM quizzes " +
@@ -38,7 +35,7 @@ public interface QuizDao {
     Quiz loadQuizByNumber( int quizNumber );
 
     @Insert( onConflict = REPLACE)
-    long insertQuiz( Quiz quiz );
+    void insertQuiz( Quiz quiz );
 
     @Update( onConflict = REPLACE)
     void updateQuiz( Quiz quiz );

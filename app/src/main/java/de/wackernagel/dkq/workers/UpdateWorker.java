@@ -39,12 +39,25 @@ public class UpdateWorker extends Worker {
     @Override
     public Result doWork() {
         AndroidWorkerInjection.inject(this);
-        DkqPreferences.setLastUpdateWorkerExecutionTime( getApplicationContext(), new SimpleDateFormat( "dd. MMMM yyyy - HH:mm", Locale.getDefault() ).format( new Date() ) );
+        updateLog();
 
         updateQuizzes();
         updateMessages();
 
-        return Worker.Result.SUCCESS;
+        return Worker.Result.success();
+    }
+
+    private void updateLog() {
+        final String prevLogs = DkqPreferences.getLastUpdateWorkerExecutionTime( getApplicationContext() );
+        final String currentTimestamp = new SimpleDateFormat( "dd.MM.yyyy - HH:mm", Locale.getDefault() ).format( new Date() );
+        String newLogs;
+        if( !prevLogs.contains("|") ) {
+            newLogs = currentTimestamp;
+        } else {
+            final String prevLog = prevLogs.split("\\|")[0];
+            newLogs = currentTimestamp + "|" + prevLog;
+        }
+        DkqPreferences.setLastUpdateWorkerExecutionTime( getApplicationContext(), newLogs );
     }
 
     private void updateQuizzes() {

@@ -95,9 +95,6 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
                 drawerLayout.setTag( R.id.drawerLayout, null );
                 if( itemId != null ) {
                     switch ( (int) itemId ) {
-                        case R.id.drawer_item_ranking:
-                            break;
-
                         case R.id.drawer_item_about:
                             break;
 
@@ -206,6 +203,14 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
                 if( !( currentFragment instanceof QuizzesListFragment ) ) {
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.container, QuizzesListFragment.newInstance(), "quizzes")
+                            .commit();
+                }
+                return true;
+
+            case R.id.action_quizzers:
+                if( !( currentFragment instanceof QuizzersListFragment ) ) {
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container, QuizzersListFragment.newInstance(), "quizzers")
                             .commit();
                 }
                 return true;

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
@@ -78,26 +79,8 @@ public class QuizActivity extends AbstractDkqActivity implements HasSupportFragm
         viewModel.loadQuiz( getQuizId(), getQuizNumber() ).observe(this, new Observer<Resource<Quiz>>() {
             @Override
             public void onChanged(@Nullable Resource<Quiz> resource) {
-                if( resource != null ) {
-                    switch (resource.status) {
-                        case ERROR:
-                            break;
-
-                        case LOADING:
-                            break;
-
-                        case SUCCESS:
-                            break;
-                    }
-                    if( resource.data != null ) {
-                        Quiz quiz = resource.data;
-                        TextView details = findViewById(R.id.details);
-                        details.setText(
-                                "Datum: " + (quiz.quizDate == null || quiz.quizDate.equals("0000-00-00 00:00:00") ? "?" : quiz.quizDate) +
-                                "\nQuiz-Master: " + (TextUtils.isEmpty( quiz.quizMaster ) ? "?" : quiz.quizMaster) +
-                                "\nOrt: " + (TextUtils.isEmpty( quiz.location ) ? "?" : quiz.location) +
-                                "\nAdresse: " + (TextUtils.isEmpty( quiz.address ) ? "?" : quiz.address) );
-                    }
+                if( resource != null && resource.data != null ) {
+                    setQuizDetails( resource.data );
                 }
             }
         });
@@ -107,6 +90,16 @@ public class QuizActivity extends AbstractDkqActivity implements HasSupportFragm
                 .replace( R.id.container, QuestionsListFragment.newInstance( getQuizId(), getQuizNumber() ), "questions" )
                 .commit();
         }
+    }
+
+    private void setQuizDetails( @NonNull final Quiz quiz ) {
+        TextView details = findViewById(R.id.details);
+        details.setText(
+                "Datum: " + (quiz.quizDate == null || quiz.quizDate.equals("0000-00-00 00:00:00") ? "?" : quiz.quizDate) +
+                        "\nQuiz-Master: " + quiz.quizMasterId +
+                        "\nGewinner: " + quiz.winnerId +
+                        "\nOrt: " + (TextUtils.isEmpty( quiz.location ) ? "?" : quiz.location) +
+                        "\nAdresse: " + (TextUtils.isEmpty( quiz.address ) ? "?" : quiz.address) );
     }
 
     @Override

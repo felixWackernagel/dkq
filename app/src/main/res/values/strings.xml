@@ -34,7 +34,6 @@
     <!-- Drawer -->
     <string name="drawer_main">Kneipe</string>
     <string name="drawer_about">Über DKQ</string>
-    <string name="drawer_ranking">Rangliste</string>
     <string name="drawer_development">Entwicklung</string>
     <string name="drawer_preferences">Einstellungen</string>
     <string name="drawer_open">Navigation öffnen</string>
@@ -64,6 +63,7 @@
     <!-- Menus -->
     <string name="bottom_navigation_quizzes">Quizze</string>
     <string name="bottom_navigation_news">Artikel</string>
+    <string name="bottom_navigation_quizzers">Quizzer</string>
 
     <!-- Preferences -->
     <string name="pref_category_ui">Oberfläche</string>

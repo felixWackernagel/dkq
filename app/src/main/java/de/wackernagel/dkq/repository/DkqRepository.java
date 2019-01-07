@@ -15,10 +15,13 @@ import de.wackernagel.dkq.receiver.NotificationReceiver;
 import de.wackernagel.dkq.room.daos.MessageDao;
 import de.wackernagel.dkq.room.daos.QuestionDao;
 import de.wackernagel.dkq.room.daos.QuizDao;
+import de.wackernagel.dkq.room.daos.QuizzerDao;
 import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.QuizListItem;
+import de.wackernagel.dkq.room.entities.Quizzer;
+import de.wackernagel.dkq.room.entities.QuizzerListItem;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.RateLimiter;
 import de.wackernagel.dkq.webservice.ApiResponse;
@@ -34,6 +37,7 @@ public class DkqRepository {
     private final QuizDao quizDao;
     private final QuestionDao questionDao;
     private final MessageDao messageDao;
+    private final QuizzerDao quizzerDao;
 
     private RateLimiter<String> rateLimiter = new RateLimiter<>(10, TimeUnit.MINUTES);
     private static final String LIMITER_QUIZZES = "quizzes";
@@ -41,14 +45,17 @@ public class DkqRepository {
     private static final String LIMITER_QUESTIONS = "questions";
     private static final String LIMITER_MESSAGES = "messages";
     private static final String LIMITER_MESSAGE = "message";
+    private static final String LIMITER_QUIZZERS = "quizzers";
+    private static final String LIMITER_QUIZZER = "quizzer";
 
-    public DkqRepository(final Context context, final AppExecutors executors, final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao ) {
+    public DkqRepository(final Context context, final AppExecutors executors, final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao, final QuizzerDao quizzerDao ) {
         this.context = context;
         this.executors = executors;
         this.webservice = webservice;
         this.quizDao = quizDao;
         this.questionDao = questionDao;
         this.messageDao = messageDao;
+        this.quizzerDao = quizzerDao;
     }
 
     public LiveData<Resource<List<QuizListItem>>> loadQuizzes() {
@@ -128,21 +135,23 @@ public class DkqRepository {
             return 0;
         }
         final Quiz existingQuiz = quizDao.loadQuizByNumber( onlineQuiz.number );
+        onlineQuiz.quizMasterId = saveQuizzer( onlineQuiz.quizMaster );
+        onlineQuiz.winnerId = saveQuizzer( onlineQuiz.winner );
         final boolean isNew = existingQuiz == null;
         if( isNew ) {
             if( onlineQuiz.published == 1 ) {
-                Log.i("DKQ", "Insert new quiz " + onlineQuiz.number);
+                Log.i("DKQ", "Insert new Quiz " + onlineQuiz.number + " " + onlineQuiz.toString() );
                 quizDao.insertQuiz(onlineQuiz);
                 return DateUtils.joomlaDateToJavaDate(onlineQuiz.quizDate, new Date()).after(new Date()) ? 1 : 0;
             }
         } else if( onlineQuiz.published == 0 ) {
-            Log.i("DKQ", "Remove existing quiz " + onlineQuiz.number);
+            Log.i("DKQ", "Remove existing Quiz " + onlineQuiz.number);
             quizDao.deleteQuiz( existingQuiz );
-        } else if( existingQuiz.version < onlineQuiz.version ) {
-            Log.i("DKQ", "Update quiz " + onlineQuiz.number + " from version " + existingQuiz.version + " to " + onlineQuiz.version);
+        } else if( existingQuiz.version < onlineQuiz.version || existingQuiz.winnerId != onlineQuiz.winnerId || existingQuiz.quizMasterId != onlineQuiz.quizMasterId ) {
             onlineQuiz.id = existingQuiz.id; // update is ID based so copy existing quiz ID to new one
+            Log.i("DKQ", "Update Quiz " + onlineQuiz.number + " from version " + existingQuiz.version + " to " + onlineQuiz.version + " " + onlineQuiz.toString() );
             quizDao.updateQuiz( onlineQuiz );
-            return !existingQuiz.quizDate.equals( onlineQuiz.quizDate ) && DateUtils.joomlaDateToJavaDate( onlineQuiz.quizDate, new Date() ).after( new Date() ) ? 1 : 0;
+            return DateUtils.notEquals( existingQuiz.quizDate, onlineQuiz.quizDate ) && DateUtils.joomlaDateToJavaDate( onlineQuiz.quizDate, new Date() ).after( new Date() ) ? 1 : 0;
         } else {
             Log.i("DKQ", "No changes on Quiz " + onlineQuiz.number);
         }
@@ -325,6 +334,95 @@ public class DkqRepository {
                 rateLimiter.reset( LIMITER_MESSAGE + ":" + messageNumber );
             }
         }.getAsLiveData();
+    }
+
+    public LiveData<Resource<List<QuizzerListItem>>> loadQuizzers() {
+        return new NetworkBoundResource<List<QuizzerListItem>,List<Quizzer>>(executors) {
+            @Override
+            protected void saveCallResult(@NonNull List<Quizzer> items) {
+                saveQuizzers( items );
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<QuizzerListItem> data) {
+                return data == null || data.isEmpty() || rateLimiter.shouldFetch( LIMITER_QUIZZERS );
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<QuizzerListItem>> loadFromDb() {
+                return quizzerDao.loadQuizMasters();
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<List<Quizzer>>> createCall() {
+                return webservice.getQuizzers();
+            }
+
+            @Override
+            protected void onFetchFailed() {
+                rateLimiter.reset( LIMITER_QUIZZERS );
+            }
+        }.getAsLiveData();
+    }
+
+    public LiveData<Resource<Quizzer>> loadQuizzer( final long quizzerId, final int quizzerNumber ) {
+        return new NetworkBoundResource<Quizzer,Quizzer>(executors) {
+            @Override
+            protected void saveCallResult(@NonNull Quizzer item) {
+                saveQuizzer( item );
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable Quizzer data) {
+                return data == null || rateLimiter.shouldFetch( LIMITER_QUIZZER + ":" + quizzerNumber );
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<Quizzer> loadFromDb() {
+                return quizzerDao.loadQuizzer(quizzerId);
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<Quizzer>> createCall() {
+                return webservice.getQuizzer(quizzerNumber);
+            }
+
+            @Override
+            protected void onFetchFailed() {
+                rateLimiter.reset( LIMITER_QUIZZER + ":" + quizzerNumber );
+            }
+        }.getAsLiveData();
+    }
+
+    private void saveQuizzers( final List<Quizzer> items) {
+        for( Quizzer quizzer : items ) {
+            saveQuizzer( quizzer );
+        }
+    }
+
+    private Long saveQuizzer( final Quizzer onlineQuizzer ) {
+        if( onlineQuizzer == null || onlineQuizzer.isInvalid() ) {
+            return null;
+        }
+        final Quizzer existingQuizzer = quizzerDao.loadQuizzerByNumber( onlineQuizzer.number );
+        final boolean isNew = existingQuizzer == null;
+        if( isNew ) {
+            final long id = quizzerDao.insertQuizzer(onlineQuizzer);
+            Log.i("DKQ", "Insert new Quizzer " + onlineQuizzer.number + " (id=" + id + ")");
+            return id;
+        } else if( existingQuizzer.version < onlineQuizzer.version ) {
+            onlineQuizzer.id = existingQuizzer.id; // update is ID based so copy existing ID to new one
+            quizzerDao.updateQuizzer( onlineQuizzer );
+            Log.i("DKQ", "Update Quizzer " + onlineQuizzer.number + " from version " + existingQuizzer.version + " to " + onlineQuizzer.version + " (id=" + onlineQuizzer.id + ")" );
+            return onlineQuizzer.id;
+        } else {
+            Log.i("DKQ", "No changes on Quizzer " + existingQuizzer.number + " (id=" + existingQuizzer.id + ")" );
+            return existingQuizzer.id;
+        }
     }
 
     public void updateMessage(final Message message ) {
