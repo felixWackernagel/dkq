@@ -4,7 +4,7 @@ import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 import de.wackernagel.dkq.ui.MessagesListFragment;
 import de.wackernagel.dkq.ui.QuestionsListFragment;
-import de.wackernagel.dkq.ui.QuizzersListFragment;
+import de.wackernagel.dkq.ui.QuizzersFragment;
 import de.wackernagel.dkq.ui.QuizzesListFragment;
 
 @Module
@@ -20,6 +20,6 @@ public abstract class FragmentBuildersModule {
     abstract MessagesListFragment contributeMessagesListFragment();
 
     @ContributesAndroidInjector
-    abstract QuizzersListFragment contributeQuizzersListFragment();
+    abstract QuizzersFragment contributeQuizzersFragment();
 
 }

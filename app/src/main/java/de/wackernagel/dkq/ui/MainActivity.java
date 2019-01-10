@@ -208,9 +208,9 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
                 return true;
 
             case R.id.action_quizzers:
-                if( !( currentFragment instanceof QuizzersListFragment ) ) {
+                if( !( currentFragment instanceof QuizzersViewPagerFragment) ) {
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, QuizzersListFragment.newInstance(), "quizzers")
+                            .replace(R.id.container, QuizzersViewPagerFragment.newInstance(), "quizzers")
                             .commit();
                 }
                 return true;

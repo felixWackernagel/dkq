@@ -24,6 +24,7 @@ import de.wackernagel.dkq.room.entities.Quizzer;
 import de.wackernagel.dkq.room.entities.QuizzerListItem;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.RateLimiter;
+import de.wackernagel.dkq.viewmodels.QuizzersSearch;
 import de.wackernagel.dkq.webservice.ApiResponse;
 import de.wackernagel.dkq.webservice.NetworkBoundResource;
 import de.wackernagel.dkq.webservice.Resource;
@@ -336,7 +337,7 @@ public class DkqRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<List<QuizzerListItem>>> loadQuizzers() {
+    public LiveData<Resource<List<QuizzerListItem>>> loadQuizzers(final QuizzersSearch criteria) {
         return new NetworkBoundResource<List<QuizzerListItem>,List<Quizzer>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Quizzer> items) {
@@ -351,7 +352,14 @@ public class DkqRepository {
             @NonNull
             @Override
             protected LiveData<List<QuizzerListItem>> loadFromDb() {
-                return quizzerDao.loadQuizMasters();
+                switch ( criteria ) {
+                    case WINNERS:
+                        return quizzerDao.loadWinners();
+
+                    case QUIZ_MASTERS:
+                    default:
+                        return quizzerDao.loadQuizMasters();
+                }
             }
 
             @NonNull

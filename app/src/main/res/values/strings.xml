@@ -89,4 +89,16 @@
     <string name="subheader_timestamps">Zeitstempel</string>
     <string name="timestamps_text">Update-Worker: %1$s</string>
 
+    <!-- Quizzers -->
+    <string name="quizzers_tab_winners">Gewinner</string>
+    <string name="quizzers_tab_quiz_masters">Quiz-Masters</string>
+    <plurals name="quizzers_win_count">
+        <item quantity="one">%1$d Sieg</item>
+        <item quantity="other">%1$d Siege</item>
+    </plurals>
+    <plurals name="quizzers_quiz_master_count">
+        <item quantity="one">%1$d Quiz</item>
+        <item quantity="other">%1$d Quizze</item>
+    </plurals>
+
 </resources>
