@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
+    android:paddingBottom="16dp"
+    android:paddingStart="72dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="?actionBarSize"
+    app:layout_collapseMode="parallax">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/quizMasterImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@null"
+            tools:src="@mipmap/ic_launcher"/>
+
+        <TextView
+            android:id="@+id/quizMaster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            tools:text="QUIZ_MASTER\nFelix Wackernagel"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/winnerImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@null"
+            tools:src="@mipmap/ic_launcher"/>
+
+        <TextView
+            android:id="@+id/winner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            tools:text="Felix Wackernagel"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="0dp">
+
+        <TextView
+            android:id="@+id/quiz_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_insert_invitation_black_24dp"
+            android:drawablePadding="24dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="8dp"
+            tools:text="12.01.2019"/>
+
+        <TextView
+            android:id="@+id/quiz_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_access_time_black_24dp"
+            android:drawablePadding="24dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            tools:text="20:00 Uhr"/>
+
+        <TextView
+            android:id="@+id/quiz_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_location_on_white_24dp"
+            android:drawablePadding="24dp"
+            android:layout_marginTop="8dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            tools:text="Barneby\nDresden Straße 1\n01234 Dresden" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -406,6 +406,32 @@ public class DkqRepository {
         }.getAsLiveData();
     }
 
+    public LiveData<Resource<Quizzer>> loadQuizzer( final long quizzerId ) {
+        return new NetworkBoundResource<Quizzer,Quizzer>(executors) {
+            @Override
+            protected void saveCallResult(@NonNull Quizzer item) {
+                // no-op
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable Quizzer data) {
+                return false;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<Quizzer> loadFromDb() {
+                return quizzerDao.loadQuizzer(quizzerId);
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<Quizzer>> createCall() {
+                return webservice.getQuizzer(0);
+            }
+        }.getAsLiveData();
+    }
+
     private void saveQuizzers( final List<Quizzer> items) {
         for( Quizzer quizzer : items ) {
             saveQuizzer( quizzer );

@@ -1,13 +1,13 @@
 package de.wackernagel.dkq.viewmodels;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
-
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
+import de.wackernagel.dkq.room.entities.Quizzer;
 import de.wackernagel.dkq.webservice.Resource;
 
 public class QuestionsViewModel extends ViewModel {
@@ -24,5 +24,9 @@ public class QuestionsViewModel extends ViewModel {
 
     public LiveData<Resource<Quiz>> loadQuiz( final long quizId, final int quizNumber) {
         return repository.loadQuiz( quizId, quizNumber );
+    }
+
+    public LiveData<Resource<Quizzer>> loadQuizzer( final long quizzerId ) {
+        return repository.loadQuizzer( quizzerId );
     }
 }

@@ -171,7 +171,7 @@ public class QuizzersFragment extends Fragment {
             if( position != RecyclerView.NO_POSITION ) {
                 final QuizzerListItem quizzer = getItem( position);
 
-                GlideUtils.loadCircleImage( holder.image, quizzer.image );
+                GlideUtils.loadCircleImage( holder.image, quizzer.image, false );
                 holder.name.setText( quizzer.name );
                 final int textRes = criteria == QuizzersSearch.WINNERS ? R.plurals.quizzers_win_count : R.plurals.quizzers_quiz_master_count;
                 holder.ranking.setText( holder.itemView.getResources().getQuantityString( textRes, quizzer.ranking, quizzer.ranking) );

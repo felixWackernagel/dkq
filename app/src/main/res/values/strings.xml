@@ -10,12 +10,18 @@
     <string name="next_quiz_unschedule">Wir planen noch</string>
     <string name="answer">Antwort</string>
     <string name="questions_hint">%1$d/60</string>
+    <string name="time_format">%1$s Uhr</string>
+    <string name="unknown_word">Unbekannt</string>
 
     <string name="expanded">ausgeklappt</string>
     <string name="collapsed">zusammengeklappt</string>
 
     <string name="changelog_title">Was gibts neues?</string>
     <string name="changelog_message"><![CDATA[
+        <b>Version 3.0</b><br><br>
+        <b>NEU</b> Gewinner & Quiz-Masters<br>
+        Neues Design<br>
+        <br><br>
         <b>Version 2.0</b><br><br>
         <b>NEU</b> Erhaltet Nachrichten rund ums DKQ.<br>
         <b>NEU</b> Info zu Neuheiten in der App.<br>

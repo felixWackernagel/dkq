@@ -62,10 +62,10 @@ public class GlideUtils {
             .into( view );
     }
 
-    public static void loadCircleImage(final ImageView view, final String url) {
+    public static void loadCircleImage(final ImageView view, final String url, final boolean white) {
         GlideRequest<Drawable> builder;
         if(TextUtils.isEmpty( url )) {
-            builder= GlideApp.with( view ).load(R.drawable.ic_account_circle_38_black_40dp);
+            builder= GlideApp.with( view ).load( white ? R.drawable.ic_account_circle_white_40dp : R.drawable.ic_account_circle_38_black_40dp);
         } else {
             builder = GlideApp.with( view ).load(url);
         }
