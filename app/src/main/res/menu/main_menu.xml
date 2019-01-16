@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.MainActivity">
+    <item
+        android:id="@+id/menu_preferences"
+        android:title="@string/menu_preferences" />
+    <item
+        android:id="@+id/menu_item_about"
+        android:title="@string/menu_about"
+        android:visible="false"/>
+    <item
+        android:id="@+id/menu_item_development"
+        android:title="@string/menu_development"
+        android:visible="@bool/development"/>
+</menu>

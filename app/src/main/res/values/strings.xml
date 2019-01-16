@@ -37,13 +37,10 @@
     <!-- Quesstions -->
     <string name="no_questions">Keine Fragen vorhanden</string>
 
-    <!-- Drawer -->
-    <string name="drawer_main">Kneipe</string>
-    <string name="drawer_about">Über DKQ</string>
-    <string name="drawer_development">Entwicklung</string>
-    <string name="drawer_preferences">Einstellungen</string>
-    <string name="drawer_open">Navigation öffnen</string>
-    <string name="drawer_close">Navigation schließen</string>
+    <!-- Menu -->
+    <string name="menu_about">Über DKQ</string>
+    <string name="menu_development">Entwicklung</string>
+    <string name="menu_preferences">Einstellungen</string>
 
     <!-- Notifications -->
     <string name="next_quiz_title">Es gibt neue Termine zum DKQ</string>
@@ -97,7 +94,7 @@
 
     <!-- Quizzers -->
     <string name="quizzers_tab_winners">Gewinner</string>
-    <string name="quizzers_tab_quiz_masters">Quiz-Masters</string>
+    <string name="quizzers_tab_quiz_masters">Quizmaster</string>
     <plurals name="quizzers_win_count">
         <item quantity="one">%1$d Sieg</item>
         <item quantity="other">%1$d Siege</item>

@@ -20,7 +20,6 @@
             app:badgePadding="16dp"
             app:badgeGravity="top|end"
             app:badgeText="@string/badge_new"
-            tools:src="@drawable/bar"
             tools:scaleType="centerCrop"/>
 
         <TextView

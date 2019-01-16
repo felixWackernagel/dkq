@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,14 +18,10 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.text.HtmlCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -64,57 +60,8 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar( toolbar );
 
-        final ActionBar actionBar = getSupportActionBar();
-        if( actionBar != null ) {
-            actionBar.setDisplayHomeAsUpEnabled( true );
-            actionBar.setHomeButtonEnabled( true );
-        }
-
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener( this );
-
-        final DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
-        final NavigationView navigationView = findViewById( R.id.navigationView );
-        navigationView.setNavigationItemSelectedListener( new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected( @NonNull final MenuItem menuItem) {
-                drawerLayout.setTag(R.id.drawerLayout, menuItem.getItemId());
-                drawerLayout.closeDrawers();
-                return true;
-            }
-        });
-
-        final ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle( this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close ) {
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed( drawerView );
-
-                navigationView.setCheckedItem(R.id.drawer_item_main);
-
-                Object itemId = drawerLayout.getTag( R.id.drawerLayout );
-                drawerLayout.setTag( R.id.drawerLayout, null );
-                if( itemId != null ) {
-                    switch ( (int) itemId ) {
-                        case R.id.drawer_item_about:
-                            break;
-
-                        case R.id.drawer_preferences:
-                            startActivity( PreferencesActivity.createLaunchIntent( getApplicationContext() ) );
-                            break;
-
-                        case R.id.drawer_item_development:
-                            startActivity( DevelopmentActivity.createLaunchIntent( getApplicationContext() ) );
-                            break;
-
-                        case R.id.drawer_item_main:
-                        default:
-                            break;
-                    }
-                }
-            }
-        };
-        drawerLayout.addDrawerListener(drawerToggle);
-        drawerToggle.syncState();
 
         final MainViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(MainViewModel.class);
         viewModel.installUpdateChecker();
@@ -177,44 +124,61 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
     }
 
     @Override
-    public void onBackPressed() {
-        final DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
-        if( drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate( R.menu.main_menu, menu );
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch( item.getItemId() ) {
+            case R.id.menu_preferences:
+                startActivity( PreferencesActivity.createLaunchIntent( getApplicationContext() ) );
+                return true;
+
+            case R.id.menu_item_development:
+                startActivity( DevelopmentActivity.createLaunchIntent( getApplicationContext() ) );
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull final MenuItem item) {
-        final Fragment currentFragment = getSupportFragmentManager().findFragmentById( R.id.container );
+        Fragment replacement = null;
+        String tag = null;
 
+        final Fragment currentFragment = getSupportFragmentManager().findFragmentById( R.id.container );
         switch (item.getItemId()) {
             case R.id.action_news:
                 if( !( currentFragment instanceof MessagesListFragment ) ) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, MessagesListFragment.newInstance(), "messages")
-                            .commit();
+                    replacement = MessagesListFragment.newInstance();
+                    tag = "messages";
                 }
-                return true;
+                break;
 
             case R.id.action_quizzes:
                 if( !( currentFragment instanceof QuizzesListFragment ) ) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, QuizzesListFragment.newInstance(), "quizzes")
-                            .commit();
+                    replacement = QuizzesListFragment.newInstance();
+                    tag = "quizzes";
                 }
-                return true;
+                break;
 
             case R.id.action_quizzers:
                 if( !( currentFragment instanceof QuizzersViewPagerFragment) ) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, QuizzersViewPagerFragment.newInstance(), "quizzers")
-                            .commit();
+                    replacement = QuizzersViewPagerFragment.newInstance();
+                    tag = "quizzers";
                 }
-                return true;
+                break;
         }
+
+        if( replacement != null ) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, replacement, tag).commit();
+        }
+
         return true;
     }
 
