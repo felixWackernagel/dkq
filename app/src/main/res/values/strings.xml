@@ -12,6 +12,7 @@
     <string name="questions_hint">%1$d/60</string>
     <string name="time_format">%1$s Uhr</string>
     <string name="unknown_word">Unbekannt</string>
+    <string name="maximize_image">Bild vergrößern</string>
 
     <string name="expanded">ausgeklappt</string>
     <string name="collapsed">zusammengeklappt</string>

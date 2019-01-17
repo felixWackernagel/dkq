@@ -7,9 +7,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,7 +29,9 @@ import androidx.lifecycle.ViewModelProviders;
 import dagger.android.AndroidInjection;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Message;
+import de.wackernagel.dkq.ui.widgets.IconImageView;
 import de.wackernagel.dkq.utils.DateUtils;
+import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GlideUtils;
 import de.wackernagel.dkq.viewmodels.MessageDetailsViewModel;
 import de.wackernagel.dkq.webservice.Resource;
@@ -99,7 +103,7 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
     }
 
     private void bindViews( final Message message ) {
-        final ImageView image = findViewById(R.id.image);
+        final IconImageView image = findViewById(R.id.image);
         final TextView lastUpdate = findViewById(R.id.lastUpdate);
         final TextView title = findViewById(R.id.title);
         final TextView content = findViewById(R.id.content);
@@ -113,6 +117,18 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
                     @Override
                     public void onClick(View v) {
                         v.getContext().startActivity(viewImageIntent);
+                    }
+                });
+                image.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        // position toast below image and at the center of the device
+                        int x = 0;
+                        int y = view.getBottom() + DeviceUtils.dpToPx( 16f, view.getContext() );
+                        Toast toast = Toast.makeText( view.getContext(), R.string.maximize_image, Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, x, y);
+                        toast.show();
+                        return true;
                     }
                 });
             }

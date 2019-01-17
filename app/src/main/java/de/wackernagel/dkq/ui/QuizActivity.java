@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -176,7 +177,7 @@ public class QuizActivity extends AbstractDkqActivity implements HasSupportFragm
 
         final TextView location = findViewById(R.id.quiz_location);
         value = getString(R.string.unknown_word);
-        if( quiz.location != null && quiz.address != null ) {
+        if( quiz.location != null && !TextUtils.isEmpty( quiz.address ) ) {
             value = quiz.location + "\n" + quiz.address.replaceAll(", ", "\n");
         } else if( quiz.location != null ) {
             value = quiz.location;
