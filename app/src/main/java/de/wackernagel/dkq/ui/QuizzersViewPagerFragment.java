@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import de.wackernagel.dkq.R;
-import de.wackernagel.dkq.viewmodels.QuizzersSearch;
+import de.wackernagel.dkq.viewmodels.QuizzerRole;
 
 public class QuizzersViewPagerFragment extends Fragment {
 
@@ -51,22 +51,22 @@ public class QuizzersViewPagerFragment extends Fragment {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            return QuizzersFragment.newInstance(QuizzersSearch.values()[position]);
+            return QuizzersFragment.newInstance(QuizzerRole.values()[position]);
         }
 
         @Override
         public int getCount() {
-            return QuizzersSearch.values().length;
+            return 2;
         }
 
         @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
-            switch ( QuizzersSearch.values()[ position ] ) {
-                case WINNERS:
+            switch ( QuizzerRole.values()[ position ] ) {
+                case WINNER:
                     return context.getString( R.string.quizzers_tab_winners);
 
-                case QUIZ_MASTERS:
+                case QUIZMASTER:
                 default:
                     return context.getString( R.string.quizzers_tab_quiz_masters);
             }

@@ -16,7 +16,7 @@ public class QuizzersViewModel extends ViewModel {
         this.repository = repository;
     }
 
-    public LiveData<Resource<List<QuizzerListItem>>> loadQuizzers( final QuizzersSearch criteria ) {
+    public LiveData<Resource<List<QuizzerListItem>>> loadQuizzers( final QuizzerRole criteria ) {
         return repository.loadQuizzers( criteria );
     }
 }

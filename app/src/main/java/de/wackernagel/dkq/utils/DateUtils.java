@@ -64,4 +64,11 @@ public class DateUtils {
         return 0;
     }
 
+    public static String twoDigits( int digit ) {
+        if( digit < 10 )
+            return "0".concat( String.valueOf( digit ) );
+        else
+            return String.valueOf( digit );
+    }
+
 }

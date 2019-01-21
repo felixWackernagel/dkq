@@ -12,7 +12,5 @@
     <color name="textSecondary">#99000000</color>     <!-- 60% black -->
     <color name="textDisabled">#60000000</color>      <!-- 38% black -->
 
-    <color name="iconActive">#DE000000</color>       <!-- 87% black -->
     <color name="iconInactive">#99000000</color>     <!-- 60% black -->
-    <color name="iconDisabled">#60000000</color>      <!-- 38% black -->
 </resources>

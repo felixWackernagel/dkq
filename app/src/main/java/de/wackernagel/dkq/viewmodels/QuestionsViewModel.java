@@ -26,7 +26,11 @@ public class QuestionsViewModel extends ViewModel {
         return repository.loadQuiz( quizId, quizNumber );
     }
 
-    public LiveData<Resource<Quizzer>> loadQuizzer( final long quizzerId ) {
-        return repository.loadQuizzer( quizzerId );
+    public LiveData<Resource<Quizzer>> loadWinner( final long quizId ) {
+        return repository.loadQuizzer( QuizzerRole.WINNER, quizId );
+    }
+
+    public LiveData<Resource<Quizzer>> loadQuizmaster( final long quizId ) {
+        return repository.loadQuizzer( QuizzerRole.QUIZMASTER, quizId );
     }
 }

@@ -15,6 +15,7 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -27,6 +28,7 @@ import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
+import de.wackernagel.dkq.DkqConstants;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.Quizzer;
@@ -34,6 +36,9 @@ import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.GlideUtils;
 import de.wackernagel.dkq.viewmodels.QuestionsViewModel;
 import de.wackernagel.dkq.webservice.Resource;
+
+import static de.wackernagel.dkq.DkqConstants.Web.JOOMLA_UNKNOWN_DATE;
+import static de.wackernagel.dkq.utils.DateUtils.twoDigits;
 
 public class QuizActivity extends AbstractDkqActivity implements HasSupportFragmentInjector {
 
@@ -90,35 +95,29 @@ public class QuizActivity extends AbstractDkqActivity implements HasSupportFragm
             @Override
             public void onChanged(@Nullable Resource<Quiz> resource) {
                 if( resource != null && resource.data != null ) {
-                    setQuizDetails( resource.data );
+                    setQuizDate( resource.data );
+                    setQuizTime( resource.data );
+                    setQuizLocation( resource.data );
+                }
+            }
+        });
 
-                    if( resource.data.winnerId == null ) {
-                        setWinner( null );
-                    } else {
-                        viewModel.loadQuizzer( resource.data.winnerId ).observe(QuizActivity.this, new Observer<Resource<Quizzer>>() {
-                            @Override
-                            public void onChanged(Resource<Quizzer> quizzerResource) {
-                                if( quizzerResource != null )
-                                    setWinner( quizzerResource.data );
-                                else
-                                    setWinner( null );
-                            }
-                        });
-                    }
+        setWinner( null );
+        viewModel.loadWinner( getQuizId() ).observe( this, new Observer<Resource<Quizzer>>() {
+            @Override
+            public void onChanged(@Nullable Resource<Quizzer> resource) {
+                if( resource != null && resource.data != null ) {
+                    setWinner( resource.data );
+                }
+            }
+        });
 
-                    if( resource.data.quizMasterId == null ) {
-                        setQuizMaster( null );
-                    } else {
-                        viewModel.loadQuizzer( resource.data.quizMasterId ).observe(QuizActivity.this, new Observer<Resource<Quizzer>>() {
-                            @Override
-                            public void onChanged(Resource<Quizzer> quizzerResource) {
-                                if( quizzerResource != null )
-                                    setQuizMaster( quizzerResource.data );
-                                else
-                                    setQuizMaster( null );
-                            }
-                        });
-                    }
+        setQuizMaster( null );
+        viewModel.loadQuizmaster( getQuizId() ).observe( this, new Observer<Resource<Quizzer>>() {
+            @Override
+            public void onChanged(@Nullable Resource<Quizzer> resource) {
+                if( resource != null && resource.data != null ) {
+                    setQuizMaster( resource.data );
                 }
             }
         });
@@ -131,52 +130,54 @@ public class QuizActivity extends AbstractDkqActivity implements HasSupportFragm
     }
 
     private void setWinner( @Nullable final Quizzer quizzer ) {
-        if( quizzer != null ) {
-            ImageView image = findViewById(R.id.winnerImage);
-            TextView name = findViewById(R.id.winner);
-            GlideUtils.loadCircleImage( image, quizzer.image, true );
-            SpannableString ss = new SpannableString( "GEWINNER\n" + quizzer.name );
-            ss.setSpan( new AbsoluteSizeSpan(10, true), 0, "gewinner".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE );
-            name.setText( ss, TextView.BufferType.SPANNABLE );
-        }
+        setQuizzer( quizzer, R.id.winnerImage, R.id.winner, getString( R.string.quizzers_tab_winners ) );
     }
 
     private void setQuizMaster( @Nullable final Quizzer quizzer ) {
-        if( quizzer != null ) {
-            ImageView image = findViewById(R.id.quizMasterImage);
-            TextView name = findViewById(R.id.quizMaster);
-            GlideUtils.loadCircleImage( image, quizzer.image, true );
-            SpannableString ss = new SpannableString( "QUIZ-MASTER\n" + quizzer.name );
-            ss.setSpan( new AbsoluteSizeSpan(10, true), 0, "quiz-master".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE );
-            name.setText( ss, TextView.BufferType.SPANNABLE );
-        }
+        setQuizzer( quizzer, R.id.quizMasterImage, R.id.quizMaster, getString( R.string.quizzers_tab_quiz_masters ) );
     }
 
-    private void setQuizDetails( @NonNull final Quiz quiz ) {
-        final TextView date = findViewById(R.id.quiz_date);
+    private void setQuizzer(@Nullable final Quizzer quizzer, @IdRes final int imageId, @IdRes final int textId, @NonNull final String quizzerRole ) {
+        final ImageView image = findViewById( imageId );
+        final TextView name = findViewById( textId );
+        final String nameData = quizzer != null ? quizzer.name : getString( R.string.unknown_word );
+        final String imageData = quizzer != null ? quizzer.image : null;
+
+        GlideUtils.loadCircleImage( image, imageData, true );
+        final SpannableString ss = new SpannableString( quizzerRole + "\n" + nameData );
+        ss.setSpan( new AbsoluteSizeSpan(10, true), 0, quizzerRole.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE );
+        name.setText( ss, TextView.BufferType.SPANNABLE );
+    }
+
+    private void setQuizDate( @NonNull final Quiz quiz ) {
         String value = getString(R.string.unknown_word);
-        if( quiz.quizDate != null && !quiz.quizDate.equals("0000-00-00 00:00:00") ) {
+        final TextView date = findViewById(R.id.quiz_date);
+        if( quiz.quizDate != null && !quiz.quizDate.equals(JOOMLA_UNKNOWN_DATE) ) {
             final Date quizDate = DateUtils.joomlaDateToJavaDate( quiz.quizDate );
-            Calendar calendar = Calendar.getInstance();
+            final Calendar calendar = Calendar.getInstance();
             calendar.setTime( quizDate );
             value = twoDigits(calendar.get(Calendar.DAY_OF_MONTH)) + "." +
-                        twoDigits(calendar.get(Calendar.MONTH) + 1) + "." +
-                        twoDigits(calendar.get(Calendar.YEAR));
+                    twoDigits(calendar.get(Calendar.MONTH) + 1) + "." +
+                    twoDigits(calendar.get(Calendar.YEAR));
         }
         date.setText( value );
+    }
 
+    private void setQuizTime( @NonNull final Quiz quiz ) {
+        String value = getString(R.string.unknown_word);
         final TextView time = findViewById(R.id.quiz_time);
-        value = getString(R.string.unknown_word);
-        if( quiz.quizDate != null && !quiz.quizDate.equals("0000-00-00 00:00:00") ) {
+        if( quiz.quizDate != null && !quiz.quizDate.equals(JOOMLA_UNKNOWN_DATE) ) {
             final Date quizTime = DateUtils.joomlaDateToJavaDate( quiz.quizDate );
-            Calendar calendar = Calendar.getInstance();
+            final Calendar calendar = Calendar.getInstance();
             calendar.setTime( quizTime );
             value = getString( R.string.time_format, twoDigits(calendar.get(Calendar.HOUR_OF_DAY)) + ":" + twoDigits(calendar.get(Calendar.MINUTE)) );
         }
         time.setText( value );
+    }
 
+    private void setQuizLocation( @NonNull final Quiz quiz ) {
+        String value = getString(R.string.unknown_word);
         final TextView location = findViewById(R.id.quiz_location);
-        value = getString(R.string.unknown_word);
         if( quiz.location != null && !TextUtils.isEmpty( quiz.address ) ) {
             value = quiz.location + "\n" + quiz.address.replaceAll(", ", "\n");
         } else if( quiz.location != null ) {
@@ -185,13 +186,6 @@ public class QuizActivity extends AbstractDkqActivity implements HasSupportFragm
             value = quiz.address.replaceAll(",", "\n");
         }
         location.setText( value );
-    }
-
-    private String twoDigits( int digit ) {
-        if( digit < 10 )
-            return "0".concat( String.valueOf( digit ) );
-        else
-            return String.valueOf( digit );
     }
 
     @Override

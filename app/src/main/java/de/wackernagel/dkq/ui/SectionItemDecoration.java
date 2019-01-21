@@ -11,11 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import de.wackernagel.dkq.R;
 
-/**
- * https://github.com/paetztm/recycler_view_headers
- */
-
-public class RecyclerSectionItemDecoration extends RecyclerView.ItemDecoration {
+public class SectionItemDecoration extends RecyclerView.ItemDecoration {
 
     private final int             headerOffset;
     private final boolean         sticky;
@@ -24,7 +20,7 @@ public class RecyclerSectionItemDecoration extends RecyclerView.ItemDecoration {
     private View headerView;
     private TextView header;
 
-    RecyclerSectionItemDecoration(int headerHeight, boolean sticky, @NonNull SectionCallback sectionCallback) {
+    SectionItemDecoration(int headerHeight, boolean sticky, @NonNull SectionCallback sectionCallback) {
         headerOffset = headerHeight;
         this.sticky = sticky;
         this.sectionCallback = sectionCallback;
@@ -85,20 +81,13 @@ public class RecyclerSectionItemDecoration extends RecyclerView.ItemDecoration {
      * https://yoda.entelect.co.za/view/9627/how-to-android-recyclerview-item-decorations
      */
     private void fixLayoutSize(View view, ViewGroup parent) {
-        int widthSpec = View.MeasureSpec.makeMeasureSpec(parent.getWidth(),
-                View.MeasureSpec.EXACTLY);
-        int heightSpec = View.MeasureSpec.makeMeasureSpec(parent.getHeight(),
-                View.MeasureSpec.UNSPECIFIED);
+        int widthSpec = View.MeasureSpec.makeMeasureSpec(parent.getWidth(), View.MeasureSpec.EXACTLY);
+        int heightSpec = View.MeasureSpec.makeMeasureSpec(parent.getHeight(), View.MeasureSpec.UNSPECIFIED);
 
-        int childWidth = ViewGroup.getChildMeasureSpec(widthSpec,
-                parent.getPaddingLeft() + parent.getPaddingRight(),
-                view.getLayoutParams().width);
-        int childHeight = ViewGroup.getChildMeasureSpec(heightSpec,
-                parent.getPaddingTop() + parent.getPaddingBottom(),
-                view.getLayoutParams().height);
+        int childWidth = ViewGroup.getChildMeasureSpec(widthSpec,parent.getPaddingLeft() + parent.getPaddingRight(), view.getLayoutParams().width);
+        int childHeight = ViewGroup.getChildMeasureSpec(heightSpec,parent.getPaddingTop() + parent.getPaddingBottom(), view.getLayoutParams().height);
 
         view.measure(childWidth, childHeight);
-
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
     }
 

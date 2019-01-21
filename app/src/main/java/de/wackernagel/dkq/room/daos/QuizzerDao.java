@@ -4,7 +4,6 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -32,11 +31,14 @@ public interface QuizzerDao {
             "ORDER BY ranking DESC" )
     LiveData<List<QuizzerListItem>> loadQuizMasters();
 
-    @Query( "SELECT * FROM quizzers ORDER BY name ASC" )
-    LiveData<List<Quizzer>> loadQuizzers();
-
     @Query( "SELECT * FROM quizzers WHERE id = :quizzerId" )
     LiveData<Quizzer> loadQuizzer(long quizzerId);
+
+    @Query( "SELECT * FROM quizzers WHERE id = (SELECT winnerId FROM quizzes WHERE id = :quizId)" )
+    LiveData<Quizzer> loadWinnerByQuiz(long quizId);
+
+    @Query( "SELECT * FROM quizzers WHERE id = (SELECT quizMasterId FROM quizzes WHERE id = :quizId)" )
+    LiveData<Quizzer> loadQuizmasterByQuiz(long quizId);
 
     @Query( "SELECT * FROM quizzers WHERE number = :quizzerNumber" )
     Quizzer loadQuizzerByNumber(int quizzerNumber);
@@ -46,8 +48,5 @@ public interface QuizzerDao {
 
     @Update( onConflict = REPLACE)
     void updateQuizzer(Quizzer quizzer);
-
-    @Delete
-    void deleteQuizzer(Quizzer quizzer);
 
 }

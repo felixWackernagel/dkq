@@ -11,7 +11,9 @@
         android:layout_height="?actionBarSize"
         app:tabBackground="@color/colorPrimary"
         app:tabMode="fixed"
-        app:tabTextColor="@color/colorAccent" />
+        app:tabGravity="fill"
+        app:tabMaxWidth="0dp"
+        app:tabTextColor="@color/colorAccent"/>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"

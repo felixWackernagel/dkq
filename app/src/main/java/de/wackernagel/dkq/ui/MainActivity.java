@@ -104,6 +104,10 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
             getSupportFragmentManager().beginTransaction()
                 .replace( R.id.container, QuizzesListFragment.newInstance(), "quizzes" )
                 .commit();
+
+            final View infoCard = findViewById(R.id.toolbarCard);
+            infoCard.setAlpha( 0f );
+            infoCard.animate().alpha( 1f ).setDuration( 400L ).setListener( null ).start();
         }
     }
 

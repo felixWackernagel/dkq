@@ -2,7 +2,6 @@ package de.wackernagel.dkq.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -30,9 +26,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.R;
-import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.QuizListItem;
-import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GridGutterDecoration;
 import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
@@ -74,7 +68,6 @@ public class QuizzesListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         if( recyclerView != null ) {
-
             final SlideUpAlphaAnimator animator = new SlideUpAlphaAnimator().withInterpolator( new FastOutSlowInInterpolator() );
             animator.setAddDuration( 400 );
             animator.setChangeDuration( 400 );
@@ -91,6 +84,17 @@ public class QuizzesListFragment extends Fragment {
                     1,
                     true,
                     true ) );
+            recyclerView.addItemDecoration( new SectionItemDecoration(DeviceUtils.dpToPx(48f, getContext()), false, new SectionItemDecoration.SectionCallback() {
+                @Override
+                public boolean isSection(int position) {
+                    return position == 0;
+                }
+
+                @Override
+                public CharSequence getSectionHeader(int position) {
+                    return getString( R.string.quizzes_section, adapter.getItemCount() );
+                }
+            }) );
 
             final QuizzesViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(QuizzesViewModel.class);
             viewModel.loadQuizzes().observe(this, new Observer<Resource<List<QuizListItem>>>() {
@@ -118,14 +122,11 @@ public class QuizzesListFragment extends Fragment {
     }
 
     static class QuizViewHolder extends RecyclerView.ViewHolder {
-        final QuizAdapter adapter;
+        private TextView name;
+        private TextView questionsHint;
 
-        TextView name;
-        TextView questionsHint;
-
-        QuizViewHolder(final QuizAdapter adapter, View itemView) {
+        QuizViewHolder(final View itemView) {
             super(itemView);
-            this.adapter = adapter;
             name = itemView.findViewById( R.id.name );
             questionsHint = itemView.findViewById( R.id.questionsHint);
         }
@@ -150,7 +151,7 @@ public class QuizzesListFragment extends Fragment {
 
         @Override
         public QuizViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new QuizViewHolder( this, LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_quiz, parent, false ) );
+            return new QuizViewHolder( LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_quiz, parent, false ) );
         }
 
         @Override

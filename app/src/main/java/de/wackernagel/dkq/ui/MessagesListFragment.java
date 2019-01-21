@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.R;
-import de.wackernagel.dkq.room.entities.Message;
+import de.wackernagel.dkq.room.entities.MessageListItem;
 import de.wackernagel.dkq.ui.widgets.BadgedFourThreeImageView;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GlideUtils;
@@ -77,21 +77,36 @@ public class MessagesListFragment extends Fragment {
             animator.setMoveDuration( 400 );
             animator.setRemoveDuration( 400 );
 
+            final int columnCount = DeviceUtils.isPortraitMode( getContext() ) ? 1 : 2;
             adapter = new MessagesListFragment.MessageAdapter( new MessageItemCallback() );
-            recyclerView.setLayoutManager( new GridLayoutManager( getContext(), 1 ) );
+            recyclerView.setLayoutManager( new GridLayoutManager( getContext(), columnCount ) );
             recyclerView.setHasFixedSize( true );
             recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );
             recyclerView.addItemDecoration( new GridGutterDecoration(
                     DeviceUtils.dpToPx(16, getContext()),
-                    1,
+                    columnCount,
                     true,
                     true ) );
+            recyclerView.addItemDecoration( new SectionItemDecoration(DeviceUtils.dpToPx(48f, getContext()), false, new SectionItemDecoration.SectionCallback() {
+                @Override
+                public boolean isSection(int position) {
+                    return position < columnCount;
+                }
+
+                @Override
+                public CharSequence getSectionHeader(int position) {
+                    if( position == 0 ) {
+                        return getString( R.string.messages_section, adapter.getItemCount() );
+                    }
+                    return "";
+                }
+            }) );
 
             final MessagesViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(MessagesViewModel.class);
-            viewModel.loadMessages().observe(this, new Observer<Resource<List<Message>>>() {
+            viewModel.loadMessages().observe(this, new Observer<Resource<List<MessageListItem>>>() {
                 @Override
-                public void onChanged(@Nullable Resource<List<Message>> messages) {
+                public void onChanged(@Nullable Resource<List<MessageListItem>> messages) {
                     if( messages != null ) {
                         Log.i("dkq", "Status=" + messages.status + ", Items=" + (messages.data != null ? messages.data.size() : "null" ));
                         switch (messages.status) {
@@ -112,14 +127,14 @@ public class MessagesListFragment extends Fragment {
         }
     }
 
-    static class MessageItemCallback extends DiffUtil.ItemCallback<Message> {
+    static class MessageItemCallback extends DiffUtil.ItemCallback<MessageListItem> {
         @Override
-        public boolean areItemsTheSame(@NonNull Message oldItem, @NonNull Message newItem) {
+        public boolean areItemsTheSame(@NonNull MessageListItem oldItem, @NonNull MessageListItem newItem) {
             return oldItem.id == newItem.id;
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull Message oldItem, @NonNull Message newItem) {
+        public boolean areContentsTheSame(@NonNull MessageListItem oldItem, @NonNull MessageListItem newItem) {
             return TextUtils.equals( oldItem.image, newItem.image )
                     && TextUtils.equals( oldItem.title, newItem.title )
                     && TextUtils.equals( oldItem.content, newItem.content )
@@ -128,36 +143,32 @@ public class MessagesListFragment extends Fragment {
     }
 
     static class MessageViewHolder extends RecyclerView.ViewHolder {
-        final MessagesListFragment.MessageAdapter adapter;
+        private BadgedFourThreeImageView image;
+        private TextView title;
+        private TextView content;
 
-        BadgedFourThreeImageView image;
-        TextView title;
-        TextView content;
-
-        MessageViewHolder(final MessagesListFragment.MessageAdapter adapter, View itemView) {
+        MessageViewHolder( final View itemView ) {
             super(itemView);
-            this.adapter = adapter;
             image = itemView.findViewById( R.id.image );
             title = itemView.findViewById( R.id.title );
             content = itemView.findViewById( R.id.content );
         }
     }
 
-    static class MessageAdapter extends ListAdapter<Message, MessageViewHolder> {
-
-        MessageAdapter(@NonNull DiffUtil.ItemCallback<Message> diffCallback) {
+    static class MessageAdapter extends ListAdapter<MessageListItem, MessageViewHolder> {
+        MessageAdapter(@NonNull DiffUtil.ItemCallback<MessageListItem> diffCallback) {
             super(diffCallback);
         }
 
         @Override
         public MessagesListFragment.MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new MessagesListFragment.MessageViewHolder( this, LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_message, parent, false ) );
+            return new MessagesListFragment.MessageViewHolder( LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_message, parent, false ) );
         }
 
         @Override
         public void onBindViewHolder( final MessagesListFragment.MessageViewHolder holder, final int position) {
             if( position != RecyclerView.NO_POSITION ) {
-                final Message message = getItem( position);
+                final MessageListItem message = getItem( position);
 
                 GlideUtils.loadImage( holder.image, message.image );
                 holder.title.setText( message.title );

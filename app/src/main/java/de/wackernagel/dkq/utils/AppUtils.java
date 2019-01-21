@@ -1,6 +1,5 @@
 package de.wackernagel.dkq.utils;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 

@@ -1,9 +1,7 @@
 <resources>
     <string name="quiz_number">Quiz %1$d</string>
     <string name="question_number">Frage %1$d</string>
-    <string name="message_number">Nachricht %1$d</string>
     <string name="crash_toast_text">DKQ hatte ein Problem und wurde geschlossen.</string>
-    <string name="ok_word">OK</string>
     <string name="close_word">Schließen</string>
     <string name="badge_new">NEU</string>
     <string name="next_quiz">Quiz %1$d - %2$s Uhr</string>
@@ -13,6 +11,7 @@
     <string name="time_format">%1$s Uhr</string>
     <string name="unknown_word">Unbekannt</string>
     <string name="maximize_image">Bild vergrößern</string>
+    <string name="additions_section">Schätzfragen</string>
 
     <string name="expanded">ausgeklappt</string>
     <string name="collapsed">zusammengeklappt</string>
@@ -31,12 +30,20 @@
 
     <!-- Messages -->
     <string name="no_messages">Keine News zum DKQ</string>
+    <string name="messages_section">%1$d Artikel</string>
 
-    <!-- Quizze -->
+    <!-- Quizzes -->
     <string name="no_quizzes">Keine Quizze vorhanden</string>
+    <string name="quizzes_section">%1$d Quizze</string>
 
     <!-- Quesstions -->
     <string name="no_questions">Keine Fragen vorhanden</string>
+    <string name="questions_section">Runde %1$d</string>
+
+    <!-- Quizzers -->
+    <string name="winner_section">%1$d Gewinner</string>
+    <string name="quizmaster_section">%1$d Quizmaster</string>
+    <string name="no_quizzers">Keine Treffer</string>
 
     <!-- Menu -->
     <string name="menu_about">Über DKQ</string>

@@ -92,7 +92,6 @@ public class QuestionsListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         if( recyclerView != null ) {
-
             final SlideUpAlphaAnimator animator = new SlideUpAlphaAnimator().withInterpolator( new FastOutSlowInInterpolator() );
             animator.setAddDuration( 400 );
             animator.setChangeDuration( 400 );
@@ -108,6 +107,24 @@ public class QuestionsListFragment extends Fragment {
                     1,
                     true,
                     true ) );
+            recyclerView.addItemDecoration( new SectionItemDecoration(DeviceUtils.dpToPx(48f, getContext()), false, new SectionItemDecoration.SectionCallback() {
+                @Override
+                public boolean isSection(int position) {
+                    return position == 0 || position == 20 || position == 40 || position == 60;
+                }
+
+                @Override
+                public CharSequence getSectionHeader(int position) {
+                    int round = 1;
+                    if( position >= 20 )
+                        round = 2;
+                    if( position >= 40 )
+                        round = 3;
+                    if( position >= 60 )
+                        return getString( R.string.additions_section );
+                    return getString( R.string.questions_section, round );
+                }
+            }) );
 
             final QuestionsViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(QuestionsViewModel.class);
             viewModel.loadQuestions( getQuizId(), getQuizNumber() ).observe(this, new Observer<Resource<List<Question>>>() {
@@ -134,9 +151,9 @@ public class QuestionsListFragment extends Fragment {
     }
 
     static class QuestionViewHolder extends RecyclerView.ViewHolder {
-        TextView name;
-        TextView question;
-        CollapsibleCard answer;
+        private TextView name;
+        private TextView question;
+        private CollapsibleCard answer;
 
         QuestionViewHolder(final View itemView) {
             super(itemView);
@@ -159,7 +176,6 @@ public class QuestionsListFragment extends Fragment {
     }
 
     static class QuestionAdapter extends ListAdapter<Question, QuestionViewHolder> {
-
         QuestionAdapter(@NonNull DiffUtil.ItemCallback<Question> diffCallback) {
             super(diffCallback);
         }

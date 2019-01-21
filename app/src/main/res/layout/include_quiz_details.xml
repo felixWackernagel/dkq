@@ -5,12 +5,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorPrimary"
     android:paddingBottom="16dp"
     android:paddingStart="72dp"
     android:paddingEnd="16dp"
     android:paddingTop="?actionBarSize"
-    app:layout_collapseMode="parallax">
+    app:layout_collapseMode="parallax"
+    tools:background="@color/colorPrimary">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
             android:layout_height="40dp"
             android:layout_marginEnd="16dp"
             android:contentDescription="@null"
-            tools:src="@mipmap/ic_launcher"/>
+            tools:src="@drawable/ic_account_circle_white_40dp"/>
 
         <TextView
             android:id="@+id/quizMaster"
@@ -34,7 +34,7 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:gravity="center_vertical"
-            tools:text="QUIZ_MASTER\nFelix Wackernagel"/>
+            tools:text="QUIZMASTER\nFelix Wackernagel"/>
 
     </LinearLayout>
 
@@ -50,7 +50,7 @@
             android:layout_height="40dp"
             android:layout_marginEnd="16dp"
             android:contentDescription="@null"
-            tools:src="@mipmap/ic_launcher"/>
+            tools:src="@drawable/ic_account_circle_white_40dp"/>
 
         <TextView
             android:id="@+id/winner"
@@ -60,7 +60,7 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:gravity="center_vertical"
-            tools:text="Felix Wackernagel"/>
+            tools:text="WINNER\nFelix Wackernagel"/>
 
     </LinearLayout>
 

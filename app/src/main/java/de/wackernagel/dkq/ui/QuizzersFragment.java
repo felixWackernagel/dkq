@@ -31,7 +31,7 @@ import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GlideUtils;
 import de.wackernagel.dkq.utils.GridGutterDecoration;
 import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
-import de.wackernagel.dkq.viewmodels.QuizzersSearch;
+import de.wackernagel.dkq.viewmodels.QuizzerRole;
 import de.wackernagel.dkq.viewmodels.QuizzersViewModel;
 import de.wackernagel.dkq.webservice.Resource;
 
@@ -46,7 +46,7 @@ public class QuizzersFragment extends Fragment {
     private ProgressBar progressBar;
     private QuizzerAdapter adapter;
 
-    static QuizzersFragment newInstance(final QuizzersSearch criteria) {
+    static QuizzersFragment newInstance(final QuizzerRole criteria) {
         final QuizzersFragment fragment = new QuizzersFragment();
         final Bundle arguments = new Bundle(1);
         arguments.putInt(QUIZZERS_CRITERIA, criteria.ordinal());
@@ -54,13 +54,13 @@ public class QuizzersFragment extends Fragment {
         return fragment;
     }
 
-    private QuizzersSearch getQuizzersSearchCriteria() {
+    private QuizzerRole getQuizzersSearchCriteria() {
         int ordinal = 0;
         final Bundle arguments = getArguments();
         if( arguments != null ) {
             ordinal = arguments.getInt(QUIZZERS_CRITERIA, 0);
         }
-        return QuizzersSearch.values()[ ordinal ];
+        return QuizzerRole.values()[ ordinal ];
     }
 
     @Nullable
@@ -99,6 +99,24 @@ public class QuizzersFragment extends Fragment {
                     1,
                     true,
                     true ) );
+            recyclerView.addItemDecoration( new SectionItemDecoration(DeviceUtils.dpToPx(48f, getContext()), false, new SectionItemDecoration.SectionCallback() {
+                @Override
+                public boolean isSection(int position) {
+                    return position == 0;
+                }
+
+                @Override
+                public CharSequence getSectionHeader(int position) {
+                    switch ( getQuizzersSearchCriteria() ) {
+                        case WINNER:
+                            return getString( R.string.winner_section, adapter.getItemCount() );
+                        case QUIZMASTER:
+                            return getString( R.string.quizmaster_section, adapter.getItemCount() );
+                        default:
+                            return "";
+                    }
+                }
+            }) );
 
             final QuizzersViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(QuizzersViewModel.class);
             viewModel.loadQuizzers( getQuizzersSearchCriteria() ).observe(this, new Observer<Resource<List<QuizzerListItem>>>() {
@@ -138,15 +156,12 @@ public class QuizzersFragment extends Fragment {
     }
 
     static class QuizzerViewHolder extends RecyclerView.ViewHolder {
-        final QuizzersFragment.QuizzerAdapter adapter;
+        private ImageView image;
+        private TextView name;
+        private TextView ranking;
 
-        ImageView image;
-        TextView name;
-        TextView ranking;
-
-        QuizzerViewHolder(final QuizzersFragment.QuizzerAdapter adapter, View itemView) {
+        QuizzerViewHolder(final View itemView) {
             super(itemView);
-            this.adapter = adapter;
             image = itemView.findViewById( R.id.image );
             name = itemView.findViewById( R.id.name );
             ranking = itemView.findViewById( R.id.ranking );
@@ -154,16 +169,16 @@ public class QuizzersFragment extends Fragment {
     }
 
     static class QuizzerAdapter extends ListAdapter<QuizzerListItem, QuizzerViewHolder> {
-        private final QuizzersSearch criteria;
+        private final QuizzerRole criteria;
 
-        QuizzerAdapter( @NonNull final DiffUtil.ItemCallback<QuizzerListItem> diffCallback, final QuizzersSearch criteria ) {
+        QuizzerAdapter( @NonNull final DiffUtil.ItemCallback<QuizzerListItem> diffCallback, final QuizzerRole criteria ) {
             super(diffCallback);
             this.criteria = criteria;
         }
 
         @Override
         public QuizzersFragment.QuizzerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new QuizzersFragment.QuizzerViewHolder( this, LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_quizzer, parent, false ) );
+            return new QuizzersFragment.QuizzerViewHolder( LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_quizzer, parent, false ) );
         }
 
         @Override
@@ -173,7 +188,7 @@ public class QuizzersFragment extends Fragment {
 
                 GlideUtils.loadCircleImage( holder.image, quizzer.image, false );
                 holder.name.setText( quizzer.name );
-                final int textRes = criteria == QuizzersSearch.WINNERS ? R.plurals.quizzers_win_count : R.plurals.quizzers_quiz_master_count;
+                final int textRes = criteria == QuizzerRole.WINNER ? R.plurals.quizzers_win_count : R.plurals.quizzers_quiz_master_count;
                 holder.ranking.setText( holder.itemView.getResources().getQuantityString( textRes, quizzer.ranking, quizzer.ranking) );
             }
         }

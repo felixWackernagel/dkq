@@ -16,11 +16,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import de.wackernagel.dkq.DkqPreferences;
+import de.wackernagel.dkq.DkqConstants;
 import de.wackernagel.dkq.R;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AbstractDkqActivity {
 
     @NonNull
     static Intent createLaunchIntent( final Context context ) {
@@ -74,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
 
         final String username = usernameField.getText().toString();
         final String password = passwordField.getText().toString();
-        if( TextUtils.equals( username,"dkq" ) && TextUtils.equals( password,"app" ) ) {
+        if( TextUtils.equals( username,DkqConstants.Account.USERNAME) && TextUtils.equals( password,DkqConstants.Account.PASSWORD ) ) {
             usernameContainer.setError( null );
             passwordContainer.setError( null );
             openMainActivity();

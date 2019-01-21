@@ -17,14 +17,16 @@ import de.wackernagel.dkq.room.daos.QuestionDao;
 import de.wackernagel.dkq.room.daos.QuizDao;
 import de.wackernagel.dkq.room.daos.QuizzerDao;
 import de.wackernagel.dkq.room.entities.Message;
+import de.wackernagel.dkq.room.entities.MessageListItem;
 import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.QuizListItem;
 import de.wackernagel.dkq.room.entities.Quizzer;
 import de.wackernagel.dkq.room.entities.QuizzerListItem;
 import de.wackernagel.dkq.utils.DateUtils;
+import de.wackernagel.dkq.utils.ObjectUtils;
 import de.wackernagel.dkq.utils.RateLimiter;
-import de.wackernagel.dkq.viewmodels.QuizzersSearch;
+import de.wackernagel.dkq.viewmodels.QuizzerRole;
 import de.wackernagel.dkq.webservice.ApiResponse;
 import de.wackernagel.dkq.webservice.NetworkBoundResource;
 import de.wackernagel.dkq.webservice.Resource;
@@ -47,7 +49,6 @@ public class DkqRepository {
     private static final String LIMITER_MESSAGES = "messages";
     private static final String LIMITER_MESSAGE = "message";
     private static final String LIMITER_QUIZZERS = "quizzers";
-    private static final String LIMITER_QUIZZER = "quizzer";
 
     public DkqRepository(final Context context, final AppExecutors executors, final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao, final QuizzerDao quizzerDao ) {
         this.context = context;
@@ -148,7 +149,7 @@ public class DkqRepository {
         } else if( onlineQuiz.published == 0 ) {
             Log.i("DKQ", "Remove existing Quiz " + onlineQuiz.number);
             quizDao.deleteQuiz( existingQuiz );
-        } else if( existingQuiz.version < onlineQuiz.version || existingQuiz.winnerId != onlineQuiz.winnerId || existingQuiz.quizMasterId != onlineQuiz.quizMasterId ) {
+        } else if( existingQuiz.version < onlineQuiz.version || !ObjectUtils.equals( existingQuiz.winnerId, onlineQuiz.winnerId ) || !ObjectUtils.equals( existingQuiz.quizMasterId, onlineQuiz.quizMasterId ) ) {
             onlineQuiz.id = existingQuiz.id; // update is ID based so copy existing quiz ID to new one
             Log.i("DKQ", "Update Quiz " + onlineQuiz.number + " from version " + existingQuiz.version + " to " + onlineQuiz.version + " " + onlineQuiz.toString() );
             quizDao.updateQuiz( onlineQuiz );
@@ -244,21 +245,21 @@ public class DkqRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<List<Message>>> loadMessages() {
-        return new NetworkBoundResource<List<Message>,List<Message>>(executors) {
+    public LiveData<Resource<List<MessageListItem>>> loadMessages() {
+        return new NetworkBoundResource<List<MessageListItem>,List<Message>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Message> items) {
                 saveMessagesWithNotification( items );
             }
 
             @Override
-            protected boolean shouldFetch(@Nullable List<Message> data) {
+            protected boolean shouldFetch(@Nullable List<MessageListItem> data) {
                 return data == null || data.isEmpty() || rateLimiter.shouldFetch( LIMITER_MESSAGES );
             }
 
             @NonNull
             @Override
-            protected LiveData<List<Message>> loadFromDb() {
+            protected LiveData<List<MessageListItem>> loadFromDb() {
                 return messageDao.loadMessages();
             }
 
@@ -337,7 +338,7 @@ public class DkqRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<List<QuizzerListItem>>> loadQuizzers(final QuizzersSearch criteria) {
+    public LiveData<Resource<List<QuizzerListItem>>> loadQuizzers(final QuizzerRole criteria) {
         return new NetworkBoundResource<List<QuizzerListItem>,List<Quizzer>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Quizzer> items) {
@@ -353,10 +354,10 @@ public class DkqRepository {
             @Override
             protected LiveData<List<QuizzerListItem>> loadFromDb() {
                 switch ( criteria ) {
-                    case WINNERS:
+                    case WINNER:
                         return quizzerDao.loadWinners();
 
-                    case QUIZ_MASTERS:
+                    case QUIZMASTER:
                     default:
                         return quizzerDao.loadQuizMasters();
                 }
@@ -375,38 +376,7 @@ public class DkqRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<Quizzer>> loadQuizzer( final long quizzerId, final int quizzerNumber ) {
-        return new NetworkBoundResource<Quizzer,Quizzer>(executors) {
-            @Override
-            protected void saveCallResult(@NonNull Quizzer item) {
-                saveQuizzer( item );
-            }
-
-            @Override
-            protected boolean shouldFetch(@Nullable Quizzer data) {
-                return data == null || rateLimiter.shouldFetch( LIMITER_QUIZZER + ":" + quizzerNumber );
-            }
-
-            @NonNull
-            @Override
-            protected LiveData<Quizzer> loadFromDb() {
-                return quizzerDao.loadQuizzer(quizzerId);
-            }
-
-            @NonNull
-            @Override
-            protected LiveData<ApiResponse<Quizzer>> createCall() {
-                return webservice.getQuizzer(quizzerNumber);
-            }
-
-            @Override
-            protected void onFetchFailed() {
-                rateLimiter.reset( LIMITER_QUIZZER + ":" + quizzerNumber );
-            }
-        }.getAsLiveData();
-    }
-
-    public LiveData<Resource<Quizzer>> loadQuizzer( final long quizzerId ) {
+    public LiveData<Resource<Quizzer>> loadQuizzer( final QuizzerRole role, final long id ) {
         return new NetworkBoundResource<Quizzer,Quizzer>(executors) {
             @Override
             protected void saveCallResult(@NonNull Quizzer item) {
@@ -421,7 +391,17 @@ public class DkqRepository {
             @NonNull
             @Override
             protected LiveData<Quizzer> loadFromDb() {
-                return quizzerDao.loadQuizzer(quizzerId);
+                switch ( role ) {
+                    case WINNER:
+                        return quizzerDao.loadWinnerByQuiz(id);
+
+                    case QUIZMASTER:
+                        return quizzerDao.loadQuizmasterByQuiz(id);
+
+                    case QUIZZER:
+                    default:
+                        return quizzerDao.loadQuizzer(id);
+                }
             }
 
             @NonNull
