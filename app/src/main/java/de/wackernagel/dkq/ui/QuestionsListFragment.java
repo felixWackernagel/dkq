@@ -30,6 +30,7 @@ import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.ui.widgets.CollapsibleCard;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GridGutterDecoration;
+import de.wackernagel.dkq.utils.SectionItemDecoration;
 import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
 import de.wackernagel.dkq.viewmodels.QuestionsViewModel;
 import de.wackernagel.dkq.webservice.Resource;
@@ -105,9 +106,10 @@ public class QuestionsListFragment extends Fragment {
             recyclerView.addItemDecoration( new GridGutterDecoration(
                     DeviceUtils.dpToPx(16, getContext()),
                     1,
+                    false,
                     true,
                     true ) );
-            recyclerView.addItemDecoration( new SectionItemDecoration(DeviceUtils.dpToPx(48f, getContext()), false, new SectionItemDecoration.SectionCallback() {
+            recyclerView.addItemDecoration( new SectionItemDecoration( getContext(),false, new SectionItemDecoration.SectionCallback() {
                 @Override
                 public boolean isSection(int position) {
                     return position == 0 || position == 20 || position == 40 || position == 60;

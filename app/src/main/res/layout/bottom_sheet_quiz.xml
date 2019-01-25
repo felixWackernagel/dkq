@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:text="Aktionen"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="@color/textSecondary" />
+
+    <TextView
+        android:id="@+id/calendarAction"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:text="Kalendereintrag anlegen"
+        android:drawableStart="@drawable/ic_insert_invitation_gray_24dp"
+        android:drawablePadding="32dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="@color/textPrimary" />
+
+    <TextView
+        android:id="@+id/mapsAction"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:text="Location anzeigen"
+        android:drawableStart="@drawable/ic_place_gray_24dp"
+        android:drawablePadding="32dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="@color/textPrimary" />
+
+    <TextView
+        android:id="@+id/shareAction"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:text="Teilen"
+        android:drawableStart="@drawable/ic_share_gray_24dp"
+        android:drawablePadding="32dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="@color/textPrimary" />
+
+</LinearLayout>

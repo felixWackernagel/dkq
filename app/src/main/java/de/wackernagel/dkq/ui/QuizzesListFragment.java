@@ -29,6 +29,7 @@ import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.QuizListItem;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GridGutterDecoration;
+import de.wackernagel.dkq.utils.SectionItemDecoration;
 import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
 import de.wackernagel.dkq.viewmodels.QuizzesViewModel;
 import de.wackernagel.dkq.webservice.Resource;
@@ -82,9 +83,10 @@ public class QuizzesListFragment extends Fragment {
             recyclerView.addItemDecoration( new GridGutterDecoration(
                     DeviceUtils.dpToPx(16, getContext()),
                     1,
+                    false,
                     true,
                     true ) );
-            recyclerView.addItemDecoration( new SectionItemDecoration(DeviceUtils.dpToPx(48f, getContext()), false, new SectionItemDecoration.SectionCallback() {
+            recyclerView.addItemDecoration( new SectionItemDecoration( getContext(),false, new SectionItemDecoration.SectionCallback() {
                 @Override
                 public boolean isSection(int position) {
                     return position == 0;

@@ -7,8 +7,12 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -28,7 +32,6 @@ import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
-import de.wackernagel.dkq.DkqConstants;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.Quizzer;
@@ -90,6 +93,7 @@ public class QuizActivity extends AbstractDkqActivity implements HasSupportFragm
             actionBar.setTitle( getString(R.string.quiz_number, getQuizNumber()) );
         }
 
+        setFabBehavior( null );
         final QuestionsViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(QuestionsViewModel.class);
         viewModel.loadQuiz( getQuizId(), getQuizNumber() ).observe(this, new Observer<Resource<Quiz>>() {
             @Override
@@ -98,6 +102,7 @@ public class QuizActivity extends AbstractDkqActivity implements HasSupportFragm
                     setQuizDate( resource.data );
                     setQuizTime( resource.data );
                     setQuizLocation( resource.data );
+                    setFabBehavior( resource.data );
                 }
             }
         });
@@ -126,6 +131,23 @@ public class QuizActivity extends AbstractDkqActivity implements HasSupportFragm
             getSupportFragmentManager().beginTransaction()
                 .replace( R.id.container, QuestionsListFragment.newInstance( getQuizId(), getQuizNumber() ), "questions" )
                 .commit();
+        }
+    }
+
+    private void setFabBehavior(@Nullable final Quiz quiz ) {
+        final FloatingActionButton fab = findViewById(R.id.fab);
+        if( quiz == null ) {
+            fab.hide();
+        } else {
+            fab.show();
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final BottomSheetDialog modalBottomSheet = new BottomSheetDialog( QuizActivity.this );
+                    modalBottomSheet.setContentView( R.layout.bottom_sheet_quiz );
+                    modalBottomSheet.show();
+                }
+            });
         }
     }
 

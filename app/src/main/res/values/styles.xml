@@ -51,4 +51,10 @@
         <item name="android:textColor">@color/collapsing_section</item>
     </style>
 
+    <style name="TextAppearance.DKQ.Section" parent="@style/TextAppearance.AppCompat.Body1">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/textSecondary</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
 </resources>

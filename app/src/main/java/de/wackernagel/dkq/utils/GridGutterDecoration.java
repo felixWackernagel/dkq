@@ -1,15 +1,17 @@
 package de.wackernagel.dkq.utils;
 
 import android.graphics.Rect;
+import android.view.View;
+
 import androidx.annotation.IntRange;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
 
 public class GridGutterDecoration extends RecyclerView.ItemDecoration {
 
     private final int gutterSize;
     private final int spanCount;
-    private boolean gutterOutsideTopAndBottom;
+    private boolean gutterOutsideTop;
+    private boolean gutterOutsideBottom;
     private boolean gutterOutsideLeftAndRight;
 
     /**
@@ -43,9 +45,22 @@ public class GridGutterDecoration extends RecyclerView.ItemDecoration {
      * @param gutterOutsideLeftAndRight Add a gutter on the first column left and last column right
      */
     public GridGutterDecoration(@IntRange(from = 0) final int gutterSize, @IntRange(from = 1) final int spanCount, final boolean gutterOutsideTopAndBottom, final boolean gutterOutsideLeftAndRight ) {
+        this( gutterSize, spanCount, gutterOutsideTopAndBottom, gutterOutsideTopAndBottom, gutterOutsideLeftAndRight );
+    }
+
+    /**
+     *
+     * @param gutterSize Space between each item and the outside edges
+     * @param spanCount Number of grid columns
+     * @param gutterOutsideTop Add a gutter on the first row top
+     * @param gutterOutsideBottom  Add a gutter on the last row bottom
+     * @param gutterOutsideLeftAndRight Add a gutter on the first column left and last column right
+     */
+    public GridGutterDecoration(@IntRange(from = 0) final int gutterSize, @IntRange(from = 1) final int spanCount, final boolean gutterOutsideTop, final boolean gutterOutsideBottom, final boolean gutterOutsideLeftAndRight ) {
         this.gutterSize = gutterSize;
         this.spanCount = spanCount;
-        this.gutterOutsideTopAndBottom = gutterOutsideTopAndBottom;
+        this.gutterOutsideTop = gutterOutsideTop;
+        this.gutterOutsideBottom = gutterOutsideBottom;
         this.gutterOutsideLeftAndRight = gutterOutsideLeftAndRight;
     }
 
@@ -68,11 +83,11 @@ public class GridGutterDecoration extends RecyclerView.ItemDecoration {
 
         outRect.bottom = gutterSize;
 
-        if( isFirstRow && gutterOutsideTopAndBottom ) {
+        if( isFirstRow && gutterOutsideTop ) {
             outRect.top = gutterSize;
         }
 
-        if( isLastRow && !gutterOutsideTopAndBottom ) {
+        if( isLastRow && !gutterOutsideBottom ) {
             outRect.bottom = 0;
         }
     }

@@ -1,5 +1,6 @@
-package de.wackernagel.dkq.ui;
+package de.wackernagel.dkq.utils;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
@@ -13,15 +14,15 @@ import de.wackernagel.dkq.R;
 
 public class SectionItemDecoration extends RecyclerView.ItemDecoration {
 
-    private final int             headerOffset;
-    private final boolean         sticky;
+    private final int headerOffset;
+    private final boolean sticky;
     private final SectionCallback sectionCallback;
 
     private View headerView;
     private TextView header;
 
-    SectionItemDecoration(int headerHeight, boolean sticky, @NonNull SectionCallback sectionCallback) {
-        headerOffset = headerHeight;
+    public SectionItemDecoration(@NonNull final Context context, final boolean sticky, @NonNull final SectionCallback sectionCallback) {
+        headerOffset = context.getResources().getDimensionPixelOffset( R.dimen.section_height );
         this.sticky = sticky;
         this.sectionCallback = sectionCallback;
     }
@@ -31,7 +32,7 @@ public class SectionItemDecoration extends RecyclerView.ItemDecoration {
         super.getItemOffsets(outRect, view, parent, state);
 
         int pos = parent.getChildAdapterPosition(view);
-        if (sectionCallback.isSection(pos)) {
+        if( sectionCallback.isSection( pos ) ) {
             outRect.top = headerOffset;
         }
     }
@@ -40,14 +41,14 @@ public class SectionItemDecoration extends RecyclerView.ItemDecoration {
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDrawOver(c, parent, state);
 
-        if (headerView == null) {
+        if( headerView == null ) {
             headerView = inflateHeaderView(parent);
             header = headerView.findViewById(R.id.list_item_section_text);
             fixLayoutSize(headerView, parent);
         }
 
         CharSequence previousHeader = "";
-        for (int i = 0; i < parent.getChildCount(); i++) {
+        for( int i = 0; i < parent.getChildCount(); i++ ) {
             View child = parent.getChildAt(i);
             final int position = parent.getChildAdapterPosition(child);
 
