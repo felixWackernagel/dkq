@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import androidx.annotation.Nullable;
+import de.wackernagel.dkq.R;
 
 public class DateUtils {
 
@@ -34,8 +35,7 @@ public class DateUtils {
      * @return Converted date or fallback
      */
     public static Date joomlaDateToJavaDate( final String dateTime, final Date fallback ) {
-        if( dateTime == null || dateTime.length() != 19 ) {
-            Log.d( "DKQ", "Wrong dateTime format." );
+        if( dateTime == null || "0000-00-00 00:00:00".equals( dateTime ) || dateTime.length() != 19 ) {
             return fallback;
         }
 
@@ -64,11 +64,35 @@ public class DateUtils {
         return 0;
     }
 
-    public static String twoDigits( int digit ) {
+    private static String twoDigits( int digit ) {
         if( digit < 10 )
             return "0".concat( String.valueOf( digit ) );
         else
             return String.valueOf( digit );
     }
 
+    public static String getDateFromJoomlaDate( @Nullable final String joomlaDate, @Nullable final String fallback ) {
+        final Date javaDate = joomlaDateToJavaDate( joomlaDate );
+        if( javaDate != null ) {
+            final Calendar calendar = Calendar.getInstance();
+            calendar.setTime( javaDate );
+            return twoDigits(calendar.get(Calendar.DAY_OF_MONTH)) + "." +
+                   twoDigits(calendar.get(Calendar.MONTH) + 1) + "." +
+                   twoDigits(calendar.get(Calendar.YEAR));
+        } else {
+            return fallback;
+        }
+    }
+
+    public static String getTimeFromJoomlaDate( @Nullable final String joomlaDate, @Nullable final String fallback ) {
+        final Date javaDate = joomlaDateToJavaDate( joomlaDate );
+        if( javaDate != null ) {
+            final Calendar calendar = Calendar.getInstance();
+            calendar.setTime( javaDate );
+            return twoDigits( calendar.get(Calendar.HOUR_OF_DAY) ) + ":" +
+                   twoDigits( calendar.get( Calendar.MINUTE ) );
+        } else {
+            return fallback;
+        }
+    }
 }

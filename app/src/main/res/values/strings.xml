@@ -9,7 +9,7 @@
     <string name="answer">Antwort</string>
     <string name="questions_hint">%1$d/60</string>
     <string name="time_format">%1$s Uhr</string>
-    <string name="unknown_word">Unbekannt</string>
+    <string name="unknown_word">unbekannt</string>
     <string name="maximize_image">Bild vergrößern</string>
     <string name="additions_section">Schätzfragen</string>
 
@@ -111,5 +111,15 @@
         <item quantity="one">%1$d Quiz</item>
         <item quantity="other">%1$d Quizze</item>
     </plurals>
+
+    <!-- Quiz BottomSheet -->
+    <string name="quiz_bottom_sheet_title">Aktionen</string>
+    <string name="quiz_bottom_sheet_calendar">Kalendereintrag anlegen</string>
+    <string name="quiz_bottom_sheet_calendar_no_date">Für diese Funktion fehlt ein Datum.</string>
+    <string name="quiz_bottom_sheet_maps">Location anzeigen</string>
+    <string name="quiz_bottom_sheet_maps_no_location">Für diese Funktion fehlt die Location.</string>
+    <string name="quiz_bottom_sheet_share">Teilen</string>
+    <string name="quiz_bottom_sheet_share_message">Das %1$d. DKQ findet am %2$s um %3$s Uhr im %4$s statt.</string>
+    <string name="quiz_bottom_sheet_share_chooser">Teilen über &#8230;</string>
 
 </resources>

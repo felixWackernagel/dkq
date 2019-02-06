@@ -53,6 +53,4 @@
         app:srcCompat="@drawable/ic_share_black_24dp"
         style="@style/Widget.MaterialComponents.FloatingActionButton"/>
 
-    <!--<include layout="@layout/bottom_sheet_quiz" />-->
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

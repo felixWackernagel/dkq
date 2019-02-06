@@ -9,45 +9,27 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="center_vertical"
-        android:text="Aktionen"
+        android:text="@string/quiz_bottom_sheet_title"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:textColor="@color/textSecondary" />
 
     <TextView
         android:id="@+id/calendarAction"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:gravity="center_vertical"
-        android:text="Kalendereintrag anlegen"
+        android:text="@string/quiz_bottom_sheet_calendar"
         android:drawableStart="@drawable/ic_insert_invitation_gray_24dp"
-        android:drawablePadding="32dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:textColor="@color/textPrimary" />
+        style="@style/BottomSheetButton"/>
 
     <TextView
         android:id="@+id/mapsAction"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:gravity="center_vertical"
-        android:text="Location anzeigen"
+        android:text="@string/quiz_bottom_sheet_maps"
         android:drawableStart="@drawable/ic_place_gray_24dp"
-        android:drawablePadding="32dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:textColor="@color/textPrimary" />
+        style="@style/BottomSheetButton"/>
 
     <TextView
         android:id="@+id/shareAction"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:gravity="center_vertical"
-        android:text="Teilen"
+        android:text="@string/quiz_bottom_sheet_share"
         android:drawableStart="@drawable/ic_share_gray_24dp"
-        android:drawablePadding="32dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:textColor="@color/textPrimary" />
+        style="@style/BottomSheetButton"/>
 
 </LinearLayout>
