@@ -34,6 +34,9 @@ public interface QuizDao {
     @Query( "SELECT * FROM quizzes WHERE number = :quizNumber" )
     Quiz loadQuizByNumber( int quizNumber );
 
+    @Query( "SELECT * FROM quizzes" )
+    List<Quiz> queryQuizzes();
+
     @Insert( onConflict = REPLACE)
     void insertQuiz( Quiz quiz );
 

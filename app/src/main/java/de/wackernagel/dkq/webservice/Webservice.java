@@ -21,10 +21,13 @@ public interface Webservice {
     Call<List<Quiz>> getQuizzesList();
 
     @GET(VERSION + "/quizzes/{quizNumber}")
-    LiveData<ApiResponse<Quiz>> getQuiz( @Path("quizNumber") long quizNumber );
+    LiveData<ApiResponse<Quiz>> getQuiz( @Path("quizNumber") int quizNumber );
 
     @GET(VERSION + "/quizzes/{quizNumber}/questions")
-    LiveData<ApiResponse<List<Question>>> getQuestionsFromQuiz( @Path("quizNumber") long quizNumber );
+    LiveData<ApiResponse<List<Question>>> getQuestionsFromQuiz( @Path("quizNumber") int quizNumber );
+
+    @GET(VERSION + "/quizzes/{quizNumber}/questions")
+   Call<List<Question>> getQuestionsList( @Path("quizNumber") int quizNumber );
 
     @GET(VERSION + "/messages")
     LiveData<ApiResponse<List<Message>>> getMessages();
@@ -33,11 +36,11 @@ public interface Webservice {
     Call<List<Message>> getMessagesList();
 
     @GET(VERSION + "/messages/{messageNumber}")
-    LiveData<ApiResponse<Message>> getMessage( @Path("messageNumber") long messageNumber );
+    LiveData<ApiResponse<Message>> getMessage( @Path("messageNumber") int messageNumber );
 
     @GET(VERSION + "/quizzers")
     LiveData<ApiResponse<List<Quizzer>>> getQuizzers();
 
     @GET(VERSION + "/quizzers/{quizzerNumber}")
-    LiveData<ApiResponse<Quizzer>> getQuizzer( @Path("quizzerNumber") long quizzerNumber );
+    LiveData<ApiResponse<Quizzer>> getQuizzer( @Path("quizzerNumber") int quizzerNumber );
 }

@@ -191,34 +191,11 @@ public class DkqRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<List<Question>>> loadQuestions( final long quizId, final long quizNumber ) {
+    public LiveData<Resource<List<Question>>> loadQuestions( final long quizId, final int quizNumber ) {
         return new NetworkBoundResource<List<Question>,List<Question>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Question> items) {
-                for( Question onlineQuestion : items ) {
-                    if( onlineQuestion.isInvalid() ) {
-                        continue;
-                    }
-                    final Question existingQuestion = questionDao.loadQuestionByQuizAndNumber( quizId, onlineQuestion.number );
-                    final boolean isNew = existingQuestion == null;
-                    if( isNew ) {
-                        if( onlineQuestion.published == 1 ) {
-                            Log.i("DKQ", "Insert new question " + onlineQuestion.number);
-                            onlineQuestion.quizId = quizId;
-                            questionDao.insertQuestion(onlineQuestion);
-                        }
-                    } else if( onlineQuestion.published == 0 ) {
-                        Log.i("DKQ", "Delete existing question " + onlineQuestion.number);
-                        questionDao.deleteQuestion( existingQuestion );
-                    } else if( existingQuestion.version < onlineQuestion.version ) {
-                        Log.i("DKQ", "Update question " + onlineQuestion.number + " from version " + existingQuestion.version + " to " + onlineQuestion.version);
-                        onlineQuestion.id = existingQuestion.id; // update is ID based so copy existing quiz ID to new one
-                        onlineQuestion.quizId = existingQuestion.quizId;
-                        questionDao.updateQuestion( onlineQuestion );
-                    } else {
-                        Log.i("DKQ", "No changes on Question " + onlineQuestion.number);
-                    }
-                }
+                saveQuestions( items, quizId );
             }
 
             @Override
@@ -243,6 +220,33 @@ public class DkqRepository {
                 rateLimiter.reset( quizNumber + ":" + LIMITER_QUESTIONS );
             }
         }.getAsLiveData();
+    }
+
+    public void saveQuestions( final List<Question> items, final long quizId ) {
+        for( Question onlineQuestion : items ) {
+            if( onlineQuestion.isInvalid() ) {
+                continue;
+            }
+            final Question existingQuestion = questionDao.loadQuestionByQuizAndNumber( quizId, onlineQuestion.number );
+            final boolean isNew = existingQuestion == null;
+            if( isNew ) {
+                if( onlineQuestion.published == 1 ) {
+                    Log.i("DKQ", "Insert new question " + onlineQuestion.number);
+                    onlineQuestion.quizId = quizId;
+                    questionDao.insertQuestion(onlineQuestion);
+                }
+            } else if( onlineQuestion.published == 0 ) {
+                Log.i("DKQ", "Delete existing question " + onlineQuestion.number);
+                questionDao.deleteQuestion( existingQuestion );
+            } else if( existingQuestion.version < onlineQuestion.version ) {
+                Log.i("DKQ", "Update question " + onlineQuestion.number + " from version " + existingQuestion.version + " to " + onlineQuestion.version);
+                onlineQuestion.id = existingQuestion.id; // update is ID based so copy existing quiz ID to new one
+                onlineQuestion.quizId = existingQuestion.quizId;
+                questionDao.updateQuestion( onlineQuestion );
+            } else {
+                Log.i("DKQ", "No changes on Question " + onlineQuestion.number);
+            }
+        }
     }
 
     public LiveData<Resource<List<MessageListItem>>> loadMessages() {
@@ -482,5 +486,9 @@ public class DkqRepository {
                 quizDao.deleteQuizzesByNumber( quizNumbers );
             }
         });
+    }
+
+    public List<Quiz> queryQuizzes() {
+        return quizDao.queryQuizzes();
     }
 }
