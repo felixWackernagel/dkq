@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import de.wackernagel.dkq.AppExecutors;
 import de.wackernagel.dkq.receiver.NotificationReceiver;
+import de.wackernagel.dkq.room.SampleCreator;
 import de.wackernagel.dkq.room.daos.MessageDao;
 import de.wackernagel.dkq.room.daos.QuestionDao;
 import de.wackernagel.dkq.room.daos.QuizDao;
@@ -91,35 +92,8 @@ public class DkqRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<Quiz>> loadNextQuiz() {
-        return new NetworkBoundResource<Quiz,Quiz>(executors) {
-            @Override
-            protected void saveCallResult(@NonNull Quiz item) {
-                // no-op
-            }
-
-            @Override
-            protected boolean shouldFetch(@Nullable Quiz data) {
-                return false;
-            }
-
-            @NonNull
-            @Override
-            protected LiveData<Quiz> loadFromDb() {
-                return quizDao.loadNextQuiz();
-            }
-
-            @NonNull
-            @Override
-            protected LiveData<ApiResponse<Quiz>> createCall() {
-                return webservice.getQuiz( 0 );
-            }
-
-            @Override
-            protected void onFetchFailed() {
-                rateLimiter.reset( LIMITER_QUIZZES );
-            }
-        }.getAsLiveData();
+    public LiveData<Quiz> loadNextQuiz() {
+        return quizDao.loadNextQuiz();
     }
 
     public void saveQuizzesWithNotification( @NonNull final List<Quiz> items ) {
@@ -380,40 +354,18 @@ public class DkqRepository {
         }.getAsLiveData();
     }
 
-    public LiveData<Resource<Quizzer>> loadQuizzer( final QuizzerRole role, final long id ) {
-        return new NetworkBoundResource<Quizzer,Quizzer>(executors) {
-            @Override
-            protected void saveCallResult(@NonNull Quizzer item) {
-                // no-op
-            }
+    public LiveData<Quizzer> loadQuizzer( final QuizzerRole role, final long id ) {
+        switch ( role ) {
+            case WINNER:
+                return quizzerDao.loadWinnerByQuiz(id);
 
-            @Override
-            protected boolean shouldFetch(@Nullable Quizzer data) {
-                return false;
-            }
+            case QUIZMASTER:
+                return quizzerDao.loadQuizmasterByQuiz(id);
 
-            @NonNull
-            @Override
-            protected LiveData<Quizzer> loadFromDb() {
-                switch ( role ) {
-                    case WINNER:
-                        return quizzerDao.loadWinnerByQuiz(id);
-
-                    case QUIZMASTER:
-                        return quizzerDao.loadQuizmasterByQuiz(id);
-
-                    case QUIZZER:
-                    default:
-                        return quizzerDao.loadQuizzer(id);
-                }
-            }
-
-            @NonNull
-            @Override
-            protected LiveData<ApiResponse<Quizzer>> createCall() {
-                return webservice.getQuizzer(0);
-            }
-        }.getAsLiveData();
+            case QUIZZER:
+            default:
+                return quizzerDao.loadQuizzer(id);
+        }
     }
 
     private void saveQuizzers( final List<Quizzer> items) {
@@ -461,6 +413,10 @@ public class DkqRepository {
         });
     }
 
+    public LiveData<Integer> getNewMessagesCount() {
+        return messageDao.loadNewMessagesCount();
+    }
+
     public void deleteAllMessages() {
         executors.diskIO().execute(new Runnable() {
             @Override
@@ -484,6 +440,42 @@ public class DkqRepository {
             @Override
             public void run() {
                 quizDao.deleteQuizzesByNumber( quizNumbers );
+            }
+        });
+    }
+
+    public void createSamples() {
+        executors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                messageDao.deleteAllMessages();
+                questionDao.deleteAllQuestions();
+                quizDao.deleteAllQuizzes();
+                quizzerDao.deleteAllQuizzers();
+
+                final Quizzer[] quizzers = SampleCreator.createSampleQuizzers();
+                for( Quizzer quizzer : quizzers ) {
+                    quizzer.id = quizzerDao.insertQuizzer( quizzer );
+                }
+
+                final Quiz[] quizzes = SampleCreator.createSampleQuizzes( quizzers[0], quizzers[1] );
+                final int count = quizzes.length;
+                for( int index = 0; index < count; index++ ) {
+                    final Quiz quiz = quizzes[ index ];
+                    quiz.id = quizDao.insertQuiz( quiz );
+
+                    if( index + 1 < count ) {
+                        final Question[] questions = SampleCreator.createSampleQuestions( quiz );
+                        for( Question question : questions ) {
+                            questionDao.insertQuestion( question );
+                        }
+                    }
+                }
+
+                final Message[] messages = SampleCreator.createSampleMessages();
+                for( Message message : messages ) {
+                    messageDao.insertMessages( message );
+                }
             }
         });
     }

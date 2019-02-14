@@ -31,4 +31,7 @@ public interface QuestionDao {
     @Delete
     void deleteQuestion(Question question);
 
+    @Query( "DELETE FROM questions" )
+    void deleteAllQuestions();
+
 }

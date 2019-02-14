@@ -17,7 +17,6 @@ import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.utils.AppUtils;
-import de.wackernagel.dkq.webservice.Resource;
 import de.wackernagel.dkq.workers.UpdateWorker;
 
 public class MainViewModel extends AndroidViewModel {
@@ -63,7 +62,11 @@ public class MainViewModel extends AndroidViewModel {
         return newAppVersion;
     }
 
-    public LiveData<Resource<Quiz>> loadNextQuiz() {
+    public LiveData<Quiz> loadNextQuiz() {
         return repository.loadNextQuiz();
+    }
+
+    public LiveData<Integer> getNewMessagesCount() {
+        return repository.getNewMessagesCount();
     }
 }

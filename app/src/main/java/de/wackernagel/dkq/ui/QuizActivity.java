@@ -109,21 +109,21 @@ public class QuizActivity extends AbstractDkqActivity implements HasSupportFragm
         });
 
         setWinner( null );
-        viewModel.loadWinner( getQuizId() ).observe( this, new Observer<Resource<Quizzer>>() {
+        viewModel.loadWinner( getQuizId() ).observe( this, new Observer<Quizzer>() {
             @Override
-            public void onChanged(@Nullable Resource<Quizzer> resource) {
-                if( resource != null && resource.data != null ) {
-                    setWinner( resource.data );
+            public void onChanged(@Nullable Quizzer quizzer ) {
+                if( quizzer != null ) {
+                    setWinner( quizzer );
                 }
             }
         });
 
         setQuizMaster( null );
-        viewModel.loadQuizmaster( getQuizId() ).observe( this, new Observer<Resource<Quizzer>>() {
+        viewModel.loadQuizmaster( getQuizId() ).observe( this, new Observer<Quizzer>() {
             @Override
-            public void onChanged(@Nullable Resource<Quizzer> resource) {
-                if( resource != null && resource.data != null ) {
-                    setQuizMaster( resource.data );
+            public void onChanged(@Nullable Quizzer quizzer) {
+                if( quizzer != null ) {
+                    setQuizMaster( quizzer );
                 }
             }
         });

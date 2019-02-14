@@ -13,4 +13,7 @@
     <color name="textDisabled">#60000000</color>      <!-- 38% black -->
 
     <color name="iconInactive">#99000000</color>     <!-- 60% black -->
+
+    <color name="badgeBackground">#FFFFFF</color>
+    <color name="badgeText">#000000</color>
 </resources>

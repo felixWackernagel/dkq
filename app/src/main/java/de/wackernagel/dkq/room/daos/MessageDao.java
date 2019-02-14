@@ -24,6 +24,9 @@ public interface MessageDao {
     @Query( "SELECT * FROM messages WHERE number = :messageNumber" )
     Message loadMessageByNumber(int messageNumber);
 
+    @Query( "SELECT COUNT(read) FROM messages WHERE read = 0" )
+    LiveData<Integer> loadNewMessagesCount();
+
     @Query( "DELETE FROM messages" )
     void deleteAllMessages();
 

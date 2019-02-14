@@ -37,8 +37,11 @@ public interface QuizDao {
     @Query( "SELECT * FROM quizzes" )
     List<Quiz> queryQuizzes();
 
+    @Query( "DELETE FROM quizzes" )
+    void deleteAllQuizzes();
+
     @Insert( onConflict = REPLACE)
-    void insertQuiz( Quiz quiz );
+    long insertQuiz( Quiz quiz );
 
     @Update( onConflict = REPLACE)
     void updateQuiz( Quiz quiz );

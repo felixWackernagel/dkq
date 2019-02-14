@@ -34,9 +34,9 @@ import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.utils.AppUtils;
+import de.wackernagel.dkq.utils.BottomNavigationUtils;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.viewmodels.MainViewModel;
-import de.wackernagel.dkq.webservice.Resource;
 
 public class MainActivity extends AbstractDkqActivity implements HasSupportFragmentInjector, BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -73,29 +73,39 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
                 }
             }
         } );
-        viewModel.loadNextQuiz().observe(this, new Observer<Resource<Quiz>>() {
+        viewModel.loadNextQuiz().observe(this, new Observer<Quiz>() {
             @Override
-            public void onChanged( final Resource<Quiz> quiz ) {
+            public void onChanged( final Quiz quiz ) {
+                final TextView nextQuizTextView = findViewById(R.id.nextQuizTextView);
                 if( quiz != null ) {
-                    final TextView nextQuizTextView = findViewById(R.id.nextQuizTextView);
-                    if( quiz.data != null ) {
-                        final SimpleDateFormat formatter = new SimpleDateFormat( "dd. MMMM yyyy - HH:mm", Locale.getDefault() );
-                        final Date quizDate = DateUtils.joomlaDateToJavaDate( quiz.data.quizDate );
-                        final String formattedDate = quizDate != null ? formatter.format( quizDate ) : "?";
+                    final SimpleDateFormat formatter = new SimpleDateFormat( "dd. MMMM yyyy - HH:mm", Locale.getDefault() );
+                    final Date quizDate = DateUtils.joomlaDateToJavaDate( quiz.quizDate );
+                    final String formattedDate = quizDate != null ? formatter.format( quizDate ) : "?";
 
-                        nextQuizTextView.setText( getString( R.string.next_quiz, quiz.data.number, formattedDate) );
+                    nextQuizTextView.setText( getString( R.string.next_quiz, quiz.number, formattedDate) );
 
-                        final CardView toolbarCard = findViewById(R.id.toolbarCard);
-                        toolbarCard.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                final Context context = view.getContext();
-                                context.startActivity( QuizActivity.createLaunchIntent( context, quiz.data.id, quiz.data.number ) );
-                            }
-                        });
-                    } else {
-                        nextQuizTextView.setText( getString( R.string.next_quiz_unschedule ) );
-                    }
+                    final CardView toolbarCard = findViewById(R.id.toolbarCard);
+                    toolbarCard.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            final Context context = view.getContext();
+                            context.startActivity( QuizActivity.createLaunchIntent( context, quiz.id, quiz.number ) );
+                        }
+                    });
+                }
+                else {
+                    nextQuizTextView.setText( getString( R.string.next_quiz_unschedule ) );
+                }
+            }
+        });
+
+        viewModel.getNewMessagesCount().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if( integer != null && integer > 0 ) {
+                    BottomNavigationUtils.showOrUpdateBadge( bottomNavigationView, R.id.action_news, integer.toString() );
+                } else {
+                    BottomNavigationUtils.removeBadge( bottomNavigationView, R.id.action_news);
                 }
             }
         });

@@ -80,10 +80,14 @@ public class DevelopmentActivity extends AbstractDkqActivity {
     }
 
     public void insertSampleQuiz( View view ) {
-        viewModel.insertQuiz( SampleCreator.createFutureSampleQuiz() );
+        viewModel.insertQuiz( SampleCreator.createSampleFutureQuiz() );
     }
 
     public void deleteSampleQuizzes( View view ) {
-        viewModel.deleteQuizzesByNumber( new int[]{ SampleCreator.createFutureSampleQuiz().number } );
+        viewModel.deleteQuizzesByNumber( new int[]{ SampleCreator.createSampleFutureQuiz().number } );
+    }
+
+    public void dropAllAndCreateSamples( View view ) {
+        viewModel.dropAllAndCreateSamples();
     }
 }

@@ -49,4 +49,7 @@ public interface QuizzerDao {
     @Update( onConflict = REPLACE)
     void updateQuizzer(Quizzer quizzer);
 
+    @Query( "DELETE FROM quizzers" )
+    void deleteAllQuizzers();
+
 }

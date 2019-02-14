@@ -99,6 +99,8 @@
     <string name="subheader_quizzes">Quizze</string>
     <string name="subheader_timestamps">Zeitstempel</string>
     <string name="timestamps_text">Update-Worker: %1$s</string>
+    <string name="subheader_screenshot_samples">Screenshot Daten</string>
+    <string name="drop_all_create_samples">Alles Löschen und Beispiele anlegen</string>
 
     <!-- Quizzers -->
     <string name="quizzers_tab_winners">Gewinner</string>
