@@ -90,4 +90,8 @@ public class DevelopmentActivity extends AbstractDkqActivity {
     public void dropAllAndCreateSamples( View view ) {
         viewModel.dropAllAndCreateSamples();
     }
+
+    public void dropAll( View view ) {
+        viewModel.dropAll();
+    }
 }

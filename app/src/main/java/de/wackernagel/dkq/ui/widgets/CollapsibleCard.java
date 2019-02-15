@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.AttrRes;
+import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.content.res.AppCompatResources;
 import de.wackernagel.dkq.R;
@@ -41,6 +42,11 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.M;
 
 public class CollapsibleCard extends FrameLayout {
+
+    public interface OnToggleListener {
+        void onToggleClicked( boolean isExpanded );
+    }
+
     private boolean expanded = false;
     private TextView cardTitleView;
     private TextView cardDescriptionView;
@@ -48,6 +54,7 @@ public class CollapsibleCard extends FrameLayout {
     private Transition toggle;
     private View root;
     private String cardTitle;
+    private OnToggleListener listener;
 
     public CollapsibleCard( final Context context ) {
         this( context, null );
@@ -100,6 +107,10 @@ public class CollapsibleCard extends FrameLayout {
         cardDescriptionView.setText(description);
     }
 
+    public void setOnToggleListener( @Nullable final OnToggleListener listener ) {
+        this.listener = listener;
+    }
+
     private void setTitleContentDescription(String cardTitle) {
         final Resources res = getResources();
         String description = cardTitle + " ";
@@ -109,6 +120,15 @@ public class CollapsibleCard extends FrameLayout {
             description += res.getString(R.string.collapsed);
         }
         cardTitleView.setContentDescription(description);
+    }
+
+    public void setExpanded( boolean isExpanded ) {
+        expanded = isExpanded;
+        cardDescriptionView.setVisibility(expanded ? View.VISIBLE : View.GONE);
+        expandIcon.setRotation(expanded ? 180f : 0f);
+        expandIcon.setActivated(expanded);
+        cardTitleView.setActivated(expanded);
+        setTitleContentDescription(cardTitle);
     }
 
     private void toggleExpanded() {
@@ -122,6 +142,9 @@ public class CollapsibleCard extends FrameLayout {
         expandIcon.setActivated(expanded);
         cardTitleView.setActivated(expanded);
         setTitleContentDescription(cardTitle);
+        if( listener != null ) {
+            listener.onToggleClicked( expanded );
+        }
     }
 
     @Override

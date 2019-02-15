@@ -480,6 +480,18 @@ public class DkqRepository {
         });
     }
 
+    public void dropAll() {
+        executors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                messageDao.deleteAllMessages();
+                questionDao.deleteAllQuestions();
+                quizDao.deleteAllQuizzes();
+                quizzerDao.deleteAllQuizzers();
+            }
+        });
+    }
+
     public List<Quiz> queryQuizzes() {
         return quizDao.queryQuizzes();
     }

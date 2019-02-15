@@ -14,6 +14,8 @@
 
     <color name="iconInactive">#99000000</color>     <!-- 60% black -->
 
-    <color name="badgeBackground">#FFFFFF</color>
+    <color name="bottomNavigationBackground">#F5F5F5</color>
+
+    <color name="badgeBackground">#FFD740</color>
     <color name="badgeText">#000000</color>
 </resources>

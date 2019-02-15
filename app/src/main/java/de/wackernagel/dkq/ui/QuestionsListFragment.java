@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -178,6 +180,8 @@ public class QuestionsListFragment extends Fragment {
     }
 
     static class QuestionAdapter extends ListAdapter<Question, QuestionViewHolder> {
+        private Set<Integer> openCards = new HashSet<>();
+
         QuestionAdapter(@NonNull DiffUtil.ItemCallback<Question> diffCallback) {
             super(diffCallback);
         }
@@ -188,11 +192,22 @@ public class QuestionsListFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(QuestionViewHolder holder, int position) {
+        public void onBindViewHolder( final QuestionViewHolder holder, final int position) {
             final Question question = getItem(position);
             holder.name.setText( holder.itemView.getContext().getString( R.string.question_number, question.number ) );
             holder.question.setText( question.question );
             holder.answer.setCardDescription( question.answer );
+            holder.answer.setExpanded( openCards.contains( position ) );
+            holder.answer.setOnToggleListener(new CollapsibleCard.OnToggleListener() {
+                @Override
+                public void onToggleClicked(boolean isExpanded) {
+                    if( isExpanded ) {
+                        openCards.add( position );
+                    } else {
+                        openCards.remove( position );
+                    }
+                }
+            });
         }
     }
 }

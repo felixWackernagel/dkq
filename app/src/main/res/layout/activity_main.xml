@@ -66,9 +66,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="?colorPrimary"
-        app:itemIconTint="@drawable/nav_item_selector"
-        app:itemTextColor="@drawable/nav_item_selector"
+        android:background="@color/bottomNavigationBackground"
+        app:labelVisibilityMode="selected"
+        app:itemIconTint="@drawable/bottom_navigation_item_selector"
+        app:itemTextColor="@drawable/bottom_navigation_item_selector"
         app:menu="@menu/bottom_navigation_main" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -18,7 +18,7 @@ public final class SampleCreator {
     }
 
     public static void createSamples( final AppDatabase db ) {
-        Log.i("DKQ", "create samples");
+        Log.i("DKQ", "create samples for db " + db.getOpenHelper().getDatabaseName() );
     }
 
     public static Quizzer[] createSampleQuizzers() {
@@ -68,8 +68,8 @@ public final class SampleCreator {
         newQuestion.quizId = quizId;
         newQuestion.question = question;
         newQuestion.answer = answer;
-        newQuestion.version = 1;
-        newQuestion.lastUpdate = "2019-01-01 20:00:00";
+        newQuestion.version = 0;
+        newQuestion.lastUpdate = "2018-01-01 20:00:00";
         newQuestion.published = 1;
         return newQuestion;
     }
@@ -79,8 +79,8 @@ public final class SampleCreator {
         quizzer.name = name;
         quizzer.number = number;
         quizzer.image = null;
-        quizzer.version = 1;
-        quizzer.lastUpdate = "2019-01-01 20:00:00";
+        quizzer.version = 0;
+        quizzer.lastUpdate = "2018-01-01 20:00:00";
         return quizzer;
     }
 
@@ -94,9 +94,9 @@ public final class SampleCreator {
         quiz.winnerId = winnerId;
         quiz.latitude = 0.0d;
         quiz.longitude = 0.0d;
-        quiz.version = 1;
+        quiz.version = 0;
         quiz.published = 1;
-        quiz.lastUpdate = "2019-01-01 20:00:00";
+        quiz.lastUpdate = "2018-01-01 20:00:00";
         return quiz;
     }
 
@@ -108,8 +108,8 @@ public final class SampleCreator {
         theMessage.content = content;
         theMessage.image = image;
         theMessage.read = 0;
-        theMessage.version = 1;
-        theMessage.lastUpdate = "2019-01-01 20:00:00";
+        theMessage.version = 0;
+        theMessage.lastUpdate = "2018-01-01 20:00:00";
         return theMessage;
     }
 }
