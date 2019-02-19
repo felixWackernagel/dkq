@@ -15,12 +15,13 @@ public class Question {
     public int number;
     public String question;
     public String answer;
+    public String image;
     public int published;
     public int version;
     public String lastUpdate;
 
     public boolean isInvalid() {
-        return id == 0L && quizId == 0L && number == 0 && question == null && answer == null
+        return id == 0L && quizId == 0L && number == 0 && question == null && answer == null && image == null
                 && published == 0 && version == 0 && lastUpdate == null;
     }
 
@@ -32,6 +33,7 @@ public class Question {
                 ", number=" + number +
                 ", question='" + question + '\'' +
                 ", answer='" + answer + '\'' +
+                ", image='" + image + '\'' +
                 ", published=" + published +
                 ", version=" + version +
                 ", lastUpdate='" + lastUpdate + '\'' +

@@ -12,6 +12,7 @@
     <string name="unknown_word">unbekannt</string>
     <string name="maximize_image">Bild vergrößern</string>
     <string name="additions_section">Schätzfragen</string>
+    <string name="open_quiz">zu Quiz %1$d</string>
 
     <string name="expanded">ausgeklappt</string>
     <string name="collapsed">zusammengeklappt</string>

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.entities.Message;
+import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.webservice.Resource;
 
 public class MessageDetailsViewModel extends ViewModel {
@@ -20,5 +21,9 @@ public class MessageDetailsViewModel extends ViewModel {
 
     public void updateMessage( final Message message ) {
         repository.updateMessage( message );
+    }
+
+    public LiveData<Quiz> loadQuiz( final long id ) {
+        return repository.loadQuiz( id );
     }
 }

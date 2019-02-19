@@ -165,6 +165,10 @@ public class DkqRepository {
         }.getAsLiveData();
     }
 
+    public LiveData<Quiz> loadQuiz( final long quizId ) {
+        return quizDao.loadQuiz( quizId );
+    }
+
     public LiveData<Resource<List<Question>>> loadQuestions( final long quizId, final int quizNumber ) {
         return new NetworkBoundResource<List<Question>,List<Question>>(executors) {
             @Override
@@ -268,6 +272,8 @@ public class DkqRepository {
         if( onlineMessage.isInvalid() ) {
             return 0;
         }
+        onlineMessage.quizId = getQuizIdByNumber( onlineMessage.quizNumber );
+        onlineMessage.type = Message.Type.ARTICLE;
         final Message existingMessage = messageDao.loadMessageByNumber( onlineMessage.number );
         final boolean isNew = existingMessage == null;
         if( isNew ) {
@@ -283,6 +289,18 @@ public class DkqRepository {
             Log.i("DKQ", "No changes on message " + onlineMessage.number);
         }
         return 0;
+    }
+
+    private Long getQuizIdByNumber( @Nullable final Integer quizNumber) {
+        if( quizNumber == null ) {
+            return null;
+        }
+
+        final Quiz quiz = quizDao.loadQuizByNumber( quizNumber );
+        if( quiz == null ) {
+            return null;
+        }
+        return quiz.id;
     }
 
     public LiveData<Resource<Message>> loadMessage( final long messageId, final int messageNumber ) {
@@ -472,7 +490,7 @@ public class DkqRepository {
                     }
                 }
 
-                final Message[] messages = SampleCreator.createSampleMessages();
+                final Message[] messages = SampleCreator.createSampleMessages( quizzes[0] );
                 for( Message message : messages ) {
                     messageDao.insertMessages( message );
                 }

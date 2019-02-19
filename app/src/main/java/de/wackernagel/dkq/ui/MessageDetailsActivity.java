@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ import androidx.lifecycle.ViewModelProviders;
 import dagger.android.AndroidInjection;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Message;
+import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.ui.widgets.IconImageView;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.DeviceUtils;
@@ -91,6 +93,17 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
                         final Message message = resource.data;
                         bindViews( message );
 
+                        if( message.quizId == null ) {
+                            bindQuizButton( null );
+                        } else {
+                            viewModel.loadQuiz( message.quizId ).observe(MessageDetailsActivity.this, new Observer<Quiz>() {
+                                @Override
+                                public void onChanged( Quiz quiz ) {
+                                    bindQuizButton( quiz );
+                                }
+                            });
+                        }
+
                         if( message.read == 0 ) {
                             message.read = 1;
                             viewModel.updateMessage( message );
@@ -99,6 +112,23 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
                 }
             }
         });
+    }
+
+    private void bindQuizButton( final Quiz quiz ) {
+        final Button quizButton = findViewById(R.id.quizButton);
+        if( quiz == null ) {
+            quizButton.setVisibility(View.GONE);
+            quizButton.setOnClickListener( null );
+        } else {
+            quizButton.setVisibility(View.VISIBLE);
+            quizButton.setText( getString( R.string.open_quiz, quiz.number ));
+            quizButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.getContext().startActivity( QuizActivity.createLaunchIntent( v.getContext(), quiz.id, quiz.number ) );
+                }
+            });
+        }
     }
 
     private void bindViews( final Message message ) {

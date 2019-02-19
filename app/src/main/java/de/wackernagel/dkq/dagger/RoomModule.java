@@ -53,6 +53,21 @@ public class RoomModule {
         }
     };
 
+    private static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.beginTransaction();
+            try {
+                database.execSQL( "ALTER TABLE `questions` ADD COLUMN `image` TEXT" );
+                database.execSQL( "ALTER TABLE `messages` ADD COLUMN `type` INTEGER NOT NULL DEFAULT 0" );
+                database.execSQL( "ALTER TABLE `messages` ADD COLUMN `quizId` INTEGER CONSTRAINT `fk_quiz` REFERENCES `quizzes`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION" );
+                database.setTransactionSuccessful();
+            } finally {
+                database.endTransaction();
+            }
+        }
+    };
+
     private final AppDatabase database;
     private final Application application;
     private final AppExecutors executors;
@@ -62,7 +77,7 @@ public class RoomModule {
         this.executors = executors;
         this.database = Room
             .databaseBuilder( application, AppDatabase.class, "dkq.db" )
-            .addMigrations( MIGRATION_1_2, MIGRATION_2_3 )
+            .addMigrations( MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4 )
             .addCallback(new RoomDatabase.Callback() {
                 @Override
                 public void onCreate(@NonNull SupportSQLiteDatabase db) {

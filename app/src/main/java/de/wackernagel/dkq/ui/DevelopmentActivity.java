@@ -52,7 +52,7 @@ public class DevelopmentActivity extends AbstractDkqActivity {
     }
 
     public void createSampleMessages(View view) {
-        viewModel.insertMessages( SampleCreator.createSampleMessages() );
+        viewModel.insertMessages( SampleCreator.createSampleMessages( null ) );
     }
 
     public void dropSampleMessages(View view) {
