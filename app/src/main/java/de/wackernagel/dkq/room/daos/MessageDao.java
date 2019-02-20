@@ -15,7 +15,7 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface MessageDao {
 
-    @Query( "SELECT id, number, title, content, image, read FROM messages ORDER BY number DESC" )
+    @Query( "SELECT id, number, title, content, image, read, type FROM messages ORDER BY number DESC, type DESC" )
     LiveData<List<MessageListItem>> loadMessages();
 
     @Query( "SELECT * FROM messages WHERE id = :messageId" )

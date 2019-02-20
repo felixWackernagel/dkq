@@ -149,6 +149,12 @@ public class QuizzesListFragment extends Fragment {
     static class QuizAdapter extends ListAdapter<QuizListItem, QuizViewHolder> {
         QuizAdapter(@NonNull DiffUtil.ItemCallback<QuizListItem> diffCallback) {
             super(diffCallback);
+            setHasStableIds( true );
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return getItem( position ).id;
         }
 
         @Override

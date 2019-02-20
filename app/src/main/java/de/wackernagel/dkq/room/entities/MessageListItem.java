@@ -7,4 +7,5 @@ public class MessageListItem {
     public String content;
     public String image;
     public int read;
+    public Message.Type type;
 }

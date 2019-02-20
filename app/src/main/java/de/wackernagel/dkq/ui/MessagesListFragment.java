@@ -27,8 +27,10 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.R;
+import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.MessageListItem;
 import de.wackernagel.dkq.ui.widgets.BadgedFourThreeImageView;
+import de.wackernagel.dkq.ui.widgets.BadgedView;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GlideUtils;
 import de.wackernagel.dkq.utils.GridGutterDecoration;
@@ -140,17 +142,20 @@ public class MessagesListFragment extends Fragment {
             return TextUtils.equals( oldItem.image, newItem.image )
                     && TextUtils.equals( oldItem.title, newItem.title )
                     && TextUtils.equals( oldItem.content, newItem.content )
-                    && oldItem.read == newItem.read;
+                    && oldItem.read == newItem.read
+                    && oldItem.type == newItem.type;
         }
     }
 
     static class MessageViewHolder extends RecyclerView.ViewHolder {
+        private BadgedView badge;
         private BadgedFourThreeImageView image;
         private TextView title;
         private TextView content;
 
         MessageViewHolder( final View itemView ) {
             super(itemView);
+            badge = itemView.findViewById( R.id.badge );
             image = itemView.findViewById( R.id.image );
             title = itemView.findViewById( R.id.title );
             content = itemView.findViewById( R.id.content );
@@ -160,11 +165,29 @@ public class MessagesListFragment extends Fragment {
     static class MessageAdapter extends ListAdapter<MessageListItem, MessageViewHolder> {
         MessageAdapter(@NonNull DiffUtil.ItemCallback<MessageListItem> diffCallback) {
             super(diffCallback);
+            setHasStableIds( true );
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return getItem( position ).id;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            switch( getItem( position ).type ) {
+                case UPDATE_LOG:
+                    return R.layout.item_message_update_log;
+
+                case ARTICLE:
+                default:
+                    return R.layout.item_message_article;
+            }
         }
 
         @Override
         public MessagesListFragment.MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new MessagesListFragment.MessageViewHolder( LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_message, parent, false ) );
+            return new MessagesListFragment.MessageViewHolder( LayoutInflater.from( parent.getContext() ).inflate( viewType, parent, false ) );
         }
 
         @Override
@@ -172,10 +195,14 @@ public class MessagesListFragment extends Fragment {
             if( position != RecyclerView.NO_POSITION ) {
                 final MessageListItem message = getItem( position);
 
-                GlideUtils.loadImage( holder.image, message.image );
                 holder.title.setText( message.title );
-                holder.content.setText( message.content );
-                holder.image.drawBadge( message.read == 0 );
+                if( message.type == Message.Type.ARTICLE ) {
+                    GlideUtils.loadImage(holder.image, message.image);
+                    holder.image.drawBadge(message.read == 0);
+                    holder.content.setText( message.content );
+                } else {
+                    holder.badge.drawBadge(message.read == 0);
+                }
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

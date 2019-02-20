@@ -36,7 +36,7 @@ import de.wackernagel.dkq.viewmodels.QuizzerRole;
 import de.wackernagel.dkq.viewmodels.QuizzersViewModel;
 import de.wackernagel.dkq.webservice.Resource;
 
-public class QuizzersFragment extends Fragment {
+public class QuizzersListFragment extends Fragment {
     private static final String QUIZZERS_CRITERIA = "criteria";
 
     @Inject
@@ -47,8 +47,8 @@ public class QuizzersFragment extends Fragment {
     private ProgressBar progressBar;
     private QuizzerAdapter adapter;
 
-    static QuizzersFragment newInstance(final QuizzerRole criteria) {
-        final QuizzersFragment fragment = new QuizzersFragment();
+    static QuizzersListFragment newInstance(final QuizzerRole criteria) {
+        final QuizzersListFragment fragment = new QuizzersListFragment();
         final Bundle arguments = new Bundle(1);
         arguments.putInt(QUIZZERS_CRITERIA, criteria.ordinal());
         fragment.setArguments( arguments );
@@ -90,7 +90,7 @@ public class QuizzersFragment extends Fragment {
             animator.setMoveDuration( 400 );
             animator.setRemoveDuration( 400 );
 
-            adapter = new QuizzersFragment.QuizzerAdapter( new QuizzerItemCallback(), getQuizzersSearchCriteria() );
+            adapter = new QuizzersListFragment.QuizzerAdapter( new QuizzerItemCallback(), getQuizzersSearchCriteria() );
             recyclerView.setLayoutManager( new GridLayoutManager( getContext(), 1 ) );
             recyclerView.setHasFixedSize( true );
             recyclerView.setItemAnimator( animator );
@@ -176,15 +176,21 @@ public class QuizzersFragment extends Fragment {
         QuizzerAdapter( @NonNull final DiffUtil.ItemCallback<QuizzerListItem> diffCallback, final QuizzerRole criteria ) {
             super(diffCallback);
             this.criteria = criteria;
+            setHasStableIds( true );
         }
 
         @Override
-        public QuizzersFragment.QuizzerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new QuizzersFragment.QuizzerViewHolder( LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_quizzer, parent, false ) );
+        public long getItemId(int position) {
+            return getItem( position ).id;
         }
 
         @Override
-        public void onBindViewHolder(final QuizzersFragment.QuizzerViewHolder holder, final int position) {
+        public QuizzersListFragment.QuizzerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new QuizzersListFragment.QuizzerViewHolder( LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_quizzer, parent, false ) );
+        }
+
+        @Override
+        public void onBindViewHolder(final QuizzersListFragment.QuizzerViewHolder holder, final int position) {
             if( position != RecyclerView.NO_POSITION ) {
                 final QuizzerListItem quizzer = getItem( position);
 

@@ -184,6 +184,12 @@ public class QuestionsListFragment extends Fragment {
 
         QuestionAdapter(@NonNull DiffUtil.ItemCallback<Question> diffCallback) {
             super(diffCallback);
+            setHasStableIds( true );
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return getItem( position ).id;
         }
 
         @Override

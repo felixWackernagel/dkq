@@ -51,7 +51,7 @@ public class QuizzersViewPagerFragment extends Fragment {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            return QuizzersFragment.newInstance(QuizzerRole.values()[position]);
+            return QuizzersListFragment.newInstance(QuizzerRole.values()[position]);
         }
 
         @Override

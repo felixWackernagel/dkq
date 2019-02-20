@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "900d70c73b6c17bb98c54c36fc6cd583",
+    "identityHash": "c4b4fb63941d73cb58df4a9e143d5ef1",
     "entities": [
       {
         "tableName": "quizzes",
@@ -285,12 +285,13 @@
         },
         "indices": [
           {
-            "name": "index_messages_number",
+            "name": "index_messages_number_type",
             "unique": true,
             "columnNames": [
-              "number"
+              "number",
+              "type"
             ],
-            "createSql": "CREATE UNIQUE INDEX `index_messages_number` ON `${TABLE_NAME}` (`number`)"
+            "createSql": "CREATE UNIQUE INDEX `index_messages_number_type` ON `${TABLE_NAME}` (`number`, `type`)"
           }
         ],
         "foreignKeys": [
@@ -370,7 +371,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"900d70c73b6c17bb98c54c36fc6cd583\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c4b4fb63941d73cb58df4a9e143d5ef1\")"
     ]
   }
 }

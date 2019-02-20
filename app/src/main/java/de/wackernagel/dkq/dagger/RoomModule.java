@@ -61,6 +61,8 @@ public class RoomModule {
                 database.execSQL( "ALTER TABLE `questions` ADD COLUMN `image` TEXT" );
                 database.execSQL( "ALTER TABLE `messages` ADD COLUMN `type` INTEGER NOT NULL DEFAULT 0" );
                 database.execSQL( "ALTER TABLE `messages` ADD COLUMN `quizId` INTEGER CONSTRAINT `fk_quiz` REFERENCES `quizzes`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION" );
+                database.execSQL( "DROP INDEX IF EXISTS `index_messages_number`" );
+                database.execSQL( "CREATE UNIQUE INDEX IF NOT EXISTS `index_messages_number_type` ON `messages` (`number`, `type`)" );
                 database.setTransactionSuccessful();
             } finally {
                 database.endTransaction();
