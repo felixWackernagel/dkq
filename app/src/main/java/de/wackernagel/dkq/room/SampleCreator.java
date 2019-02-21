@@ -57,7 +57,7 @@ public final class SampleCreator {
         return new Message[] {
                 newMessage(1, Message.Type.ARTICLE,"Wir gratulieren zu Bilbo B. Sieg.", "Nach einem langen Quiz hat Bilbo B. mit den meisten richtigen Antworten gesiegt.", null, quizId ),
                 newMessage(2, Message.Type.ARTICLE,"Das nächste Quiz steht fest.", "Lange haben wir auf Frodo B. gewartet, doch nun kann das nächste Quiz stattfinden.", "https://cdn.pixabay.com/photo/2013/03/02/02/41/city-89197_960_720.jpg", quizId ),
-                newMessage(2, Message.Type.UPDATE_LOG,"Version 2.0", "Folgende Dinge haben sich geändert", null, null ),
+                newMessage(2, Message.Type.UPDATE_LOG,"Version 2.0", "<p>Folgende Dinge haben sich geändert.</p><br><ul><li><b>Features</b>: Tolle Sachen</li><li>Bugs</li><li>Changes</li></ul><br><p>Vielen Dank</p>", null, null ),
         };
     }
 

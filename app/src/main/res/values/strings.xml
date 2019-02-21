@@ -75,7 +75,7 @@
 
     <!-- Menus -->
     <string name="bottom_navigation_quizzes">Quizze</string>
-    <string name="bottom_navigation_news">Artikel</string>
+    <string name="bottom_navigation_news">Nachrichten</string>
     <string name="bottom_navigation_quizzers">Quizzer</string>
 
     <!-- Preferences -->

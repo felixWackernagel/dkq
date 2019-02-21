@@ -12,6 +12,9 @@
     <color name="textSecondary">#99000000</color>     <!-- 60% black -->
     <color name="textDisabled">#60000000</color>      <!-- 38% black -->
 
+    <color name="textPrimaryLight">#DEFFFFFF</color>       <!-- 87% white -->
+    <color name="textSecondaryLight">#99FFFFFF</color>     <!-- 60% white -->
+
     <color name="iconInactive">#99000000</color>     <!-- 60% black -->
 
     <color name="bottomNavigationBackground">#F5F5F5</color>

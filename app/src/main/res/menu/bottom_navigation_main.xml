@@ -10,7 +10,7 @@
 
     <item
         android:id="@+id/action_news"
-        android:icon="@drawable/ic_book_black_24dp"
+        android:icon="@drawable/ic_inbox_black_24dp"
         android:title="@string/bottom_navigation_news"
         app:showAsAction="ifRoom" />
 
