@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "c4b4fb63941d73cb58df4a9e143d5ef1",
+    "identityHash": "95cf91fb758ae373e409f423397e0f57",
     "entities": [
       {
         "tableName": "quizzes",
@@ -95,6 +95,22 @@
               "number"
             ],
             "createSql": "CREATE UNIQUE INDEX `index_quizzes_number` ON `${TABLE_NAME}` (`number`)"
+          },
+          {
+            "name": "index_quizzes_quizMasterId",
+            "unique": false,
+            "columnNames": [
+              "quizMasterId"
+            ],
+            "createSql": "CREATE  INDEX `index_quizzes_quizMasterId` ON `${TABLE_NAME}` (`quizMasterId`)"
+          },
+          {
+            "name": "index_quizzes_winnerId",
+            "unique": false,
+            "columnNames": [
+              "winnerId"
+            ],
+            "createSql": "CREATE  INDEX `index_quizzes_winnerId` ON `${TABLE_NAME}` (`winnerId`)"
           }
         ],
         "foreignKeys": [
@@ -196,6 +212,14 @@
               "quizId"
             ],
             "createSql": "CREATE UNIQUE INDEX `index_questions_number_quizId` ON `${TABLE_NAME}` (`number`, `quizId`)"
+          },
+          {
+            "name": "index_questions_quizId",
+            "unique": false,
+            "columnNames": [
+              "quizId"
+            ],
+            "createSql": "CREATE  INDEX `index_questions_quizId` ON `${TABLE_NAME}` (`quizId`)"
           }
         ],
         "foreignKeys": [
@@ -292,6 +316,14 @@
               "type"
             ],
             "createSql": "CREATE UNIQUE INDEX `index_messages_number_type` ON `${TABLE_NAME}` (`number`, `type`)"
+          },
+          {
+            "name": "index_messages_quizId",
+            "unique": false,
+            "columnNames": [
+              "quizId"
+            ],
+            "createSql": "CREATE  INDEX `index_messages_quizId` ON `${TABLE_NAME}` (`quizId`)"
           }
         ],
         "foreignKeys": [
@@ -371,7 +403,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c4b4fb63941d73cb58df4a9e143d5ef1\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"95cf91fb758ae373e409f423397e0f57\")"
     ]
   }
 }

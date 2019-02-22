@@ -63,6 +63,10 @@ public class RoomModule {
                 database.execSQL( "ALTER TABLE `messages` ADD COLUMN `quizId` INTEGER CONSTRAINT `fk_quiz` REFERENCES `quizzes`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION" );
                 database.execSQL( "DROP INDEX IF EXISTS `index_messages_number`" );
                 database.execSQL( "CREATE UNIQUE INDEX IF NOT EXISTS `index_messages_number_type` ON `messages` (`number`, `type`)" );
+                database.execSQL( "CREATE INDEX `index_messages_quizId` ON `messages` (`quizId`)" );
+                database.execSQL( "CREATE INDEX `index_questions_quizId` ON `questions` (`quizId`)" );
+                database.execSQL( "CREATE INDEX `index_quizzes_quizMasterId` ON `quizzes` (`quizMasterId`)" );
+                database.execSQL( "CREATE INDEX `index_quizzes_winnerId` ON `quizzes` (`winnerId`)" );
                 database.setTransactionSuccessful();
             } finally {
                 database.endTransaction();
@@ -144,7 +148,7 @@ public class RoomModule {
 
     @Provides
     @Singleton
-    ViewModelProvider.Factory providerViewModelFactory( final DkqRepository repository, final Application application, final AppExecutors executors ) {
-        return new ViewModelFactory( repository, application, executors );
+    ViewModelProvider.Factory providerViewModelFactory( final DkqRepository repository, final Application application ) {
+        return new ViewModelFactory( repository, application );
     }
 }

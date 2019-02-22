@@ -5,9 +5,10 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity( tableName = "questions", indices = { @Index( value = { "number", "quizId" }, unique = true ) }, foreignKeys = @ForeignKey(entity = Quiz.class,
-        parentColumns = "id",
-        childColumns = "quizId" ) )
+@Entity( tableName = "questions",
+         indices = { @Index( value = { "number", "quizId" }, unique = true ),
+                     @Index( value = { "quizId" } ) },
+         foreignKeys = @ForeignKey(entity = Quiz.class, parentColumns = "id", childColumns = "quizId" ) )
 public class Question {
     @PrimaryKey( autoGenerate = true)
     public long id;

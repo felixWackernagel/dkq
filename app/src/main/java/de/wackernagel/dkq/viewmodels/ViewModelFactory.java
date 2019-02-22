@@ -6,7 +6,6 @@ import javax.inject.Singleton;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import de.wackernagel.dkq.AppExecutors;
 import de.wackernagel.dkq.repository.DkqRepository;
 
 @Singleton
@@ -14,12 +13,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
     private final DkqRepository repository;
     private final Application application;
-    private final AppExecutors executors;
 
-    public ViewModelFactory(final DkqRepository repository, final Application application, final AppExecutors executors) {
+    public ViewModelFactory(final DkqRepository repository, final Application application) {
         this.repository = repository;
         this.application = application;
-        this.executors = executors;
     }
 
     @SuppressWarnings("unchecked")
@@ -36,7 +33,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if( modelClass.isAssignableFrom( MessageDetailsViewModel.class ) ) {
             return (T) new MessageDetailsViewModel( repository );
         } else if( modelClass.isAssignableFrom( MainViewModel.class ) ) {
-            return (T) new MainViewModel( application, executors, repository );
+            return (T) new MainViewModel( application, repository );
         } else if( modelClass.isAssignableFrom( QuizzersViewModel.class ) ) {
             return (T) new QuizzersViewModel( repository );
         }

@@ -1,7 +1,6 @@
 package de.wackernagel.dkq.ui;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,10 +17,8 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,10 +27,8 @@ import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
-import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Quiz;
-import de.wackernagel.dkq.utils.AppUtils;
 import de.wackernagel.dkq.utils.BottomNavigationUtils;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.viewmodels.MainViewModel;
@@ -65,14 +60,6 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
 
         final MainViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(MainViewModel.class);
         viewModel.installUpdateChecker();
-        viewModel.isNewAppVersion().observe( this, new Observer<Boolean>() {
-            @Override
-            public void onChanged( final Boolean newVersion ) {
-                if( newVersion != null && newVersion ) {
-                    showChangelog();
-                }
-            }
-        } );
         viewModel.loadNextQuiz().observe(this, new Observer<Quiz>() {
             @Override
             public void onChanged( final Quiz quiz ) {
@@ -119,22 +106,6 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
             infoCard.setAlpha( 0f );
             infoCard.animate().alpha( 1f ).setDuration( 400L ).setListener( null ).start();
         }
-    }
-
-    private void showChangelog() {
-        new AlertDialog.Builder( this )
-            .setTitle(R.string.changelog_title)
-            .setMessage(HtmlCompat.fromHtml( getResources().getString(R.string.changelog_message), HtmlCompat.FROM_HTML_MODE_COMPACT))
-            .setCancelable(false)
-            .setPositiveButton(R.string.close_word, null)
-            .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    DkqPreferences.setLastVersionCode( getApplicationContext(), AppUtils.getAppVersionCode( getApplicationContext() ));
-                }
-            })
-            .create()
-            .show();
     }
 
     @Override

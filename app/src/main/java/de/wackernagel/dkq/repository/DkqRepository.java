@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.lifecycle.LiveData;
 import de.wackernagel.dkq.AppExecutors;
 import de.wackernagel.dkq.receiver.NotificationReceiver;
@@ -435,6 +436,10 @@ public class DkqRepository {
         return messageDao.loadNewMessagesCount();
     }
 
+    private int getMaxMessageNumber() {
+        return messageDao.loadMaxMessageNumber();
+    }
+
     public void deleteAllMessages() {
         executors.diskIO().execute(new Runnable() {
             @Override
@@ -512,5 +517,27 @@ public class DkqRepository {
 
     public List<Quiz> queryQuizzes() {
         return quizDao.queryQuizzes();
+    }
+
+    public void saveUpdateLogMessage( @StringRes final int titleResId, @StringRes final int contentResId ) {
+        executors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                final Message updateLogMessage = new Message();
+                updateLogMessage.type = Message.Type.UPDATE_LOG;
+                updateLogMessage.number = getMaxMessageNumber() + 1;
+                updateLogMessage.title = context.getString( titleResId );
+                updateLogMessage.content = context.getString( contentResId );
+                updateLogMessage.image = null;
+                updateLogMessage.version = 1;
+                updateLogMessage.lastUpdate = DateUtils.javaDateToJoomlaDate( new Date() );
+                updateLogMessage.read = 0;
+                updateLogMessage.quizId = null;
+                updateLogMessage.quizNumber = null;
+
+                messageDao.insertMessages( updateLogMessage );
+                NotificationReceiver.forNewMessages( context, 1 );
+            }
+        });
     }
 }

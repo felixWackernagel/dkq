@@ -9,7 +9,8 @@ import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "messages",
-        indices = { @Index( value = { "number", "type" }, unique = true ) },
+        indices = { @Index( value = { "number", "type" }, unique = true ),
+                    @Index( value = { "quizId" } ) },
         foreignKeys = @ForeignKey(entity = Quiz.class, parentColumns = "id", childColumns = "quizId" ) )
 public class Message {
 

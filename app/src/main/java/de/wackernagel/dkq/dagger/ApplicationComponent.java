@@ -10,6 +10,6 @@ import de.wackernagel.dkq.dagger.workerinjector.AndroidWorkerInjectionModule;
 import de.wackernagel.dkq.dagger.workerinjector.WorkerModule;
 
 @Singleton
-@Component(modules = {AndroidInjectionModule.class, RoomModule.class, UIModule.class, RetrofitModule.class, AndroidWorkerInjectionModule.class, WorkerModule.class})
+@Component(modules = {AndroidInjectionModule.class, RoomModule.class, UIModule.class, RetrofitModule.class, AndroidWorkerInjectionModule.class, WorkerModule.class, BroadcastReceiverModule.class})
 public interface ApplicationComponent extends AndroidInjector<DkqApplication> {
 }

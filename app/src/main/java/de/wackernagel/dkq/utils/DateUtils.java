@@ -1,14 +1,15 @@
 package de.wackernagel.dkq.utils;
 
 import android.text.TextUtils;
-import android.util.Log;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import de.wackernagel.dkq.R;
 
 public class DateUtils {
 
@@ -94,5 +95,9 @@ public class DateUtils {
         } else {
             return fallback;
         }
+    }
+
+    public static String javaDateToJoomlaDate( @NonNull final Date date ) {
+        return new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss", Locale.getDefault() ).format( date );
     }
 }

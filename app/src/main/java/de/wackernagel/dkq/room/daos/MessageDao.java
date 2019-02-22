@@ -27,6 +27,9 @@ public interface MessageDao {
     @Query( "SELECT COUNT(read) FROM messages WHERE read = 0" )
     LiveData<Integer> loadNewMessagesCount();
 
+    @Query( "SELECT MAX(number) FROM messages" )
+    int loadMaxMessageNumber();
+
     @Query( "DELETE FROM messages" )
     void deleteAllMessages();
 
