@@ -24,7 +24,8 @@
             android:paddingStart="16dp"
             android:paddingTop="16dp"
             android:paddingEnd="16dp"
-            tools:text="Question 40"/>
+            tools:text="Question 40"
+            tools:ignore="SmallSP"/>
 
         <TextView
             android:id="@+id/question"
@@ -38,8 +39,20 @@
             android:paddingEnd="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="16dp"
-            android:background="@drawable/divider_full_bleed_bottom"
             tools:text="Bla adssaldkoaksdo asd"/>
+
+        <de.wackernagel.dkq.ui.widgets.IconImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:contentDescription="@null"
+            tools:src="@mipmap/ic_launcher"
+            android:foreground="?selectableItemBackground"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"/>
 
         <de.wackernagel.dkq.ui.widgets.CollapsibleCard
             android:id="@+id/answer"

@@ -20,8 +20,12 @@
 
     <string name="update_log_version_code_4_title">Version 4.0</string>
     <string name="update_log_version_code_4_content"><![CDATA[
+        <b>NEU</b>: Bild-Fragen sind nun möglich<br>
+        <b>NEU</b>: Der Bereich "Artikel" heißt jetzt "Nachrichten mit weiteren Inhalten.<br>
         <b>NEU</b>: Im täglichen Update sind Quiz-Fragen enthalten.<br>
-        <b>BUGFIX</b>: Geöffnete Antworten von ungelesenen Fragen.
+        <b>NEU</b>: Aktionen in den Quiz-Details<br>
+        <b>BUG-FIX</b>: Geöffnete Antworten von ungelesenen Fragen.<br>
+        Änderungen im Design
     ]]></string>
 
     <!-- Messages -->

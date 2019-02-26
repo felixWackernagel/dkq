@@ -173,7 +173,7 @@ public class QuizzesListFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         final Context context = view.getContext();
-                        context.startActivity( QuizActivity.createLaunchIntent( context, quiz.id, quiz.number ) );
+                        context.startActivity( QuizDetailsActivity.createLaunchIntent( context, quiz.id, quiz.number ) );
                     }
                 });
             }

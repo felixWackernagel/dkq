@@ -30,7 +30,7 @@ public class IconImageView extends FourThreeImageView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        icon.setBounds( getRight() - iconSpace - iconSize, getBottom() - iconSpace - iconSize, getRight() - iconSpace, getBottom() - iconSpace);
+        icon.setBounds( getWidth() - iconSpace - iconSize, getHeight() - iconSpace - iconSize, getWidth() - iconSpace, getHeight() - iconSpace);
     }
 
     @Override

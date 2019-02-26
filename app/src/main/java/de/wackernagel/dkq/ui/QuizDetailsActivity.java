@@ -44,13 +44,13 @@ import de.wackernagel.dkq.utils.GlideUtils;
 import de.wackernagel.dkq.viewmodels.QuestionsViewModel;
 import de.wackernagel.dkq.webservice.Resource;
 
-public class QuizActivity extends AbstractDkqActivity implements HasSupportFragmentInjector {
+public class QuizDetailsActivity extends AbstractDkqActivity implements HasSupportFragmentInjector {
 
     private static final String ARG_QUIZ_ID = "quizId";
     private static final String ARG_QUIZ_NUMBER = "quizNumber";
 
     static Intent createLaunchIntent(final Context context, final long quizId, final int quizNumber ) {
-        final Intent intent = new Intent( context, QuizActivity.class );
+        final Intent intent = new Intent( context, QuizDetailsActivity.class );
         intent.putExtra( ARG_QUIZ_ID, quizId );
         intent.putExtra( ARG_QUIZ_NUMBER, quizNumber );
         return intent;
@@ -144,7 +144,7 @@ public class QuizActivity extends AbstractDkqActivity implements HasSupportFragm
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final BottomSheetDialog modalBottomSheet = new BottomSheetDialog( QuizActivity.this );
+                    final BottomSheetDialog modalBottomSheet = new BottomSheetDialog( QuizDetailsActivity.this );
                     final View bottomSheetView = getLayoutInflater().inflate( R.layout.bottom_sheet_quiz, null, false );
                     addCalendarAction( quiz, bottomSheetView.findViewById( R.id.calendarAction ) );
                     addMapsAction( quiz, bottomSheetView.findViewById( R.id.mapsAction ) );

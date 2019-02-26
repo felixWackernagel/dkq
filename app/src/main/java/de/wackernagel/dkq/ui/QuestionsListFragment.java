@@ -1,13 +1,19 @@
 package de.wackernagel.dkq.ui;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,10 +33,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
+import de.wackernagel.dkq.GlideApp;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.ui.widgets.CollapsibleCard;
 import de.wackernagel.dkq.utils.DeviceUtils;
+import de.wackernagel.dkq.utils.GlideUtils;
 import de.wackernagel.dkq.utils.GridGutterDecoration;
 import de.wackernagel.dkq.utils.SectionItemDecoration;
 import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
@@ -157,6 +165,7 @@ public class QuestionsListFragment extends Fragment {
     static class QuestionViewHolder extends RecyclerView.ViewHolder {
         private TextView name;
         private TextView question;
+        private ImageView image;
         private CollapsibleCard answer;
 
         QuestionViewHolder(final View itemView) {
@@ -164,6 +173,7 @@ public class QuestionsListFragment extends Fragment {
             name = itemView.findViewById( R.id.name );
             question = itemView.findViewById( R.id.question );
             answer = itemView.findViewById( R.id.answer );
+            image = itemView.findViewById( R.id.image );
         }
     }
 
@@ -175,7 +185,10 @@ public class QuestionsListFragment extends Fragment {
 
         @Override
         public boolean areContentsTheSame(@NonNull Question oldItem, @NonNull Question newItem) {
-            return oldItem.number == newItem.number && TextUtils.equals(oldItem.question, newItem.question) && TextUtils.equals(oldItem.answer, newItem.answer);
+            return oldItem.number == newItem.number &&
+                    TextUtils.equals(oldItem.question, newItem.question) &&
+                    TextUtils.equals(oldItem.answer, newItem.answer) &&
+                    TextUtils.equals(oldItem.image, newItem.image);
         }
     }
 
@@ -214,6 +227,39 @@ public class QuestionsListFragment extends Fragment {
                     }
                 }
             });
+
+            if( !TextUtils.isEmpty( question.image ) ) {
+                GlideUtils.loadImage( holder.image, question.image );
+                holder.image.setVisibility( View.VISIBLE );
+                final Intent viewImageIntent = new Intent(Intent.ACTION_VIEW);
+                viewImageIntent.setDataAndType(Uri.parse(question.image), "image/*");
+                if ( holder.itemView.getContext().getPackageManager().queryIntentActivities( viewImageIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0 ) {
+                    holder.image.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            v.getContext().startActivity(viewImageIntent);
+                        }
+                    });
+                    holder.image.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+                            // position toast below image and at the center of the device
+                            int x = 0;
+                            int y = view.getBottom() + DeviceUtils.dpToPx( 16f, view.getContext() );
+                            Toast toast = Toast.makeText( view.getContext(), R.string.maximize_image, Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, x, y);
+                            toast.show();
+                            return true;
+                        }
+                    });
+                }
+            }
+            else {
+                GlideApp.with( holder.image ).clear( holder.image );
+                holder.image.setVisibility( View.GONE );
+                holder.image.setOnClickListener( null );
+                holder.image.setOnLongClickListener( null );
+            }
         }
     }
 }

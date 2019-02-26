@@ -125,7 +125,7 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
             quizButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    v.getContext().startActivity( QuizActivity.createLaunchIntent( v.getContext(), quiz.id, quiz.number ) );
+                    v.getContext().startActivity( QuizDetailsActivity.createLaunchIntent( v.getContext(), quiz.id, quiz.number ) );
                 }
             });
         }

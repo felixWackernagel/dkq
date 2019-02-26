@@ -76,7 +76,7 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
                         @Override
                         public void onClick(View view) {
                             final Context context = view.getContext();
-                            context.startActivity( QuizActivity.createLaunchIntent( context, quiz.id, quiz.number ) );
+                            context.startActivity( QuizDetailsActivity.createLaunchIntent( context, quiz.id, quiz.number ) );
                         }
                     });
                 }

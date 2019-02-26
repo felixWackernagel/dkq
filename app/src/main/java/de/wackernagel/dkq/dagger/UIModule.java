@@ -5,7 +5,7 @@ import dagger.android.ContributesAndroidInjector;
 import de.wackernagel.dkq.ui.DevelopmentActivity;
 import de.wackernagel.dkq.ui.MainActivity;
 import de.wackernagel.dkq.ui.MessageDetailsActivity;
-import de.wackernagel.dkq.ui.QuizActivity;
+import de.wackernagel.dkq.ui.QuizDetailsActivity;
 
 @Module
 public abstract class UIModule {
@@ -14,7 +14,7 @@ public abstract class UIModule {
     abstract MainActivity contributeMainActivityInjector();
 
     @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
-    abstract QuizActivity contributeQuizActivityInjector();
+    abstract QuizDetailsActivity contributeQuizActivityInjector();
 
     @ContributesAndroidInjector()
     abstract MessageDetailsActivity contributeMessageDetailsActivityInjector();
