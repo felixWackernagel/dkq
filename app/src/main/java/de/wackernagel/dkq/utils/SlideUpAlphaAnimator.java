@@ -14,11 +14,11 @@ public class SlideUpAlphaAnimator extends DefaultAnimator<SlideUpAlphaAnimator> 
     @Override
     public ViewPropertyAnimatorCompat addAnimation(RecyclerView.ViewHolder holder) {
         return ViewCompat.animate(holder.itemView)
-                .translationY(0)
-                .alpha(1)
-                .setStartDelay(50*holder.getAdapterPosition())
-                .setDuration(getMoveDuration())
-                .setInterpolator(getInterpolator());
+            .translationY(0)
+            .alpha(1)
+            .setStartDelay(50*holder.getAdapterPosition())
+            .setDuration(getMoveDuration())
+            .setInterpolator(getInterpolator());
     }
 
     @Override
@@ -39,8 +39,11 @@ public class SlideUpAlphaAnimator extends DefaultAnimator<SlideUpAlphaAnimator> 
 
     @Override
     public ViewPropertyAnimatorCompat removeAnimation(RecyclerView.ViewHolder holder) {
-        final ViewPropertyAnimatorCompat animation = ViewCompat.animate(holder.itemView);
-        return animation.setDuration(getRemoveDuration()).alpha(0).translationY(holder.itemView.getHeight()).setInterpolator(getInterpolator());
+        return ViewCompat.animate(holder.itemView)
+            .setDuration(getRemoveDuration())
+            .alpha(0)
+            .translationY(holder.itemView.getHeight())
+            .setInterpolator(getInterpolator());
     }
 
     @Override

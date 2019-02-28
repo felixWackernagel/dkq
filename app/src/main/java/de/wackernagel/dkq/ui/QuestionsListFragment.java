@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +32,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
+import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.GlideApp;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Question;
@@ -44,6 +44,10 @@ import de.wackernagel.dkq.utils.SectionItemDecoration;
 import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
 import de.wackernagel.dkq.viewmodels.QuestionsViewModel;
 import de.wackernagel.dkq.webservice.Resource;
+import de.wackernagel.dkq.webservice.Status;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class QuestionsListFragment extends Fragment {
 
@@ -143,18 +147,11 @@ public class QuestionsListFragment extends Fragment {
                 @Override
                 public void onChanged(@Nullable Resource<List<Question>> questions) {
                 if( questions != null ) {
-                    Log.i("dkq", "Status=" + questions.status + ", Items=" + (questions.data != null ? questions.data.size() : "null" ));
-                    switch (questions.status) {
-                        case LOADING:
-                            progressBar.setVisibility( View.VISIBLE );
-                            emptyView.setVisibility( View.GONE );
-                            break;
-                        case ERROR:
-                        case SUCCESS:
-                            progressBar.setVisibility( View.GONE );
-                            emptyView.setVisibility( questions.data != null && questions.data.size() > 0 ? View.GONE : View.VISIBLE );
-                            break;
-                    }
+                    DkqLog.i("QuestionsListFragment", "Status=" + questions.status + ", Items=" + (questions.data != null ? questions.data.size() : "null" ) + ", Message=" + questions.message );
+
+                    progressBar.setVisibility( questions.status == Status.LOADING ? VISIBLE : GONE );
+                    emptyView.setVisibility( questions.status != Status.LOADING && ( questions.data == null || questions.data.isEmpty() ) ? VISIBLE : GONE );
+
                     adapter.submitList( questions.data );
                 }
                 }
@@ -230,7 +227,7 @@ public class QuestionsListFragment extends Fragment {
 
             if( !TextUtils.isEmpty( question.image ) ) {
                 GlideUtils.loadImage( holder.image, question.image );
-                holder.image.setVisibility( View.VISIBLE );
+                holder.image.setVisibility( VISIBLE );
                 final Intent viewImageIntent = new Intent(Intent.ACTION_VIEW);
                 viewImageIntent.setDataAndType(Uri.parse(question.image), "image/*");
                 if ( holder.itemView.getContext().getPackageManager().queryIntentActivities( viewImageIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0 ) {
@@ -256,7 +253,7 @@ public class QuestionsListFragment extends Fragment {
             }
             else {
                 GlideApp.with( holder.image ).clear( holder.image );
-                holder.image.setVisibility( View.GONE );
+                holder.image.setVisibility( GONE );
                 holder.image.setOnClickListener( null );
                 holder.image.setOnLongClickListener( null );
             }

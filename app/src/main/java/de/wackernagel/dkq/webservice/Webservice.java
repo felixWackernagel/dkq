@@ -11,9 +11,9 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
-public interface Webservice {
-    String VERSION = "v3";
+import static de.wackernagel.dkq.DkqConstants.API.VERSION;
 
+public interface Webservice {
     @GET(VERSION + "/quizzes")
     LiveData<ApiResponse<List<Quiz>>> getQuizzes();
 

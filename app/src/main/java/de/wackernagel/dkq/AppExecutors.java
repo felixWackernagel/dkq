@@ -12,7 +12,7 @@ public class AppExecutors {
     private final Executor mNetworkIO;
     private final Executor mMainThread;
 
-    public AppExecutors() {
+    AppExecutors() {
         this(Executors.newSingleThreadExecutor(), Executors.newFixedThreadPool(3), new MainThreadExecutor());
     }
 

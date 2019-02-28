@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
+import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.QuizzerListItem;
 import de.wackernagel.dkq.utils.DeviceUtils;
@@ -35,6 +36,10 @@ import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
 import de.wackernagel.dkq.viewmodels.QuizzerRole;
 import de.wackernagel.dkq.viewmodels.QuizzersViewModel;
 import de.wackernagel.dkq.webservice.Resource;
+import de.wackernagel.dkq.webservice.Status;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class QuizzersListFragment extends Fragment {
     private static final String QUIZZERS_CRITERIA = "criteria";
@@ -125,17 +130,11 @@ public class QuizzersListFragment extends Fragment {
                 @Override
                 public void onChanged(@Nullable Resource<List<QuizzerListItem>> quizzers) {
                     if( quizzers != null ) {
-                        switch (quizzers.status) {
-                            case LOADING:
-                                progressBar.setVisibility( View.VISIBLE );
-                                emptyView.setVisibility( View.GONE );
-                                break;
-                            case ERROR:
-                            case SUCCESS:
-                                progressBar.setVisibility( View.GONE );
-                                emptyView.setVisibility( quizzers.data != null && quizzers.data.size() > 0 ? View.GONE : View.VISIBLE );
-                                break;
-                        }
+                        DkqLog.i("QuizzersListFragment", "Status=" + quizzers.status + ", Items=" + (quizzers.data != null ? quizzers.data.size() : "null" ) + ", Message=" + quizzers.message );
+
+                        progressBar.setVisibility( quizzers.status == Status.LOADING ? VISIBLE : GONE );
+                        emptyView.setVisibility( quizzers.status != Status.LOADING && ( quizzers.data == null || quizzers.data.isEmpty() ) ? VISIBLE : GONE );
+
                         adapter.submitList( quizzers.data );
                     }
                 }

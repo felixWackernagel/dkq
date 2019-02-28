@@ -3,11 +3,11 @@ package de.wackernagel.dkq.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
+import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.repository.DkqRepository;
@@ -23,7 +23,7 @@ public class AppUpdatedReceiver extends BroadcastReceiver {
 
         if( Intent.ACTION_MY_PACKAGE_REPLACED.equals( intent.getAction() ) ) {
             final int newVersionCode = AppUtils.getAppVersionCode( context );
-            Log.d("DKQ","App was updated to version code " + newVersionCode);
+            DkqLog.d("AppUpdatedReceiver","App was updated to version code " + newVersionCode);
             updatedToVersion( newVersionCode );
             DkqPreferences.setLastVersionCode( context, newVersionCode );
         }

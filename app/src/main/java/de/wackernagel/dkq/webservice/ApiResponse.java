@@ -1,10 +1,9 @@
 package de.wackernagel.dkq.webservice;
 
-import androidx.annotation.Nullable;
-import android.util.Log;
-
 import java.io.IOException;
 
+import androidx.annotation.Nullable;
+import de.wackernagel.dkq.DkqLog;
 import retrofit2.Response;
 
 public class ApiResponse<T> {
@@ -12,18 +11,18 @@ public class ApiResponse<T> {
     public final int code;
 
     @Nullable
-    public final T body;
+    final T body;
 
     @Nullable
-    public final String errorMessage;
+    final String errorMessage;
 
-    public ApiResponse(Throwable error) {
+    ApiResponse(Throwable error) {
         code = 500;
         body = null;
         errorMessage = error.getMessage();
     }
 
-    public ApiResponse(Response<T> response) {
+    ApiResponse(Response<T> response) {
         code = response.code();
         if(response.isSuccessful()) {
             body = response.body();
@@ -33,8 +32,8 @@ public class ApiResponse<T> {
             if (response.errorBody() != null) {
                 try {
                     message = response.errorBody().string();
-                } catch (IOException ignored) {
-                    Log.e("ApiResponse", "error while parsing response");
+                } catch ( IOException exception ) {
+                    DkqLog.e("ApiResponse", "error while parsing response", exception);
                 }
             }
             if (message == null || message.trim().length() == 0) {
@@ -45,7 +44,7 @@ public class ApiResponse<T> {
         }
     }
 
-    public boolean isSuccessful() {
+    boolean isSuccessful() {
         return code >= 200 && code < 300;
     }
 }

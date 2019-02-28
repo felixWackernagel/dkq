@@ -1,7 +1,6 @@
 package de.wackernagel.dkq.repository;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.lifecycle.LiveData;
 import de.wackernagel.dkq.AppExecutors;
+import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.receiver.NotificationReceiver;
 import de.wackernagel.dkq.room.SampleCreator;
 import de.wackernagel.dkq.room.daos.MessageDao;
@@ -117,20 +117,20 @@ public class DkqRepository {
         final boolean isNew = existingQuiz == null;
         if( isNew ) {
             if( onlineQuiz.published == 1 ) {
-                Log.i("DKQ", "Insert new Quiz " + onlineQuiz.number + " " + onlineQuiz.toString() );
+                DkqLog.i("DkqRepository", "Insert new Quiz " + onlineQuiz.number + " " + onlineQuiz.toString() );
                 quizDao.insertQuiz(onlineQuiz);
                 return DateUtils.joomlaDateToJavaDate(onlineQuiz.quizDate, new Date()).after(new Date()) ? 1 : 0;
             }
         } else if( onlineQuiz.published == 0 ) {
-            Log.i("DKQ", "Remove existing Quiz " + onlineQuiz.number);
+            DkqLog.i("DkqRepository", "Remove existing Quiz " + onlineQuiz.number);
             quizDao.deleteQuiz( existingQuiz );
         } else if( existingQuiz.version < onlineQuiz.version || !ObjectUtils.equals( existingQuiz.winnerId, onlineQuiz.winnerId ) || !ObjectUtils.equals( existingQuiz.quizMasterId, onlineQuiz.quizMasterId ) ) {
             onlineQuiz.id = existingQuiz.id; // update is ID based so copy existing quiz ID to new one
-            Log.i("DKQ", "Update Quiz " + onlineQuiz.number + " from version " + existingQuiz.version + " to " + onlineQuiz.version + " " + onlineQuiz.toString() );
+            DkqLog.i("DkqRepository", "Update Quiz " + onlineQuiz.number + " from version " + existingQuiz.version + " to " + onlineQuiz.version + " " + onlineQuiz.toString() );
             quizDao.updateQuiz( onlineQuiz );
             return DateUtils.notEquals( existingQuiz.quizDate, onlineQuiz.quizDate ) && DateUtils.joomlaDateToJavaDate( onlineQuiz.quizDate, new Date() ).after( new Date() ) ? 1 : 0;
         } else {
-            Log.i("DKQ", "No changes on Quiz " + onlineQuiz.number);
+            DkqLog.i("DkqRepository", "No changes on Quiz " + onlineQuiz.number);
         }
         return 0;
     }
@@ -210,20 +210,20 @@ public class DkqRepository {
             final boolean isNew = existingQuestion == null;
             if( isNew ) {
                 if( onlineQuestion.published == 1 ) {
-                    Log.i("DKQ", "Insert new question " + onlineQuestion.number);
+                    DkqLog.i("DkqRepository", "Insert new question " + onlineQuestion.number);
                     onlineQuestion.quizId = quizId;
                     questionDao.insertQuestion(onlineQuestion);
                 }
             } else if( onlineQuestion.published == 0 ) {
-                Log.i("DKQ", "Delete existing question " + onlineQuestion.number);
+                DkqLog.i("DkqRepository", "Delete existing question " + onlineQuestion.number);
                 questionDao.deleteQuestion( existingQuestion );
             } else if( existingQuestion.version < onlineQuestion.version ) {
-                Log.i("DKQ", "Update question " + onlineQuestion.number + " from version " + existingQuestion.version + " to " + onlineQuestion.version);
+                DkqLog.i("DkqRepository", "Update question " + onlineQuestion.number + " from version " + existingQuestion.version + " to " + onlineQuestion.version);
                 onlineQuestion.id = existingQuestion.id; // update is ID based so copy existing quiz ID to new one
                 onlineQuestion.quizId = existingQuestion.quizId;
                 questionDao.updateQuestion( onlineQuestion );
             } else {
-                Log.i("DKQ", "No changes on Question " + onlineQuestion.number);
+                DkqLog.i("DkqRepository", "No changes on Question " + onlineQuestion.number);
             }
         }
     }
@@ -278,16 +278,16 @@ public class DkqRepository {
         final Message existingMessage = messageDao.loadMessageByNumber( onlineMessage.number );
         final boolean isNew = existingMessage == null;
         if( isNew ) {
-            Log.i("DKQ", "Insert new message " + onlineMessage.number);
+            DkqLog.i("DkqRepository", "Insert new message " + onlineMessage.number);
             messageDao.insertMessages(onlineMessage);
             return 1;
         } else if( existingMessage.version < onlineMessage.version ) {
-            Log.i("DKQ", "Update message " + onlineMessage.number + " from version " + existingMessage.version + " to " + onlineMessage.version);
+            DkqLog.i("DkqRepository", "Update message " + onlineMessage.number + " from version " + existingMessage.version + " to " + onlineMessage.version);
             onlineMessage.id = existingMessage.id; // update is ID based so copy existing quiz ID to new one
             messageDao.updateMessage( onlineMessage );
             return 0;
         } else {
-            Log.i("DKQ", "No changes on message " + onlineMessage.number);
+            DkqLog.i("DkqRepository", "No changes on message " + onlineMessage.number);
         }
         return 0;
     }
@@ -401,35 +401,25 @@ public class DkqRepository {
         final boolean isNew = existingQuizzer == null;
         if( isNew ) {
             final long id = quizzerDao.insertQuizzer(onlineQuizzer);
-            Log.i("DKQ", "Insert new Quizzer " + onlineQuizzer.number + " (id=" + id + ")");
+            DkqLog.i("DkqRepository", "Insert new Quizzer " + onlineQuizzer.number + " (id=" + id + ")");
             return id;
         } else if( existingQuizzer.version < onlineQuizzer.version ) {
             onlineQuizzer.id = existingQuizzer.id; // update is ID based so copy existing ID to new one
             quizzerDao.updateQuizzer( onlineQuizzer );
-            Log.i("DKQ", "Update Quizzer " + onlineQuizzer.number + " from version " + existingQuizzer.version + " to " + onlineQuizzer.version + " (id=" + onlineQuizzer.id + ")" );
+            DkqLog.i("DkqRepository", "Update Quizzer " + onlineQuizzer.number + " from version " + existingQuizzer.version + " to " + onlineQuizzer.version + " (id=" + onlineQuizzer.id + ")" );
             return onlineQuizzer.id;
         } else {
-            Log.i("DKQ", "No changes on Quizzer " + existingQuizzer.number + " (id=" + existingQuizzer.id + ")" );
+            DkqLog.i("DkqRepository", "No changes on Quizzer " + existingQuizzer.number + " (id=" + existingQuizzer.id + ")" );
             return existingQuizzer.id;
         }
     }
 
     public void updateMessage(final Message message ) {
-        executors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                messageDao.updateMessage(message);
-            }
-        });
+        executors.diskIO().execute(() -> messageDao.updateMessage(message));
     }
 
     public void insertMessages(final Message... messages ) {
-        executors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                messageDao.insertMessages( messages );
-            }
-        });
+        executors.diskIO().execute(() -> messageDao.insertMessages( messages ));
     }
 
     public LiveData<Integer> getNewMessagesCount() {
@@ -441,77 +431,56 @@ public class DkqRepository {
     }
 
     public void deleteAllMessages() {
-        executors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                messageDao.deleteAllMessages();
-            }
-        });
+        executors.diskIO().execute( messageDao::deleteAllMessages );
     }
 
     public void insertQuiz(final Quiz quiz ) {
-        executors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                quizDao.insertQuiz(quiz);
-            }
-        } );
+        executors.diskIO().execute(() -> quizDao.insertQuiz(quiz));
     }
 
     public void deleteQuizzesByNumber( final int[] quizNumbers ) {
-        executors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                quizDao.deleteQuizzesByNumber( quizNumbers );
-            }
-        });
+        executors.diskIO().execute(() -> quizDao.deleteQuizzesByNumber( quizNumbers ));
     }
 
     public void createSamples() {
-        executors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                messageDao.deleteAllMessages();
-                questionDao.deleteAllQuestions();
-                quizDao.deleteAllQuizzes();
-                quizzerDao.deleteAllQuizzers();
+        executors.diskIO().execute(() -> {
+            messageDao.deleteAllMessages();
+            questionDao.deleteAllQuestions();
+            quizDao.deleteAllQuizzes();
+            quizzerDao.deleteAllQuizzers();
 
-                final Quizzer[] quizzers = SampleCreator.createSampleQuizzers();
-                for( Quizzer quizzer : quizzers ) {
-                    quizzer.id = quizzerDao.insertQuizzer( quizzer );
-                }
+            final Quizzer[] quizzers = SampleCreator.createSampleQuizzers();
+            for( Quizzer quizzer : quizzers ) {
+                quizzer.id = quizzerDao.insertQuizzer( quizzer );
+            }
 
-                final Quiz[] quizzes = SampleCreator.createSampleQuizzes( quizzers[0], quizzers[1] );
-                final int count = quizzes.length;
-                for( int index = 0; index < count; index++ ) {
-                    final Quiz quiz = quizzes[ index ];
-                    quiz.id = quizDao.insertQuiz( quiz );
+            final Quiz[] quizzes = SampleCreator.createSampleQuizzes( quizzers[0], quizzers[1] );
+            final int count = quizzes.length;
+            for( int index = 0; index < count; index++ ) {
+                final Quiz quiz = quizzes[ index ];
+                quiz.id = quizDao.insertQuiz( quiz );
 
-                    if( index + 1 < count ) {
-                        final Question[] questions = SampleCreator.createSampleQuestions( quiz );
-                        for( Question question : questions ) {
-                            questionDao.insertQuestion( question );
-                        }
+                if( index + 1 < count ) {
+                    final Question[] questions = SampleCreator.createSampleQuestions( quiz );
+                    for( Question question : questions ) {
+                        questionDao.insertQuestion( question );
                     }
                 }
+            }
 
-                final Message[] messages = SampleCreator.createSampleMessages( quizzes[0] );
-                for( Message message : messages ) {
-                    messageDao.insertMessages( message );
-                }
+            final Message[] messages = SampleCreator.createSampleMessages( quizzes[0] );
+            for( Message message : messages ) {
+                messageDao.insertMessages( message );
             }
         });
     }
 
     public void dropAll() {
-        executors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                messageDao.deleteAllMessages();
-                questionDao.deleteAllQuestions();
-                quizDao.deleteAllQuizzes();
-                quizzerDao.deleteAllQuizzers();
-            }
+        executors.diskIO().execute(() -> {
+            messageDao.deleteAllMessages();
+            questionDao.deleteAllQuestions();
+            quizDao.deleteAllQuizzes();
+            quizzerDao.deleteAllQuizzers();
         });
     }
 
@@ -520,24 +489,21 @@ public class DkqRepository {
     }
 
     public void saveUpdateLogMessage( @StringRes final int titleResId, @StringRes final int contentResId ) {
-        executors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                final Message updateLogMessage = new Message();
-                updateLogMessage.type = Message.Type.UPDATE_LOG;
-                updateLogMessage.number = getMaxMessageNumber() + 1;
-                updateLogMessage.title = context.getString( titleResId );
-                updateLogMessage.content = context.getString( contentResId );
-                updateLogMessage.image = null;
-                updateLogMessage.version = 1;
-                updateLogMessage.lastUpdate = DateUtils.javaDateToJoomlaDate( new Date() );
-                updateLogMessage.read = 0;
-                updateLogMessage.quizId = null;
-                updateLogMessage.quizNumber = null;
+        executors.diskIO().execute(() -> {
+            final Message updateLogMessage = new Message();
+            updateLogMessage.type = Message.Type.UPDATE_LOG;
+            updateLogMessage.number = getMaxMessageNumber() + 1;
+            updateLogMessage.title = context.getString( titleResId );
+            updateLogMessage.content = context.getString( contentResId );
+            updateLogMessage.image = null;
+            updateLogMessage.version = 1;
+            updateLogMessage.lastUpdate = DateUtils.javaDateToJoomlaDate( new Date() );
+            updateLogMessage.read = 0;
+            updateLogMessage.quizId = null;
+            updateLogMessage.quizNumber = null;
 
-                messageDao.insertMessages( updateLogMessage );
-                NotificationReceiver.forNewMessages( context, 1 );
-            }
+            messageDao.insertMessages( updateLogMessage );
+            NotificationReceiver.forNewMessages( context, 1 );
         });
     }
 }

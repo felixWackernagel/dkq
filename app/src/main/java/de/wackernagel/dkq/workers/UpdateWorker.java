@@ -1,7 +1,6 @@
 package de.wackernagel.dkq.workers;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -14,6 +13,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.dagger.workerinjector.AndroidWorkerInjection;
 import de.wackernagel.dkq.repository.DkqRepository;
@@ -69,7 +69,7 @@ public class UpdateWorker extends Worker {
                 repository.saveQuizzesWithNotification( response.body() );
             }
         } catch (IOException e) {
-            Log.e(TAG, "request quizzes error", e);
+            DkqLog.e(TAG, "request quizzes error", e);
         }
     }
 
@@ -80,7 +80,7 @@ public class UpdateWorker extends Worker {
                 repository.saveMessagesWithNotification( response.body() );
             }
         } catch (IOException e) {
-            Log.e(TAG, "request messages error", e);
+            DkqLog.e(TAG, "request messages error", e);
         }
     }
 
@@ -96,7 +96,7 @@ public class UpdateWorker extends Worker {
                     repository.saveQuestions( response.body(), quiz.id );
                 }
             } catch (IOException e) {
-                Log.e(TAG, "request questions error for quiz.id=" + quiz.id + ", quiz.number=" + quiz.number, e);
+                DkqLog.e(TAG, "request questions error for quiz.id=" + quiz.id + ", quiz.number=" + quiz.number, e);
             }
         }
     }

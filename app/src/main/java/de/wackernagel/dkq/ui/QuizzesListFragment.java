@@ -2,14 +2,11 @@ package de.wackernagel.dkq.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -17,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
@@ -25,6 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
+import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.QuizListItem;
 import de.wackernagel.dkq.utils.DeviceUtils;
@@ -32,7 +29,10 @@ import de.wackernagel.dkq.utils.GridGutterDecoration;
 import de.wackernagel.dkq.utils.SectionItemDecoration;
 import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
 import de.wackernagel.dkq.viewmodels.QuizzesViewModel;
-import de.wackernagel.dkq.webservice.Resource;
+import de.wackernagel.dkq.webservice.Status;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class QuizzesListFragment extends Fragment {
     @Inject
@@ -99,25 +99,14 @@ public class QuizzesListFragment extends Fragment {
             }) );
 
             final QuizzesViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(QuizzesViewModel.class);
-            viewModel.loadQuizzes().observe(this, new Observer<Resource<List<QuizListItem>>>() {
-                @Override
-                public void onChanged(@Nullable Resource<List<QuizListItem>> quizzes) {
-                    if( quizzes != null ) {
-                        Log.i("dkq", "Status=" + quizzes.status + ", Items=" + (quizzes.data != null ? quizzes.data.size() : "null" ));
-                        switch (quizzes.status) {
-                            case LOADING:
-                                progressBar.setVisibility( View.VISIBLE );
-                                emptyView.setVisibility( View.GONE );
-                                break;
-                            case ERROR:
-                            case SUCCESS:
-                                progressBar.setVisibility( View.GONE );
-                                emptyView.setVisibility( quizzes.data != null && quizzes.data.size() > 0 ? View.GONE : View.VISIBLE );
-                                break;
-                        }
+            viewModel.loadQuizzes().observe(this, quizzes -> {
+                if( quizzes != null ) {
+                    DkqLog.i("QuizzesListFragment", "Status=" + quizzes.status + ", Items=" + (quizzes.data != null ? quizzes.data.size() : "null" ) + ", Message=" + quizzes.message );
 
-                        adapter.submitList( quizzes.data );
-                    }
+                    progressBar.setVisibility( quizzes.status == Status.LOADING ? VISIBLE : GONE );
+                    emptyView.setVisibility( quizzes.status != Status.LOADING && ( quizzes.data == null || quizzes.data.isEmpty() ) ? VISIBLE : GONE );
+
+                    adapter.submitList( quizzes.data );
                 }
             });
         }
@@ -169,12 +158,9 @@ public class QuizzesListFragment extends Fragment {
 
                 holder.name.setText( holder.itemView.getContext().getString( R.string.quiz_number, quiz.number ) );
                 holder.questionsHint.setText( holder.itemView.getContext().getString( R.string.questions_hint, quiz.questionCount) );
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        final Context context = view.getContext();
-                        context.startActivity( QuizDetailsActivity.createLaunchIntent( context, quiz.id, quiz.number ) );
-                    }
+                holder.itemView.setOnClickListener(view -> {
+                    final Context context = view.getContext();
+                    context.startActivity( QuizDetailsActivity.createLaunchIntent( context, quiz.id, quiz.number ) );
                 });
             }
         }

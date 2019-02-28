@@ -3,7 +3,6 @@ package de.wackernagel.dkq.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +25,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import dagger.android.support.AndroidSupportInjection;
+import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.MessageListItem;
@@ -38,6 +38,10 @@ import de.wackernagel.dkq.utils.SectionItemDecoration;
 import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
 import de.wackernagel.dkq.viewmodels.MessagesViewModel;
 import de.wackernagel.dkq.webservice.Resource;
+import de.wackernagel.dkq.webservice.Status;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class MessagesListFragment extends Fragment {
     @Inject
@@ -112,18 +116,11 @@ public class MessagesListFragment extends Fragment {
                 @Override
                 public void onChanged(@Nullable Resource<List<MessageListItem>> messages) {
                     if( messages != null ) {
-                        Log.i("dkq", "Status=" + messages.status + ", Items=" + (messages.data != null ? messages.data.size() : "null" ));
-                        switch (messages.status) {
-                            case LOADING:
-                                progressBar.setVisibility( View.VISIBLE );
-                                emptyView.setVisibility( View.GONE );
-                                break;
-                            case ERROR:
-                            case SUCCESS:
-                                progressBar.setVisibility( View.GONE );
-                                emptyView.setVisibility( messages.data != null && messages.data.size() > 0 ? View.GONE : View.VISIBLE );
-                                break;
-                        }
+                        DkqLog.i("MessagesListFragment", "Status=" + messages.status + ", Items=" + (messages.data != null ? messages.data.size() : "null" ) + ", Message=" + messages.message );
+
+                        progressBar.setVisibility( messages.status == Status.LOADING ? VISIBLE : GONE );
+                        emptyView.setVisibility( messages.status != Status.LOADING && ( messages.data == null || messages.data.isEmpty() ) ? VISIBLE : GONE );
+
                         adapter.submitList( messages.data );
                     }
                 }

@@ -20,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import dagger.android.AndroidInjection;
@@ -28,7 +27,6 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import de.wackernagel.dkq.R;
-import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.utils.BottomNavigationUtils;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.viewmodels.MainViewModel;
@@ -60,40 +58,31 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
 
         final MainViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(MainViewModel.class);
         viewModel.installUpdateChecker();
-        viewModel.loadNextQuiz().observe(this, new Observer<Quiz>() {
-            @Override
-            public void onChanged( final Quiz quiz ) {
-                final TextView nextQuizTextView = findViewById(R.id.nextQuizTextView);
-                if( quiz != null ) {
-                    final SimpleDateFormat formatter = new SimpleDateFormat( "dd. MMMM yyyy - HH:mm", Locale.getDefault() );
-                    final Date quizDate = DateUtils.joomlaDateToJavaDate( quiz.quizDate );
-                    final String formattedDate = quizDate != null ? formatter.format( quizDate ) : "?";
+        viewModel.loadNextQuiz().observe(this, quiz -> {
+            final TextView nextQuizTextView = findViewById(R.id.nextQuizTextView);
+            if( quiz != null ) {
+                final SimpleDateFormat formatter = new SimpleDateFormat( "dd. MMMM yyyy - HH:mm", Locale.getDefault() );
+                final Date quizDate = DateUtils.joomlaDateToJavaDate( quiz.quizDate );
+                final String formattedDate = quizDate != null ? formatter.format( quizDate ) : "?";
 
-                    nextQuizTextView.setText( getString( R.string.next_quiz, quiz.number, formattedDate) );
+                nextQuizTextView.setText( getString( R.string.next_quiz, quiz.number, formattedDate) );
 
-                    final CardView toolbarCard = findViewById(R.id.toolbarCard);
-                    toolbarCard.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            final Context context = view.getContext();
-                            context.startActivity( QuizDetailsActivity.createLaunchIntent( context, quiz.id, quiz.number ) );
-                        }
-                    });
-                }
-                else {
-                    nextQuizTextView.setText( getString( R.string.next_quiz_unschedule ) );
-                }
+                final CardView toolbarCard = findViewById(R.id.toolbarCard);
+                toolbarCard.setOnClickListener(view -> {
+                    final Context context = view.getContext();
+                    context.startActivity( QuizDetailsActivity.createLaunchIntent( context, quiz.id, quiz.number ) );
+                });
+            }
+            else {
+                nextQuizTextView.setText( getString( R.string.next_quiz_unschedule ) );
             }
         });
 
-        viewModel.getNewMessagesCount().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                if( integer != null && integer > 0 ) {
-                    BottomNavigationUtils.showOrUpdateBadge( bottomNavigationView, R.id.action_news, integer.toString() );
-                } else {
-                    BottomNavigationUtils.removeBadge( bottomNavigationView, R.id.action_news);
-                }
+        viewModel.getNewMessagesCount().observe(this, integer -> {
+            if( integer != null && integer > 0 ) {
+                BottomNavigationUtils.showOrUpdateBadge( bottomNavigationView, R.id.action_news, integer.toString() );
+            } else {
+                BottomNavigationUtils.removeBadge( bottomNavigationView, R.id.action_news);
             }
         });
 

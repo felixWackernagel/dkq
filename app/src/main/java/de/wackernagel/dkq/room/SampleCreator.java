@@ -1,11 +1,10 @@
 package de.wackernagel.dkq.room;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
+import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
@@ -18,7 +17,7 @@ public final class SampleCreator {
     }
 
     public static void createSamples( final AppDatabase db ) {
-        Log.i("DKQ", "create samples for db " + db.getOpenHelper().getDatabaseName() );
+        DkqLog.i("SampleCreator", "create samples for db " + db.getOpenHelper().getDatabaseName() );
     }
 
     public static Quizzer[] createSampleQuizzers() {
