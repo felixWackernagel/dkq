@@ -55,9 +55,6 @@ public class CalendarBuilder {
 
     /**
      * Look at Spec 'http://tools.ietf.org/html/rfc5545#section-3.8.5.3'
-     *
-     * @param recurrenceRule
-     * @return builder
      */
     public CalendarBuilder recurrence(final String recurrenceRule) {
         calendar.putExtra(CalendarContract.Events.RRULE, recurrenceRule);

@@ -7,7 +7,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.media.RingtoneManager;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
@@ -74,13 +74,13 @@ public class NotificationReceiver extends BroadcastReceiver {
                     .setContentText(content)
                     .setAutoCancel(true)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_notification_dkq)
                     .setContentIntent(PendingIntent.getActivity(context, 0, activityOnClick, PendingIntent.FLAG_ONE_SHOT))
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(content))
                     .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
 
             if( DkqPreferences.soundsEnabled( context ) ) {
-                builder.setSound( Uri.parse( "android.resource://de.wackernagel.dkq/" + R.raw.stapling_paper ) );
+                builder.setSound( RingtoneManager.getDefaultUri( RingtoneManager.TYPE_NOTIFICATION ) );
             } else {
                 builder.setSound( null );
             }

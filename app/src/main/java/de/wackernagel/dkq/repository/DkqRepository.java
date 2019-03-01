@@ -124,7 +124,7 @@ public class DkqRepository {
         } else if( onlineQuiz.published == 0 ) {
             DkqLog.i("DkqRepository", "Remove existing Quiz " + onlineQuiz.number);
             quizDao.deleteQuiz( existingQuiz );
-        } else if( existingQuiz.version < onlineQuiz.version || !ObjectUtils.equals( existingQuiz.winnerId, onlineQuiz.winnerId ) || !ObjectUtils.equals( existingQuiz.quizMasterId, onlineQuiz.quizMasterId ) ) {
+        } else if( existingQuiz.version < onlineQuiz.version || ObjectUtils.notEquals( existingQuiz.winnerId, onlineQuiz.winnerId ) || ObjectUtils.notEquals( existingQuiz.quizMasterId, onlineQuiz.quizMasterId ) ) {
             onlineQuiz.id = existingQuiz.id; // update is ID based so copy existing quiz ID to new one
             DkqLog.i("DkqRepository", "Update Quiz " + onlineQuiz.number + " from version " + existingQuiz.version + " to " + onlineQuiz.version + " " + onlineQuiz.toString() );
             quizDao.updateQuiz( onlineQuiz );

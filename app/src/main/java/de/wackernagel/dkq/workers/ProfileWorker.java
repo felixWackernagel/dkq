@@ -10,6 +10,9 @@ import androidx.work.WorkerParameters;
 import de.wackernagel.dkq.dagger.workerinjector.AndroidWorkerInjection;
 import de.wackernagel.dkq.repository.DkqRepository;
 
+/**
+ * Placeholder worker for future task in background. Just to simplify dagger usage with two workers.
+ */
 public class ProfileWorker extends Worker {
 
     @Inject

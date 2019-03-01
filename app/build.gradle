@@ -53,18 +53,18 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.preference:preference:1.1.0-alpha02'
+    implementation 'androidx.preference:preference:1.1.0-alpha03'
 
     implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.0.0'
 
-    implementation 'androidx.room:room-runtime:2.1.0-alpha03'
-    annotationProcessor 'androidx.room:room-compiler:2.1.0-alpha03'
+    implementation 'androidx.room:room-runtime:2.1.0-alpha04'
+    annotationProcessor 'androidx.room:room-compiler:2.1.0-alpha04'
 
-    implementation 'androidx.paging:paging-runtime:2.0.0'
+    implementation 'androidx.paging:paging-runtime:2.1.0'
 
-    implementation 'android.arch.work:work-runtime:1.0.0-beta02'
+    implementation 'android.arch.work:work-runtime:1.0.0-rc02'
 
     // Dagger
     implementation 'com.google.dagger:dagger:2.16'
@@ -77,7 +77,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.13.1'
 
     // ACRA
     implementation 'ch.acra:acra-mail:5.1.3'

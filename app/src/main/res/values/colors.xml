@@ -3,7 +3,6 @@
     <color name="colorPrimary">#9c27b0</color>        <!-- Purple 500 -->
     <color name="colorPrimaryDark">#7b1fa2</color>    <!-- Purple 700 -->
     <color name="colorAccent">#FFD740</color>         <!-- Amber 50 200 -->
-    <color name="colorAccentDark">#FFAB00</color>     <!-- Amber 50 700 -->
     <color name="error">#B00020</color>
 
     <color name="divider">#1E000000</color>           <!-- 12% black-->

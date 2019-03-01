@@ -9,25 +9,19 @@ import java.util.concurrent.Executors;
 public class AppExecutors {
 
     private final Executor mDiskIO;
-    private final Executor mNetworkIO;
     private final Executor mMainThread;
 
     AppExecutors() {
-        this(Executors.newSingleThreadExecutor(), Executors.newFixedThreadPool(3), new MainThreadExecutor());
+        this(Executors.newSingleThreadExecutor(), new MainThreadExecutor());
     }
 
-    private AppExecutors( final Executor diskIO, final Executor networkIO, final Executor mainThread) {
+    private AppExecutors( final Executor diskIO, final Executor mainThread) {
         this.mDiskIO = diskIO;
-        this.mNetworkIO = networkIO;
         this.mMainThread = mainThread;
     }
 
     public Executor diskIO() {
         return mDiskIO;
-    }
-
-    public Executor networkIO() {
-        return mNetworkIO;
     }
 
     public Executor mainThread() {

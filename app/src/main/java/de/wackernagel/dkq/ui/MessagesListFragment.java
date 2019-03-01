@@ -105,7 +105,8 @@ public class MessagesListFragment extends Fragment {
                 @Override
                 public CharSequence getSectionHeader(int position) {
                     if( position == 0 ) {
-                        return getString( R.string.messages_section, adapter.getItemCount() );
+                        final int count = adapter.getItemCount();
+                        return getResources().getQuantityString( R.plurals.messages_section, count, count );
                     }
                     return "";
                 }

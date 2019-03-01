@@ -94,7 +94,8 @@ public class QuizzesListFragment extends Fragment {
 
                 @Override
                 public CharSequence getSectionHeader(int position) {
-                    return getString( R.string.quizzes_section, adapter.getItemCount() );
+                    final int count = adapter.getItemCount();
+                    return getResources().getQuantityString( R.plurals.quizzes_section, count, count );
                 }
             }) );
 

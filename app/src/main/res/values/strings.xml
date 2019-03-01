@@ -20,11 +20,12 @@
     <string name="update_log_version_code_4_title">Version 4.0</string>
     <string name="update_log_version_code_4_content"><![CDATA[
         <b>NEU</b>: Bild-Fragen sind nun möglich<br>
-        <b>NEU</b>: Der Bereich "Artikel" heißt jetzt "Nachrichten mit weiteren Inhalten.<br>
-        <b>NEU</b>: Im täglichen Update sind Quiz-Fragen enthalten.<br>
-        <b>NEU</b>: Aktionen in den Quiz-Details<br>
+        <b>NEU</b>: Der Bereich "Artikel" heißt jetzt "Nachrichten" mit weiteren Inhalten.<br>
+        <b>NEU</b>: Im täglichen Update sind nun Quiz-Fragen enthalten.<br>
+        <b>NEU</b>: Nutzeraktionen in den Quiz-Details<br>
         <b>BUG-FIX</b>: Geöffnete Antworten von ungelesenen Fragen.<br>
-        Änderungen im Design
+        Änderungen im Design<br>
+        Im Fehlerfall erscheint nun ein Dialog
     ]]></string>
 
     <!-- ACRA -->
@@ -35,11 +36,17 @@
 
     <!-- Messages -->
     <string name="no_messages">Keine News zum DKQ</string>
-    <string name="messages_section">%1$d Nachrichten</string>
+    <plurals name="messages_section">
+        <item quantity="one">%1$d Nachricht</item>
+        <item quantity="other">%1$d Nachrichten</item>
+    </plurals>
 
     <!-- Quizzes -->
     <string name="no_quizzes">Keine Quizze vorhanden</string>
-    <string name="quizzes_section">%1$d Quizze</string>
+    <plurals name="quizzes_section">
+        <item quantity="one">%1$d Quiz</item>
+        <item quantity="other">%1$d Quizze</item>
+    </plurals>
 
     <!-- Quesstions -->
     <string name="no_questions">Keine Fragen vorhanden</string>

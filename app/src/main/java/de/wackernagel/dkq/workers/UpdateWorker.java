@@ -24,7 +24,7 @@ import de.wackernagel.dkq.webservice.Webservice;
 import retrofit2.Response;
 
 public class UpdateWorker extends Worker {
-    private static final String TAG = UpdateWorker.class.getSimpleName();
+    private static final String TAG = "UpdateWorker";
 
     @Inject
     DkqRepository repository;
@@ -65,22 +65,22 @@ public class UpdateWorker extends Worker {
     private void updateQuizzes() {
         try {
             final Response<List<Quiz>> response = webservice.getQuizzesList().execute();
-            if( response != null && response.isSuccessful() && response.body() != null ) {
+            if( response.isSuccessful() && response.body() != null ) {
                 repository.saveQuizzesWithNotification( response.body() );
             }
         } catch (IOException e) {
-            DkqLog.e(TAG, "request quizzes error", e);
+            DkqLog.e(TAG, "Quizzes Update-Request Error", e);
         }
     }
 
     private void updateMessages() {
         try {
             final Response<List<Message>> response = webservice.getMessagesList().execute();
-            if( response != null && response.isSuccessful() && response.body() != null ) {
+            if( response.isSuccessful() && response.body() != null ) {
                 repository.saveMessagesWithNotification( response.body() );
             }
         } catch (IOException e) {
-            DkqLog.e(TAG, "request messages error", e);
+            DkqLog.e(TAG, "Messages Update-Request Error", e);
         }
     }
 
@@ -92,11 +92,11 @@ public class UpdateWorker extends Worker {
         for( Quiz quiz : localQuizzes ) {
             try {
                 final Response<List<Question>> response = webservice.getQuestionsList( quiz.number ).execute();
-                if( response != null && response.isSuccessful() && response.body() != null ) {
+                if( response.isSuccessful() && response.body() != null ) {
                     repository.saveQuestions( response.body(), quiz.id );
                 }
             } catch (IOException e) {
-                DkqLog.e(TAG, "request questions error for quiz.id=" + quiz.id + ", quiz.number=" + quiz.number, e);
+                DkqLog.e(TAG, String.format( Locale.ENGLISH,"Question Update-Request Error (id=%d, number=%d)", quiz.id, quiz.number ), e);
             }
         }
     }

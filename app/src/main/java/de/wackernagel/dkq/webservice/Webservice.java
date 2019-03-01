@@ -41,6 +41,7 @@ public interface Webservice {
     @GET(VERSION + "/quizzers")
     LiveData<ApiResponse<List<Quizzer>>> getQuizzers();
 
-    @GET(VERSION + "/quizzers/{quizzerNumber}")
-    LiveData<ApiResponse<Quizzer>> getQuizzer( @Path("quizzerNumber") int quizzerNumber );
+    // currently not used but documented
+    //@GET(VERSION + "/quizzers/{quizzerNumber}")
+    //LiveData<ApiResponse<Quizzer>> getQuizzer( @Path("quizzerNumber") int quizzerNumber );
 }

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -56,6 +55,7 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener( this );
 
+        final CardView toolbarCard = findViewById(R.id.toolbarCard);
         final MainViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(MainViewModel.class);
         viewModel.installUpdateChecker();
         viewModel.loadNextQuiz().observe(this, quiz -> {
@@ -67,7 +67,6 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
 
                 nextQuizTextView.setText( getString( R.string.next_quiz, quiz.number, formattedDate) );
 
-                final CardView toolbarCard = findViewById(R.id.toolbarCard);
                 toolbarCard.setOnClickListener(view -> {
                     final Context context = view.getContext();
                     context.startActivity( QuizDetailsActivity.createLaunchIntent( context, quiz.id, quiz.number ) );
@@ -91,9 +90,8 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
                 .replace( R.id.container, QuizzesListFragment.newInstance(), "quizzes" )
                 .commit();
 
-            final View infoCard = findViewById(R.id.toolbarCard);
-            infoCard.setAlpha( 0f );
-            infoCard.animate().alpha( 1f ).setDuration( 400L ).setListener( null ).start();
+            toolbarCard.setAlpha( 0f );
+            toolbarCard.animate().alpha( 1f ).setDuration( 400L ).setListener( null ).start();
         }
     }
 
