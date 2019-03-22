@@ -4,11 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -37,33 +35,24 @@ public class LoginActivity extends AbstractDkqActivity {
         setContentView(R.layout.activity_login);
         usernameContainer = findViewById(R.id.usernameContainer);
         usernameField = findViewById(R.id.usernameField);
-        usernameField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if( !hasFocus ) {
-                    isRequired( usernameContainer );
-                }
+        usernameField.setOnFocusChangeListener((view, hasFocus) -> {
+            if( !hasFocus ) {
+                isRequired( usernameContainer );
             }
         });
         passwordContainer = findViewById(R.id.passwordContainer);
         passwordField = findViewById(R.id.passwordField);
-        passwordField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if( !hasFocus ) {
-                    isRequired( passwordContainer );
-                }
+        passwordField.setOnFocusChangeListener((view, hasFocus) -> {
+            if( !hasFocus ) {
+                isRequired( passwordContainer );
             }
         });
-        passwordField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    login(null);
-                    return true;
-                }
-                return false;
+        passwordField.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                login(null);
+                return true;
             }
+            return false;
         });
     }
 

@@ -15,31 +15,31 @@ import static de.wackernagel.dkq.DkqConstants.API.VERSION;
 
 public interface Webservice {
     @GET(VERSION + "/quizzes")
-    LiveData<ApiResponse<List<Quiz>>> getQuizzes();
+    LiveData<ApiResponse<ApiResult<List<Quiz>>>> getQuizzes();
 
     @GET(VERSION + "/quizzes")
-    Call<List<Quiz>> getQuizzesList();
+    Call<ApiResult<List<Quiz>>> getQuizzesList();
 
     @GET(VERSION + "/quizzes/{quizNumber}")
-    LiveData<ApiResponse<Quiz>> getQuiz( @Path("quizNumber") int quizNumber );
+    LiveData<ApiResponse<ApiResult<Quiz>>> getQuiz( @Path("quizNumber") int quizNumber );
 
     @GET(VERSION + "/quizzes/{quizNumber}/questions")
-    LiveData<ApiResponse<List<Question>>> getQuestionsFromQuiz( @Path("quizNumber") int quizNumber );
+    LiveData<ApiResponse<ApiResult<List<Question>>>> getQuestionsFromQuiz( @Path("quizNumber") int quizNumber );
 
     @GET(VERSION + "/quizzes/{quizNumber}/questions")
-   Call<List<Question>> getQuestionsList( @Path("quizNumber") int quizNumber );
+   Call<ApiResult<List<Question>>> getQuestionsList( @Path("quizNumber") int quizNumber );
 
     @GET(VERSION + "/messages")
-    LiveData<ApiResponse<List<Message>>> getMessages();
+    LiveData<ApiResponse<ApiResult<List<Message>>>> getMessages();
 
     @GET(VERSION + "/messages")
-    Call<List<Message>> getMessagesList();
+    Call<ApiResult<List<Message>>> getMessagesList();
 
     @GET(VERSION + "/messages/{messageNumber}")
-    LiveData<ApiResponse<Message>> getMessage( @Path("messageNumber") int messageNumber );
+    LiveData<ApiResponse<ApiResult<Message>>> getMessage( @Path("messageNumber") int messageNumber );
 
     @GET(VERSION + "/quizzers")
-    LiveData<ApiResponse<List<Quizzer>>> getQuizzers();
+    LiveData<ApiResponse<ApiResult<List<Quizzer>>>> getQuizzers();
 
     // currently not used but documented
     //@GET(VERSION + "/quizzers/{quizzerNumber}")

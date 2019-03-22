@@ -87,7 +87,7 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
 
         if( savedInstanceState == null ) {
             getSupportFragmentManager().beginTransaction()
-                .replace( R.id.container, QuizzesListFragment.newInstance(), "quizzes" )
+                .replace( R.id.fragmentContainer, QuizzesListFragment.newInstance(), "quizzes" )
                 .commit();
 
             toolbarCard.setAlpha( 0f );
@@ -123,7 +123,7 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
         Fragment replacement = null;
         String tag = null;
 
-        final Fragment currentFragment = getSupportFragmentManager().findFragmentById( R.id.container );
+        final Fragment currentFragment = getSupportFragmentManager().findFragmentById( R.id.fragmentContainer );
         switch (item.getItemId()) {
             case R.id.action_news:
                 if( !( currentFragment instanceof MessagesListFragment ) ) {
@@ -148,7 +148,7 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
         }
 
         if( replacement != null ) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, replacement, tag).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, replacement, tag).commit();
         }
 
         return true;

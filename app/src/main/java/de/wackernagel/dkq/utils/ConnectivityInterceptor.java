@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 
 import java.io.IOException;
 
+import de.wackernagel.dkq.R;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -24,7 +25,7 @@ public class ConnectivityInterceptor implements Interceptor {
         NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
 
         if (!(netInfo != null && netInfo.isConnected())) {
-            throw new NoConnectivityException();
+            throw new NoConnectivityException( mContext.getString(R.string.no_connection_error) );
         }
 
         Request.Builder builder = chain.request().newBuilder();
@@ -32,11 +33,8 @@ public class ConnectivityInterceptor implements Interceptor {
     }
 
     public static class NoConnectivityException extends IOException {
-
-        @Override
-        public String getMessage() {
-            return "No connectivity exception";
+        NoConnectivityException( final String localizedMessage ) {
+            super( localizedMessage );
         }
-
     }
 }

@@ -2,6 +2,8 @@ package de.wackernagel.dkq.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -48,6 +50,15 @@ public class DevelopmentActivity extends AbstractDkqActivity {
         final TextView timestamps = findViewById(R.id.timestamps);
         timestamps.setText( getString( R.string.timestamps_text, DkqPreferences.getLastUpdateWorkerExecutionTime( getApplicationContext() ) ) );
 
+        final TextView networkInfo = findViewById( R.id.networkInfo );
+        final ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        final NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+        if( netInfo != null ) {
+            networkInfo.setText( getString( R.string.network_info_text, netInfo.isConnected(), netInfo.getSubtypeName() + ", " + netInfo.getExtraInfo() ) );
+        } else {
+            networkInfo.setText( getString( R.string.network_info_text, false, "No NetworkInfo" ) );
+        }
+
         viewModel = ViewModelProviders.of( this, viewModelFactory ).get(DevelopmentViewModel.class);
     }
 
@@ -57,6 +68,10 @@ public class DevelopmentActivity extends AbstractDkqActivity {
 
     public void dropSampleMessages(View view) {
         viewModel.deleteAllMessages();
+    }
+
+    public void testNotificationOneNewQuizInline(View view) {
+        NotificationReceiver.forNextQuiz( this,1 );
     }
 
     public void testNotificationOneNewQuiz(View view) {

@@ -67,6 +67,24 @@ public class RoomModule {
                 database.execSQL( "CREATE INDEX `index_questions_quizId` ON `questions` (`quizId`)" );
                 database.execSQL( "CREATE INDEX `index_quizzes_quizMasterId` ON `quizzes` (`quizMasterId`)" );
                 database.execSQL( "CREATE INDEX `index_quizzes_winnerId` ON `quizzes` (`winnerId`)" );
+
+                // DROP COLUMN quizzes.published
+                database.execSQL( "ALTER TABLE `quizzes` RENAME TO `temp_quizzes`" );
+                database.execSQL( "CREATE TABLE IF NOT EXISTS `quizzes` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `number` INTEGER NOT NULL, `location` TEXT, `address` TEXT, `quizDate` TEXT, `quizMasterId` INTEGER, `winnerId` INTEGER, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `version` INTEGER NOT NULL, `lastUpdate` TEXT, FOREIGN KEY(`winnerId`) REFERENCES `quizzers`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`quizMasterId`) REFERENCES `quizzers`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )" );
+                database.execSQL( "INSERT INTO `quizzes` ( `id`, `number`, `location`, `address`, `quizDate`, `latitude`, `longitude`, `version`, `lastUpdate`, `quizMasterId`, `winnerId` ) SELECT `id`, `number`, `location`, `address`, `quizDate`, `latitude`, `longitude`, `version`, `lastUpdate`, `quizMasterId`, `winnerId` FROM `temp_quizzes`");
+                database.execSQL( "DROP TABLE `temp_quizzes`" );
+                database.execSQL( "CREATE UNIQUE INDEX `index_quizzes_number` ON `quizzes` (`number`)" );
+                database.execSQL( "CREATE INDEX `index_quizzes_quizMasterId` ON `quizzes` (`quizMasterId`)" );
+                database.execSQL( "CREATE INDEX `index_quizzes_winnerId` ON `quizzes` (`winnerId`)" );
+
+                // DROP COLUMN questions.published
+                database.execSQL( "ALTER TABLE `questions` RENAME TO `temp_questions`" );
+                database.execSQL( "CREATE TABLE IF NOT EXISTS `questions` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `quizId` INTEGER NOT NULL, `number` INTEGER NOT NULL, `question` TEXT, `answer` TEXT, `image` TEXT, `version` INTEGER NOT NULL, `lastUpdate` TEXT, FOREIGN KEY(`quizId`) REFERENCES `quizzes`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )" );
+                database.execSQL( "INSERT INTO `questions` ( `id`, `quizId`, `number`, `question`, `answer`, `image`, `version`, `lastUpdate` ) SELECT `id`, `quizId`, `number`, `question`, `answer`, `image`, `version`, `lastUpdate` FROM `temp_questions`");
+                database.execSQL( "DROP TABLE `temp_questions`" );
+                database.execSQL( "CREATE UNIQUE INDEX `index_questions_number_quizId` ON `questions` (`number`, `quizId`)" );
+                database.execSQL( "CREATE INDEX `index_questions_quizId` ON `questions` (`quizId`)" );
+
                 database.setTransactionSuccessful();
             } finally {
                 database.endTransaction();
@@ -87,12 +105,7 @@ public class RoomModule {
             .addCallback(new RoomDatabase.Callback() {
                 @Override
                 public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                executors.diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        SampleCreator.createSamples( database );
-                    }
-                });
+                executors.diskIO().execute(() -> SampleCreator.createSamples( database ));
                 }
             })
             .build();

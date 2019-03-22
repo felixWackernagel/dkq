@@ -9,7 +9,7 @@ public final class DkqConstants {
     }
 
     public static final class API {
-        public static final String VERSION = "v3";
+        public static final String VERSION = "v4";
         public static final String BASE_URL = "http://www.felixwackernagel.de/index.php/dkq/";
     }
 

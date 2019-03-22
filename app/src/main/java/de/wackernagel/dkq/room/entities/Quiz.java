@@ -24,7 +24,6 @@ public class Quiz {
     @Nullable public Long winnerId = null;
     public double latitude;
     public double longitude;
-    public int published;
     public int version;
     public String lastUpdate;
 
@@ -35,8 +34,7 @@ public class Quiz {
 
     public boolean isInvalid() {
         return id == 0L && number == 0 && address == null && location == null && quizMasterId == null && winnerId == null &&
-                quizDate == null && version == 0 && longitude == 0.0D && latitude == 0.0D && published == 0 &&
-                lastUpdate == null;
+                quizDate == null && version == 0 && longitude == 0.0D && latitude == 0.0D && lastUpdate == null;
     }
 
     @Override
@@ -51,7 +49,6 @@ public class Quiz {
                 ", winnerId=" + winnerId +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
-                ", published=" + published +
                 ", version=" + version +
                 ", lastUpdate='" + lastUpdate + '\'' +
                 '}';

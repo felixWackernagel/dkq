@@ -28,7 +28,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import dagger.android.AndroidInjection;
@@ -42,7 +41,6 @@ import de.wackernagel.dkq.utils.CalendarBuilder;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.GlideUtils;
 import de.wackernagel.dkq.viewmodels.QuestionsViewModel;
-import de.wackernagel.dkq.webservice.Resource;
 
 public class QuizDetailsActivity extends AbstractDkqActivity implements HasSupportFragmentInjector {
 
@@ -96,41 +94,32 @@ public class QuizDetailsActivity extends AbstractDkqActivity implements HasSuppo
 
         setFabBehavior( null );
         final QuestionsViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(QuestionsViewModel.class);
-        viewModel.loadQuiz( getQuizId(), getQuizNumber() ).observe(this, new Observer<Resource<Quiz>>() {
-            @Override
-            public void onChanged(@Nullable Resource<Quiz> resource) {
-                if( resource != null && resource.data != null ) {
-                    setQuizDate( resource.data );
-                    setQuizTime( resource.data );
-                    setQuizLocation( resource.data );
-                    setFabBehavior( resource.data );
-                }
+        viewModel.loadQuiz( getQuizId(), getQuizNumber() ).observe(this, resource -> {
+            if( resource != null && resource.data != null ) {
+                setQuizDate( resource.data );
+                setQuizTime( resource.data );
+                setQuizLocation( resource.data );
+                setFabBehavior( resource.data );
             }
         });
 
         setWinner( null );
-        viewModel.loadWinner( getQuizId() ).observe( this, new Observer<Quizzer>() {
-            @Override
-            public void onChanged(@Nullable Quizzer quizzer ) {
-                if( quizzer != null ) {
-                    setWinner( quizzer );
-                }
+        viewModel.loadWinner( getQuizId() ).observe( this, quizzer -> {
+            if( quizzer != null ) {
+                setWinner( quizzer );
             }
         });
 
         setQuizMaster( null );
-        viewModel.loadQuizmaster( getQuizId() ).observe( this, new Observer<Quizzer>() {
-            @Override
-            public void onChanged(@Nullable Quizzer quizzer) {
-                if( quizzer != null ) {
-                    setQuizMaster( quizzer );
-                }
+        viewModel.loadQuizmaster( getQuizId() ).observe( this, quizzer -> {
+            if( quizzer != null ) {
+                setQuizMaster( quizzer );
             }
         });
 
         if( savedInstanceState == null ) {
             getSupportFragmentManager().beginTransaction()
-                .replace( R.id.container, QuestionsListFragment.newInstance( getQuizId(), getQuizNumber() ), "questions" )
+                .replace( R.id.fragmentContainer, QuestionsListFragment.newInstance( getQuizId(), getQuizNumber() ), "questions" )
                 .commit();
         }
     }
@@ -141,17 +130,14 @@ public class QuizDetailsActivity extends AbstractDkqActivity implements HasSuppo
             fab.hide();
         } else {
             fab.show();
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final BottomSheetDialog modalBottomSheet = new BottomSheetDialog( QuizDetailsActivity.this );
-                    final View bottomSheetView = getLayoutInflater().inflate( R.layout.bottom_sheet_quiz, null, false );
-                    addCalendarAction( quiz, bottomSheetView.findViewById( R.id.calendarAction ) );
-                    addMapsAction( quiz, bottomSheetView.findViewById( R.id.mapsAction ) );
-                    addShareAction( quiz, bottomSheetView.findViewById( R.id.shareAction ) );
-                    modalBottomSheet.setContentView( bottomSheetView );
-                    modalBottomSheet.show();
-                }
+            fab.setOnClickListener(v -> {
+                final BottomSheetDialog modalBottomSheet = new BottomSheetDialog( QuizDetailsActivity.this );
+                final View bottomSheetView = getLayoutInflater().inflate( R.layout.bottom_sheet_quiz, null, false );
+                addCalendarAction( quiz, bottomSheetView.findViewById( R.id.calendarAction ) );
+                addMapsAction( quiz, bottomSheetView.findViewById( R.id.mapsAction ) );
+                addShareAction( quiz, bottomSheetView.findViewById( R.id.shareAction ) );
+                modalBottomSheet.setContentView( bottomSheetView );
+                modalBottomSheet.show();
             });
         }
     }
@@ -173,14 +159,11 @@ public class QuizDetailsActivity extends AbstractDkqActivity implements HasSuppo
 
             final Intent intent = builder.build();
             if( existApplication( intent, getApplicationContext() ) ) {
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if( startTime == null )
-                            Toast.makeText( v.getContext(), R.string.quiz_bottom_sheet_calendar_no_date, Toast.LENGTH_LONG ).show();
-                        else
-                            startActivity( intent );
-                    }
+                view.setOnClickListener(v -> {
+                    if( startTime == null )
+                        Toast.makeText( v.getContext(), R.string.quiz_bottom_sheet_calendar_no_date, Toast.LENGTH_LONG ).show();
+                    else
+                        startActivity( intent );
                 });
             } else {
                 view.setVisibility( View.GONE );
@@ -197,14 +180,11 @@ public class QuizDetailsActivity extends AbstractDkqActivity implements HasSuppo
             final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse( uriString ) );
 
             if( existApplication( intent, getApplicationContext() ) ) {
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if( quiz.latitude == 0d && quiz.longitude == 0d )
-                            Toast.makeText( v.getContext(), R.string.quiz_bottom_sheet_maps_no_location, Toast.LENGTH_LONG ).show();
-                        else
-                            startActivity( intent );
-                    }
+                view.setOnClickListener(v -> {
+                    if( quiz.latitude == 0d && quiz.longitude == 0d )
+                        Toast.makeText( v.getContext(), R.string.quiz_bottom_sheet_maps_no_location, Toast.LENGTH_LONG ).show();
+                    else
+                        startActivity( intent );
                 });
             } else {
                 view.setVisibility( View.GONE );
@@ -225,12 +205,7 @@ public class QuizDetailsActivity extends AbstractDkqActivity implements HasSuppo
                     .createChooserIntent();
 
             if( existApplication( intent, getApplicationContext() ) ) {
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity( intent );
-                    }
-                });
+                view.setOnClickListener(v -> startActivity( intent ));
             } else {
                 view.setVisibility( View.GONE );
             }

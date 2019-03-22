@@ -9,15 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
@@ -37,7 +34,6 @@ import de.wackernagel.dkq.utils.GridGutterDecoration;
 import de.wackernagel.dkq.utils.SectionItemDecoration;
 import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
 import de.wackernagel.dkq.viewmodels.MessagesViewModel;
-import de.wackernagel.dkq.webservice.Resource;
 import de.wackernagel.dkq.webservice.Status;
 
 import static android.view.View.GONE;
@@ -84,22 +80,21 @@ public class MessagesListFragment extends Fragment {
             animator.setMoveDuration( 400 );
             animator.setRemoveDuration( 400 );
 
-            final int columnCount = DeviceUtils.isPortraitMode( getContext() ) ? 1 : 2;
             adapter = new MessagesListFragment.MessageAdapter( new MessageItemCallback() );
-            recyclerView.setLayoutManager( new GridLayoutManager( getContext(), columnCount ) );
+            recyclerView.setLayoutManager( new GridLayoutManager( getContext(), 1 ) );
             recyclerView.setHasFixedSize( true );
             recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );
             recyclerView.addItemDecoration( new GridGutterDecoration(
                     DeviceUtils.dpToPx(16, getContext()),
-                    columnCount,
+                    1,
                     false,
                     true,
                     true ) );
             recyclerView.addItemDecoration( new SectionItemDecoration( getContext(),false, new SectionItemDecoration.SectionCallback() {
                 @Override
                 public boolean isSection(int position) {
-                    return position < columnCount;
+                    return position < 1;
                 }
 
                 @Override
@@ -113,17 +108,14 @@ public class MessagesListFragment extends Fragment {
             }) );
 
             final MessagesViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(MessagesViewModel.class);
-            viewModel.loadMessages().observe(this, new Observer<Resource<List<MessageListItem>>>() {
-                @Override
-                public void onChanged(@Nullable Resource<List<MessageListItem>> messages) {
-                    if( messages != null ) {
-                        DkqLog.i("MessagesListFragment", "Status=" + messages.status + ", Items=" + (messages.data != null ? messages.data.size() : "null" ) + ", Message=" + messages.message );
+            viewModel.loadMessages().observe(this, messages -> {
+                if( messages != null ) {
+                    DkqLog.i("MessagesListFragment", "Status=" + messages.status + ", Items=" + (messages.data != null ? messages.data.size() : "null" ) + ", Message=" + messages.message );
 
-                        progressBar.setVisibility( messages.status == Status.LOADING ? VISIBLE : GONE );
-                        emptyView.setVisibility( messages.status != Status.LOADING && ( messages.data == null || messages.data.isEmpty() ) ? VISIBLE : GONE );
+                    progressBar.setVisibility( messages.status == Status.LOADING ? VISIBLE : GONE );
+                    emptyView.setVisibility( messages.status != Status.LOADING && ( messages.data == null || messages.data.isEmpty() ) ? VISIBLE : GONE );
 
-                        adapter.submitList( messages.data );
-                    }
+                    adapter.submitList( messages.data );
                 }
             });
         }
@@ -196,18 +188,15 @@ public class MessagesListFragment extends Fragment {
                 holder.title.setText( message.title );
                 if( message.type == Message.Type.ARTICLE ) {
                     GlideUtils.loadImage(holder.image, message.image);
-                    holder.image.drawBadge(message.read == 0);
+                    holder.image.drawBadge(!message.read);
                     holder.content.setText( message.content );
                 } else {
-                    holder.badge.drawBadge(message.read == 0);
+                    holder.badge.drawBadge(!message.read);
                 }
 
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        final Context context = holder.itemView.getContext();
-                        context.startActivity( MessageDetailsActivity.createLaunchIntent( context, message.id, message.number ) );
-                    }
+                holder.itemView.setOnClickListener(view -> {
+                    final Context context = holder.itemView.getContext();
+                    context.startActivity( MessageDetailsActivity.createLaunchIntent( context, message.id, message.number ) );
                 });
             }
         }

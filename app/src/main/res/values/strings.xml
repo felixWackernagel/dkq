@@ -13,6 +13,7 @@
     <string name="additions_section">Schätzfragen</string>
     <string name="open_quiz">zu Quiz %1$d</string>
     <string name="word_update">Update</string>
+    <string name="no_connection_error">Keine Internetverbindung vorhanden.</string>
 
     <string name="expanded">ausgeklappt</string>
     <string name="collapsed">zusammengeklappt</string>
@@ -100,6 +101,7 @@
     <!-- Development -->
     <string name="create_sample_messages">Beispiel Nachrichten anlegen</string>
     <string name="drop_all_messages">Alle Nachrichten löschen</string>
+    <string name="test_single_quiz_snackbar">Ein neues Quiz (Snackbar)</string>
     <string name="test_single_quiz_notification">Ein neues Quiz (Notification)</string>
     <string name="test_many_quiz_notification">Viele neue Quizze (Notification)</string>
     <string name="test_single_message_notification">Eine neue Nachricht (Notification)</string>
@@ -114,6 +116,7 @@
     <string name="subheader_screenshot_samples">Screenshot Daten</string>
     <string name="drop_all_create_samples">Alles Löschen und Beispiele anlegen</string>
     <string name="drop_all">Alles Löschen</string>
+    <string name="network_info_text">Internet %1$b (%2$s)</string>
 
     <!-- Quizzers -->
     <string name="quizzers_tab_winners">Gewinner</string>

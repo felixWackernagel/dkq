@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import de.wackernagel.dkq.DkqPreferences;
 
 public class SplashActivity extends AbstractDkqActivity {
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,4 +24,5 @@ public class SplashActivity extends AbstractDkqActivity {
         startActivity( redirectTo.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK) );
         finish();
     }
+
 }

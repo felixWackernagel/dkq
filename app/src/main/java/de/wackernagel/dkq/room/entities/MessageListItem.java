@@ -6,6 +6,6 @@ public class MessageListItem {
     public String title;
     public String content;
     public String image;
-    public int read;
+    public boolean read;
     public Message.Type type;
 }

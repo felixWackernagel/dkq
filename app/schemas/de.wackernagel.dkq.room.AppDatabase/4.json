@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "95cf91fb758ae373e409f423397e0f57",
+    "identityHash": "238e199be5bd5bd6fba745874920f552",
     "entities": [
       {
         "tableName": "quizzes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `number` INTEGER NOT NULL, `location` TEXT, `address` TEXT, `quizDate` TEXT, `quizMasterId` INTEGER, `winnerId` INTEGER, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `published` INTEGER NOT NULL, `version` INTEGER NOT NULL, `lastUpdate` TEXT, FOREIGN KEY(`winnerId`) REFERENCES `quizzers`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`quizMasterId`) REFERENCES `quizzers`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `number` INTEGER NOT NULL, `location` TEXT, `address` TEXT, `quizDate` TEXT, `quizMasterId` INTEGER, `winnerId` INTEGER, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `version` INTEGER NOT NULL, `lastUpdate` TEXT, FOREIGN KEY(`winnerId`) REFERENCES `quizzers`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`quizMasterId`) REFERENCES `quizzers`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -60,12 +60,6 @@
             "fieldPath": "longitude",
             "columnName": "longitude",
             "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "published",
-            "columnName": "published",
-            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -140,7 +134,7 @@
       },
       {
         "tableName": "questions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `quizId` INTEGER NOT NULL, `number` INTEGER NOT NULL, `question` TEXT, `answer` TEXT, `image` TEXT, `published` INTEGER NOT NULL, `version` INTEGER NOT NULL, `lastUpdate` TEXT, FOREIGN KEY(`quizId`) REFERENCES `quizzes`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `quizId` INTEGER NOT NULL, `number` INTEGER NOT NULL, `question` TEXT, `answer` TEXT, `image` TEXT, `version` INTEGER NOT NULL, `lastUpdate` TEXT, FOREIGN KEY(`quizId`) REFERENCES `quizzes`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -177,12 +171,6 @@
             "columnName": "image",
             "affinity": "TEXT",
             "notNull": false
-          },
-          {
-            "fieldPath": "published",
-            "columnName": "published",
-            "affinity": "INTEGER",
-            "notNull": true
           },
           {
             "fieldPath": "version",
@@ -403,7 +391,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"95cf91fb758ae373e409f423397e0f57\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"238e199be5bd5bd6fba745874920f552\")"
     ]
   }
 }

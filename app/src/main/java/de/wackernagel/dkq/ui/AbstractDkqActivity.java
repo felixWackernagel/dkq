@@ -1,36 +1,18 @@
 package de.wackernagel.dkq.ui;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Window;
-import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import de.wackernagel.dkq.R;
+import de.wackernagel.dkq.utils.DkqNotificationBroadcastReceiver;
 
-import static de.wackernagel.dkq.receiver.NotificationReceiver.NOTIFICATION_CONTENT;
-import static de.wackernagel.dkq.receiver.NotificationReceiver.NOTIFICATION_TITLE;
-
-public abstract class AbstractDkqActivity extends AppCompatActivity {
-
-    public static BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra( NOTIFICATION_CONTENT );
-            if( TextUtils.isEmpty( message ) ) {
-                message = intent.getStringExtra( NOTIFICATION_TITLE );
-            }
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-
-            if( isOrderedBroadcast() ) {
-                abortBroadcast();
-            }
-        }
-    };
+public abstract class AbstractDkqActivity extends AppCompatActivity implements DkqNotificationBroadcastReceiver.DkqNotificationCallback {
+    private static DkqNotificationBroadcastReceiver receiver = new DkqNotificationBroadcastReceiver();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,12 +24,19 @@ public abstract class AbstractDkqActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver( receiver, new IntentFilter("dkq.notification") );
+        receiver.setCallback( this );
+        receiver.registerTo( this );
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver( receiver );
+        receiver.clearCallback();
+        receiver.unregisterFrom( this );
+    }
+
+    @Override
+    public void onMessage(@NonNull String message) {
+        Snackbar.make( findViewById( R.id.container ), message, Snackbar.LENGTH_LONG ).show();
     }
 }

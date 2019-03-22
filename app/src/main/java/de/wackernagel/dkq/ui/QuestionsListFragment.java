@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -24,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
@@ -43,7 +41,6 @@ import de.wackernagel.dkq.utils.GridGutterDecoration;
 import de.wackernagel.dkq.utils.SectionItemDecoration;
 import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
 import de.wackernagel.dkq.viewmodels.QuestionsViewModel;
-import de.wackernagel.dkq.webservice.Resource;
 import de.wackernagel.dkq.webservice.Status;
 
 import static android.view.View.GONE;
@@ -143,9 +140,7 @@ public class QuestionsListFragment extends Fragment {
             }) );
 
             final QuestionsViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(QuestionsViewModel.class);
-            viewModel.loadQuestions( getQuizId(), getQuizNumber() ).observe(this, new Observer<Resource<List<Question>>>() {
-                @Override
-                public void onChanged(@Nullable Resource<List<Question>> questions) {
+            viewModel.loadQuestions( getQuizId(), getQuizNumber() ).observe(this, questions -> {
                 if( questions != null ) {
                     DkqLog.i("QuestionsListFragment", "Status=" + questions.status + ", Items=" + (questions.data != null ? questions.data.size() : "null" ) + ", Message=" + questions.message );
 
@@ -153,7 +148,6 @@ public class QuestionsListFragment extends Fragment {
                     emptyView.setVisibility( questions.status != Status.LOADING && ( questions.data == null || questions.data.isEmpty() ) ? VISIBLE : GONE );
 
                     adapter.submitList( questions.data );
-                }
                 }
             });
         }
@@ -214,14 +208,11 @@ public class QuestionsListFragment extends Fragment {
             holder.question.setText( question.question );
             holder.answer.setCardDescription( question.answer );
             holder.answer.setExpanded( openCards.contains( position ) );
-            holder.answer.setOnToggleListener(new CollapsibleCard.OnToggleListener() {
-                @Override
-                public void onToggleClicked(boolean isExpanded) {
-                    if( isExpanded ) {
-                        openCards.add( position );
-                    } else {
-                        openCards.remove( position );
-                    }
+            holder.answer.setOnToggleListener(isExpanded -> {
+                if( isExpanded ) {
+                    openCards.add( position );
+                } else {
+                    openCards.remove( position );
                 }
             });
 
@@ -231,23 +222,15 @@ public class QuestionsListFragment extends Fragment {
                 final Intent viewImageIntent = new Intent(Intent.ACTION_VIEW);
                 viewImageIntent.setDataAndType(Uri.parse(question.image), "image/*");
                 if ( holder.itemView.getContext().getPackageManager().queryIntentActivities( viewImageIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0 ) {
-                    holder.image.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            v.getContext().startActivity(viewImageIntent);
-                        }
-                    });
-                    holder.image.setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View view) {
-                            // position toast below image and at the center of the device
-                            int x = 0;
-                            int y = view.getBottom() + DeviceUtils.dpToPx( 16f, view.getContext() );
-                            Toast toast = Toast.makeText( view.getContext(), R.string.maximize_image, Toast.LENGTH_SHORT);
-                            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, x, y);
-                            toast.show();
-                            return true;
-                        }
+                    holder.image.setOnClickListener(v -> v.getContext().startActivity(viewImageIntent));
+                    holder.image.setOnLongClickListener(view -> {
+                        // position toast below image and at the center of the device
+                        int x = 0;
+                        int y = view.getBottom() + DeviceUtils.dpToPx( 16f, view.getContext() );
+                        Toast toast = Toast.makeText( view.getContext(), R.string.maximize_image, Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, x, y);
+                        toast.show();
+                        return true;
                     });
                 }
             }

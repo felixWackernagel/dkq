@@ -23,7 +23,7 @@ public class Resource<T> {
         this.message = message;
     }
 
-    static <T> Resource<T> success(@NonNull T data) {
+    static <T> Resource<T> success( @NonNull T data ) {
         return new Resource<>(SUCCESS, data, null);
     }
 

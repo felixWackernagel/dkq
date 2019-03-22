@@ -14,8 +14,8 @@ public class RateLimiter<KEY> {
     private final ArrayMap<KEY, Long> timestamps = new ArrayMap<>();
     private final long timeout;
 
-    public RateLimiter( final Integer timeout, final TimeUnit timeUnit ) {
-        this.timeout = timeUnit.toMillis( timeout.longValue() );
+    public RateLimiter( final long timeout, final TimeUnit timeUnit ) {
+        this.timeout = timeUnit.toMillis( timeout );
     }
 
     public synchronized boolean shouldFetch(KEY key) {

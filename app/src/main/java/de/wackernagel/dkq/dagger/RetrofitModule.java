@@ -34,12 +34,7 @@ public class RetrofitModule {
         client.addInterceptor( new ConnectivityInterceptor( application ) );
 
         if (BuildConfig.DEBUG) {
-            final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-                @Override
-                public void log( final String message ) {
-                    DkqLog.i("RetrofitModule", message);
-                }
-            });
+            final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(message -> DkqLog.i("RetrofitModule", message));
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             client.addInterceptor(interceptor);
         }

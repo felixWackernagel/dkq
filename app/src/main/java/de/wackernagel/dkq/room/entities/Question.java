@@ -17,13 +17,12 @@ public class Question {
     public String question;
     public String answer;
     public String image;
-    public int published;
     public int version;
     public String lastUpdate;
 
     public boolean isInvalid() {
         return id == 0L && quizId == 0L && number == 0 && question == null && answer == null && image == null
-                && published == 0 && version == 0 && lastUpdate == null;
+                && version == 0 && lastUpdate == null;
     }
 
     @Override
@@ -35,7 +34,6 @@ public class Question {
                 ", question='" + question + '\'' +
                 ", answer='" + answer + '\'' +
                 ", image='" + image + '\'' +
-                ", published=" + published +
                 ", version=" + version +
                 ", lastUpdate='" + lastUpdate + '\'' +
                 '}';

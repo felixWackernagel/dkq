@@ -15,9 +15,17 @@ public class DkqLog {
         }
     }
 
+    public static void e( String tag, String msg ) {
+        e( tag, msg, null );
+    }
+
     public static void e( String tag, String msg, Throwable e ) {
         if( BuildConfig.DEBUG ) {
-            Log.e("DKQ", String.format("%s: %s", tag, msg ), e);
+            if( e == null ) {
+                Log.e("DKQ", String.format("%s: %s", tag, msg ) );
+            } else {
+                Log.e("DKQ", String.format("%s: %s", tag, msg ), e);
+            }
         }
     }
 }

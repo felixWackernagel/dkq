@@ -46,7 +46,7 @@ public class Message {
     public String image;
     public int version;
     public String lastUpdate;
-    public int read;
+    public boolean read;
     @NonNull
     public Type type;
     @Nullable
@@ -56,7 +56,7 @@ public class Message {
     public Integer quizNumber = null;
 
     public boolean isInvalid() {
-        return id == 0 && number == 0 && title == null && content == null && image == null && version == 0 && lastUpdate == null && read == 0 && type == null && quizId == null;
+        return id == 0 && number == 0 && title == null && content == null && image == null && version == 0 && lastUpdate == null && type == null && quizId == null;
     }
 
     @Override

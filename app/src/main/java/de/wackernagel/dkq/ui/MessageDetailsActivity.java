@@ -23,10 +23,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.text.HtmlCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import dagger.android.AndroidInjection;
+import de.wackernagel.dkq.DkqLog;
+import de.wackernagel.dkq.GlideApp;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.Quiz;
@@ -35,7 +36,6 @@ import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GlideUtils;
 import de.wackernagel.dkq.viewmodels.MessageDetailsViewModel;
-import de.wackernagel.dkq.webservice.Resource;
 
 public class MessageDetailsActivity extends AbstractDkqActivity {
 
@@ -85,30 +85,25 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
         }
 
         final MessageDetailsViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(MessageDetailsViewModel.class);
-        viewModel.loadMessage( getMessageId(), getMessageNumber() ).observe(this, new Observer<Resource<Message>>() {
-            @Override
-            public void onChanged(@Nullable Resource<Message> resource) {
-                if( resource != null ) {
-                    if( resource.data != null ) {
-                        final Message message = resource.data;
-                        bindViews( message );
+        viewModel.loadMessage( getMessageId(), getMessageNumber() ).observe(this, resource -> {
+            if( resource != null ) {
+                DkqLog.i("MessageDetailActivity", resource.status + ": " + " Item=" + resource.data + (resource.message != null ? " , " + resource.message : "" )  );
+                if( resource.data != null ) {
+                    final Message message = resource.data;
+                    bindViews( message );
 
-                        if( message.quizId == null ) {
-                            bindQuizButton( null );
-                        } else {
-                            viewModel.loadQuiz( message.quizId ).observe(MessageDetailsActivity.this, new Observer<Quiz>() {
-                                @Override
-                                public void onChanged( Quiz quiz ) {
-                                    bindQuizButton( quiz );
-                                }
-                            });
-                        }
-
-                        if( message.read == 0 ) {
-                            message.read = 1;
-                            viewModel.updateMessage( message );
-                        }
+                    if( message.quizId == null ) {
+                        bindQuizButton( null );
+                    } else {
+                        viewModel.loadQuiz( message.quizId ).observe(MessageDetailsActivity.this, this::bindQuizButton);
                     }
+
+                    if( !message.read ) {
+                        message.read = true;
+                        viewModel.updateMessage( message );
+                    }
+                } else {
+                    clearViews();
                 }
             }
         });
@@ -122,12 +117,7 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
         } else {
             quizButton.setVisibility(View.VISIBLE);
             quizButton.setText( getString( R.string.open_quiz, quiz.number ));
-            quizButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    v.getContext().startActivity( QuizDetailsActivity.createLaunchIntent( v.getContext(), quiz.id, quiz.number ) );
-                }
-            });
+            quizButton.setOnClickListener(v -> v.getContext().startActivity( QuizDetailsActivity.createLaunchIntent( v.getContext(), quiz.id, quiz.number ) ));
         }
     }
 
@@ -142,23 +132,15 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
             final Intent viewImageIntent = new Intent(Intent.ACTION_VIEW);
             viewImageIntent.setDataAndType(Uri.parse(message.image), "image/*");
             if (getPackageManager().queryIntentActivities(viewImageIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0) {
-                image.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        v.getContext().startActivity(viewImageIntent);
-                    }
-                });
-                image.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        // position toast below image and at the center of the device
-                        int x = 0;
-                        int y = view.getBottom() + DeviceUtils.dpToPx( 16f, view.getContext() );
-                        Toast toast = Toast.makeText( view.getContext(), R.string.maximize_image, Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, x, y);
-                        toast.show();
-                        return true;
-                    }
+                image.setOnClickListener(v -> v.getContext().startActivity(viewImageIntent));
+                image.setOnLongClickListener(view -> {
+                    // position toast below image and at the center of the device
+                    int x = 0;
+                    int y = view.getBottom() + DeviceUtils.dpToPx( 16f, view.getContext() );
+                    Toast toast = Toast.makeText( view.getContext(), R.string.maximize_image, Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, x, y);
+                    toast.show();
+                    return true;
                 });
             }
         }
@@ -170,5 +152,20 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
         title.setText( message.title );
         content.setMovementMethod(LinkMovementMethod.getInstance() );
         content.setText( HtmlCompat.fromHtml( message.content, HtmlCompat.FROM_HTML_MODE_COMPACT ) );
+    }
+
+    private void clearViews() {
+        final IconImageView image = findViewById(R.id.image);
+        final TextView lastUpdate = findViewById(R.id.lastUpdate);
+        final TextView title = findViewById(R.id.title);
+        final TextView content = findViewById(R.id.content);
+
+        GlideApp.with( image ).clear( image );
+        image.setOnClickListener( null );
+        lastUpdate.setText( R.string.unknown_word );
+        title.setText( R.string.unknown_word );
+        content.setText( R.string.unknown_word );
+
+        bindQuizButton( null );
     }
 }

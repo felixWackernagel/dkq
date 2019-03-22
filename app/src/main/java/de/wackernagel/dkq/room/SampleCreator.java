@@ -63,6 +63,8 @@ public final class SampleCreator {
                         "<b>NEU</b>: Aktionen in den Quiz-Details<br>\n" +
                         "<b>BUG-FIX</b>: Geöffnete Antworten von ungelesenen Fragen.<br>\n" +
                         "Änderungen im Design", null, null ),
+                newMessage(999, Message.Type.ARTICLE,"Löschbar von API",
+                        "Diese Nachricht wird gelöscht sobald sie in der Detailansicht betrachtet wird.", null, null )
         };
     }
 
@@ -79,7 +81,6 @@ public final class SampleCreator {
         newQuestion.image = image;
         newQuestion.version = 0;
         newQuestion.lastUpdate = "2018-01-01 20:00:00";
-        newQuestion.published = 1;
         return newQuestion;
     }
 
@@ -104,7 +105,6 @@ public final class SampleCreator {
         quiz.latitude = 0.0d;
         quiz.longitude = 0.0d;
         quiz.version = 0;
-        quiz.published = 1;
         quiz.lastUpdate = "2018-01-01 20:00:00";
         return quiz;
     }
@@ -118,7 +118,7 @@ public final class SampleCreator {
         theMessage.content = content;
         theMessage.image = image;
         theMessage.quizId = quizId;
-        theMessage.read = 0;
+        theMessage.read = false;
         theMessage.version = 0;
         theMessage.lastUpdate = "2018-01-01 20:00:00";
         return theMessage;

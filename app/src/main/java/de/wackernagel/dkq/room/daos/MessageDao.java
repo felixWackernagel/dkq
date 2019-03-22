@@ -33,6 +33,9 @@ public interface MessageDao {
     @Query( "DELETE FROM messages" )
     void deleteAllMessages();
 
+    @Query( "DELETE FROM messages WHERE id = :messageId" )
+    int deleteMessage( long messageId );
+
     @Insert( onConflict = REPLACE)
     void insertMessages(Message... message);
 
