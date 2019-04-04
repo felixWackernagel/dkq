@@ -5,11 +5,19 @@ import android.content.pm.PackageManager;
 
 public class AppUtils {
 
-    public static int getAppVersionCode(final Context context ) {
+    public static int getVersionCode(final Context context ) {
         try {
             return context.getPackageManager().getPackageInfo( context.getPackageName(), 0).versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             return 0;
+        }
+    }
+
+    public static String getVersionName(final Context context ) {
+        try {
+            return context.getPackageManager().getPackageInfo( context.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return "?";
         }
     }
 

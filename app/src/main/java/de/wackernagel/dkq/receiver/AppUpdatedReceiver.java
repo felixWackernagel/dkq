@@ -22,7 +22,7 @@ public class AppUpdatedReceiver extends BroadcastReceiver {
         AndroidInjection.inject(this,context);
 
         if( Intent.ACTION_MY_PACKAGE_REPLACED.equals( intent.getAction() ) ) {
-            final int newVersionCode = AppUtils.getAppVersionCode( context );
+            final int newVersionCode = AppUtils.getVersionCode( context );
             DkqLog.d("AppUpdatedReceiver","App was updated to version code " + newVersionCode);
             updatedToVersion( newVersionCode );
             DkqPreferences.setLastVersionCode( context, newVersionCode );

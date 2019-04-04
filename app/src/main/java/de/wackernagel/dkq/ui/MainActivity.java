@@ -109,6 +109,10 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
                 startActivity( PreferencesActivity.createLaunchIntent( getApplicationContext() ) );
                 return true;
 
+            case R.id.menu_item_about:
+                startActivity( AboutActivity.createLaunchIntent( getApplicationContext() ) );
+                return true;
+
             case R.id.menu_item_development:
                 startActivity( DevelopmentActivity.createLaunchIntent( getApplicationContext() ) );
                 return true;

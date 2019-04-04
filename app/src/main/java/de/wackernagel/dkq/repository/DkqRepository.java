@@ -320,7 +320,7 @@ public class DkqRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable Message data) {
-                return ( rateLimiter.shouldFetch( LIMITER_MESSAGE + ":" + messageNumber ) && data.type == Message.Type.ARTICLE ) || data == null;
+                return ( ( rateLimiter.shouldFetch( LIMITER_MESSAGE + ":" + messageNumber ) && data != null && data.type == Message.Type.ARTICLE ) ) || data == null;
             }
 
             @NonNull

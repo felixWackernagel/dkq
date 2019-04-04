@@ -14,9 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:fullBackupContent="false"
-        tools:ignore="GoogleAppIndexingWarning">
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
         <activity android:name=".ui.SplashActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -26,7 +27,7 @@
         <activity android:name=".ui.MainActivity" android:theme="@style/MainAppTheme"/>
         <activity android:name=".ui.PreferencesActivity"
             android:label="@string/menu_preferences"
-            android:theme="@style/PreferencesTheme">
+            android:theme="@style/AppTheme.Preferences">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity" />
@@ -43,6 +44,13 @@
         </activity>
         <activity android:name=".ui.DevelopmentActivity"
             android:label="@string/menu_development">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
+        <activity android:name=".ui.AboutActivity"
+            android:label="@string/menu_about"
+            android:theme="@style/AppTheme.About">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MainActivity" />

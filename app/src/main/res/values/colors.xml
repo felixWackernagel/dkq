@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#9c27b0</color>        <!-- Purple 500 -->
     <color name="colorPrimaryDark">#7b1fa2</color>    <!-- Purple 700 -->
-    <color name="colorAccent">#FFD740</color>         <!-- Amber 50 200 -->
+    <color name="colorAccent">#ffd600</color>         <!-- Yellow A 700 -->
     <color name="error">#B00020</color>
 
     <color name="divider">#1E000000</color>           <!-- 12% black-->
@@ -17,7 +17,8 @@
     <color name="iconInactive">#99000000</color>     <!-- 60% black -->
 
     <color name="bottomNavigationBackground">#F5F5F5</color>
+    <color name="dialogBackground">#52000000</color>
 
-    <color name="badgeBackground">#FFD740</color>
+    <color name="badgeBackground">#ffd600</color>       <!-- Yellow A 700 -->
     <color name="badgeText">#000000</color>
 </resources>

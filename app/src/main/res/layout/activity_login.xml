@@ -65,7 +65,7 @@
         android:onClick="login"
         android:layout_gravity="end"
         android:layout_marginTop="8dp"
-        android:theme="@style/RaisedButton"/>
+        style="@style/Widget.MaterialComponents.Button.Dkq"/>
 
     <Button
         android:id="@+id/registerButton"
@@ -75,7 +75,6 @@
         android:onClick="register"
         android:layout_gravity="end"
         android:layout_marginTop="8dp"
-        android:theme="@style/FlatButton"
-        style="@style/Widget.AppCompat.Button.Borderless"/>
+        style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
 </LinearLayout>

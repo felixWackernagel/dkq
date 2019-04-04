@@ -92,7 +92,7 @@ public class UpdateWorker extends Worker {
     private <T> void handleApiResult( @Nullable final Response<ApiResult<T>> response, Consumer<? super T> successConsumer ){
         if( response != null && response.isSuccessful() && response.body() != null ) {
             final ApiResult<T> api = response.body();
-            if( api.isOkStatus() ) {
+            if( api.isStatusOk() ) {
                 if( api.result != null ) {
                     successConsumer.accept( api.result );
                 }

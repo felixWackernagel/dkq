@@ -7,8 +7,7 @@
         android:title="@string/menu_preferences" />
     <item
         android:id="@+id/menu_item_about"
-        android:title="@string/menu_about"
-        android:visible="false"/>
+        android:title="@string/menu_about"/>
     <item
         android:id="@+id/menu_item_development"
         android:title="@string/menu_development"

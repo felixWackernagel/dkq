@@ -72,7 +72,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
             result.removeSource(apiResponse);
             result.removeSource(dbSource);
             if (response.isSuccessful()) {
-                if( response.body.isOkStatus() ) {
+                if( response.body.isStatusOk() ) {
                     saveResultAndReInit(response.body);
                 } else {
                     executors.diskIO().execute(() -> {

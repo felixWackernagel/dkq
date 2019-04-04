@@ -1,7 +1,7 @@
 package de.wackernagel.dkq;
 
 public final class DkqConstants {
-    static final String EMAIL = "dkq@felixwackernagel.de";
+    public static final String EMAIL = "dkq@felixwackernagel.de";
 
     public static final class Account {
         public static final String USERNAME = "dkq";

@@ -9,7 +9,7 @@ public class ApiResult<T> {
     public @Nullable String message;
     public @Nullable T result;
 
-    public boolean isOkStatus() {
+    public boolean isStatusOk() {
         return "ok".equals( status );
     }
 }

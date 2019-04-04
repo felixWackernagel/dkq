@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="quiz_number">Quiz %1$d</string>
     <string name="question_number">Frage %1$d</string>
@@ -20,13 +21,16 @@
 
     <string name="update_log_version_code_4_title">Version 4.0</string>
     <string name="update_log_version_code_4_content"><![CDATA[
-        <b>NEU</b>: Bild-Fragen sind nun möglich<br>
-        <b>NEU</b>: Der Bereich "Artikel" heißt jetzt "Nachrichten" mit weiteren Inhalten.<br>
+        <b>NEU</b>: Es gibt jetzt Bild-Fragen<br>
+        <b>NEU</b>: Der Artikelbereich heißt jetzt "Nachrichten" mit mehr Inhalten.<br>
         <b>NEU</b>: Im täglichen Update sind nun Quiz-Fragen enthalten.<br>
-        <b>NEU</b>: Nutzeraktionen in den Quiz-Details<br>
+        <b>NEU</b>: Es gibt jetzt Nutzeraktionen in den Quiz-Details.<br>
+        <b>NEU</b>: Vom Artikel kann direkt zum zugehörigen Quiz gesprungen werden.<br>
+        <b>NEU</b>: Über DKQ Bereich.<br>
         <b>BUG-FIX</b>: Geöffnete Antworten von ungelesenen Fragen.<br>
-        Änderungen im Design<br>
-        Im Fehlerfall erscheint nun ein Dialog
+        <b>BUG-FIX</b>: Keine Daten mit Android Pie.<br>
+        Designänderungen<br>
+        Fehlerdialog beim Absturz.
     ]]></string>
 
     <!-- ACRA -->
@@ -99,13 +103,13 @@
     <string name="pref_sounds_enabled_summary">Töne können mit dieser Option stumm geschalten werden.</string>
 
     <!-- Development -->
-    <string name="create_sample_messages">Beispiel Nachrichten anlegen</string>
-    <string name="drop_all_messages">Alle Nachrichten löschen</string>
-    <string name="test_single_quiz_snackbar">Ein neues Quiz (Snackbar)</string>
-    <string name="test_single_quiz_notification">Ein neues Quiz (Notification)</string>
-    <string name="test_many_quiz_notification">Viele neue Quizze (Notification)</string>
-    <string name="test_single_message_notification">Eine neue Nachricht (Notification)</string>
-    <string name="test_many_message_notification">Viele neue Nachrichten (Notification)</string>
+    <string name="create_sample_messages">Nachrichten anlegen</string>
+    <string name="drop_all_messages">Nachrichten löschen</string>
+    <string name="test_single_quiz_snackbar">1 neues Quiz (Snackbar)</string>
+    <string name="test_single_quiz_notification">X neue Quizze (Notification)</string>
+    <string name="test_many_quiz_notification">X neue Quizze (Notification)</string>
+    <string name="test_single_message_notification">1 neue Nachricht (Notification)</string>
+    <string name="test_many_message_notification">X neue Nachrichten (Notification)</string>
     <string name="insert_sample_quiz">Quiz 999 anlegen</string>
     <string name="delete_sample_quiz">Quiz 999 löschen</string>
     <string name="subheader_messages">Nachrichten</string>
@@ -114,7 +118,7 @@
     <string name="subheader_timestamps">Zeitstempel</string>
     <string name="timestamps_text">Update-Worker: %1$s</string>
     <string name="subheader_screenshot_samples">Screenshot Daten</string>
-    <string name="drop_all_create_samples">Alles Löschen und Beispiele anlegen</string>
+    <string name="drop_all_create_samples">Alles Löschen &amp; Samples anlegen</string>
     <string name="drop_all">Alles Löschen</string>
     <string name="network_info_text">Internet %1$b (%2$s)</string>
 
@@ -140,5 +144,16 @@
     <string name="quiz_bottom_sheet_share_message">Das %1$d. DKQ findet am %2$s um %3$s Uhr im %4$s statt.</string>
     <string name="quiz_bottom_sheet_share_chooser">Teilen über &#8230;</string>
     <string name="word_article">Artikel</string>
+
+    <!-- About -->
+    <string name="about_version">DKQ (Version %1$s)</string>
+    <string name="about_intro">
+        <![CDATA[
+            DKQ für Android dient zur Unterstützung der Dresdner KneipenQuiz Gemeinschaft.
+            Fragen, Probleme oder Anregungen können per E-Mail an <a href="mailto:%1$s">%1$s</a> geschickt werden.
+            DKQ läuft unter der <a href="https://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a>.
+            Der Quellcode für diese Anwendung kann unter <a href="https://github.com/felixWackernagel/dkq">https://github.com/felixWackernagel/dkq</a> eingesehen werden.
+        ]]>
+    </string>
 
 </resources>
