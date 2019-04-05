@@ -272,7 +272,7 @@ public class DkqRepository {
             newMessagesCount += saveMessage( message );
         }
         if( newMessagesCount > 0 ) {
-            NotificationReceiver.forNewMessages( context, newMessagesCount );
+            NotificationReceiver.forNewMessages( context, newMessagesCount, null );
         }
     }
 
@@ -520,7 +520,7 @@ public class DkqRepository {
             updateLogMessage.quizNumber = null;
 
             messageDao.insertMessages( updateLogMessage );
-            NotificationReceiver.forNewMessages( context, 1 );
+            NotificationReceiver.forNewMessages( context, 1, null );
         });
     }
 

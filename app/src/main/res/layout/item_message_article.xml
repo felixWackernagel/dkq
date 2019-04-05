@@ -41,7 +41,7 @@
             android:layout_marginBottom="8dp"
             android:textSize="20sp"
             android:textColor="@color/textPrimary"
-            tools:text="@string/demo_title"/>
+            tools:text="Titel des Artikels"/>
 
         <TextView
             android:id="@+id/content"
@@ -53,7 +53,7 @@
             android:maxLines="2"
             android:ellipsize="end"
             android:textColor="@color/textSecondary"
-            tools:text="@string/demo_content"/>
+            tools:text="Hier entsteht ganz viel Inhalt um Linebreaks und mehr zu demonstrieren."/>
 
     </LinearLayout>
 

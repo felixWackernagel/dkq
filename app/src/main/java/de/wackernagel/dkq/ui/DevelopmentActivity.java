@@ -86,12 +86,12 @@ public class DevelopmentActivity extends AbstractDkqActivity {
 
     public void testNotificationOneNewMessage(View view) {
         finish();
-        NotificationReceiver.forNewMessages( this, 1 );
+        NotificationReceiver.forNewMessages( this, 1, "Neues von Foo & Bar" );
     }
 
     public void testNotificationManyNewMessages(View view) {
         finish();
-        NotificationReceiver.forNewMessages( this, 5 );
+        NotificationReceiver.forNewMessages( this, 5, null );
     }
 
     public void insertSampleQuiz( View view ) {

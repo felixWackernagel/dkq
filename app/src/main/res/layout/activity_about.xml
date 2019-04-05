@@ -50,7 +50,7 @@
                 android:textStyle="normal"
                 app:lineHeightMultiplierHint="1.2"
                 app:fontFamily="sans-serif"
-                tools:text="@string/demo_content"/>
+                tools:text="Hier entsteht ganz viel Inhalt um Linebreaks und mehr zu demonstrieren."/>
 
         </LinearLayout>
 

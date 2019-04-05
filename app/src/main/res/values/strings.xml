@@ -68,6 +68,8 @@
     <string name="menu_preferences">Einstellungen</string>
 
     <!-- Notifications -->
+    <string name="notification_channel_name">DKQ Benachrichtigungen</string>
+    <string name="notification_channel_description">Zeigt Benachrichtigungen vom DKQ.</string>
     <string name="next_quiz_title">Es gibt neue Termine zum DKQ</string>
     <plurals name="next_quiz_description">
         <item quantity="one">Das nächste Quiz steht fest.</item>

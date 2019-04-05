@@ -9,7 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.os.Build;
+import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import de.wackernagel.dkq.DkqPreferences;
@@ -18,27 +20,33 @@ import de.wackernagel.dkq.ui.MainActivity;
 
 public class NotificationReceiver extends BroadcastReceiver {
 
+    private static final String ACTION_DKQ_NOTIFICATION = "dkq.notification";
+
     public static final String NOTIFICATION_TITLE = "notification:title";
     public static final String NOTIFICATION_CONTENT = "notification:content";
     public static final String NOTIFICATION_TYPE = "notification:type";
 
-    public static final int NOTIFICATION_TYPE_NEXT_QUIZ = 1;
-    public static final int NOTIFICATION_TYPE_NEW_MESSAGES = 2;
+    private static final int NOTIFICATION_TYPE_NEXT_QUIZ = 1;
+    private static final int NOTIFICATION_TYPE_NEW_MESSAGES = 2;
 
     private static final String CHANNEL_ID = "dkq";
 
     public static void forNextQuiz( final Context context, final int futureQuizzesCount ) {
-        final Intent notification = new Intent( "dkq.notification" );
+        final Intent notification = new Intent( ACTION_DKQ_NOTIFICATION );
         notification.putExtra( NOTIFICATION_TITLE, context.getString(R.string.next_quiz_title) );
         notification.putExtra( NOTIFICATION_CONTENT, context.getResources().getQuantityString(R.plurals.next_quiz_description, futureQuizzesCount, futureQuizzesCount) );
         notification.putExtra( NOTIFICATION_TYPE, NOTIFICATION_TYPE_NEXT_QUIZ );
         context.sendOrderedBroadcast( notification, null ); // null means no permissions required by the receiver
     }
 
-    public static void forNewMessages( final Context context, final int newMessagesCount ) {
-        final Intent notification = new Intent( "dkq.notification" );
+    public static void forNewMessages( final Context context, final int newMessagesCount, @Nullable final String articleTitle ) {
+        final Intent notification = new Intent( ACTION_DKQ_NOTIFICATION );
         notification.putExtra( NOTIFICATION_TITLE, context.getString(R.string.new_messages_title) );
-        notification.putExtra( NOTIFICATION_CONTENT, context.getResources().getQuantityString(R.plurals.new_messages_description, newMessagesCount, newMessagesCount) );
+        if( TextUtils.isEmpty( articleTitle ) ) {
+            notification.putExtra( NOTIFICATION_CONTENT, context.getResources().getQuantityString(R.plurals.new_messages_description, newMessagesCount, newMessagesCount) );
+        } else {
+            notification.putExtra( NOTIFICATION_CONTENT, articleTitle );
+        }
         notification.putExtra( NOTIFICATION_TYPE, NOTIFICATION_TYPE_NEW_MESSAGES );
         context.sendOrderedBroadcast( notification, null ); // null means no permissions required by the receiver
     }
@@ -51,8 +59,8 @@ public class NotificationReceiver extends BroadcastReceiver {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 // Create the NotificationChannel, but only on API 26+ because
                 // the NotificationChannel class is new and not in the support library
-                final String name = "DKQ Benachrichtigungen";
-                final String description = "Zeigt Benachrichtigungen vom DKQ.";
+                final String name = context.getString( R.string.notification_channel_name );
+                final String description = context.getString( R.string.notification_channel_description );
                 final NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
                 channel.setDescription( description );
 

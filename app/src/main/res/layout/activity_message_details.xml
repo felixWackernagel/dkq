@@ -64,7 +64,7 @@
                 tools:ignore="SmallSp"
                 android:textStyle="normal"
                 app:textAllCaps="true"
-                tools:text="@string/demo_date" />
+                tools:text="01. Januar 2019" />
 
             <de.wackernagel.dkq.ui.widgets.BaselineGridTextView
                 android:id="@+id/title"
@@ -79,7 +79,7 @@
                 android:textColor="@color/textPrimary"
                 android:textSize="24sp"
                 android:textStyle="normal"
-                tools:text="@string/demo_title" />
+                tools:text="Titel eines Artikels" />
 
             <de.wackernagel.dkq.ui.widgets.BaselineGridTextView
                 android:id="@+id/content"
@@ -92,7 +92,7 @@
                 android:textColor="@color/textSecondary"
                 android:textSize="16sp"
                 android:textStyle="normal"
-                tools:text="@string/demo_content" />
+                tools:text="Hier entsteht ganz viel Inhalt um Linebreaks und mehr zu demonstrieren." />
 
             <Button
                 android:id="@+id/quizButton"
