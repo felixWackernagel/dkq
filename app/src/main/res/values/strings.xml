@@ -22,15 +22,16 @@
     <string name="update_log_version_code_4_title">Version 4.0</string>
     <string name="update_log_version_code_4_content"><![CDATA[
         <b>NEU</b>: Es gibt jetzt Bild-Fragen<br>
-        <b>NEU</b>: Der Artikelbereich heißt jetzt "Nachrichten" mit mehr Inhalten.<br>
+        <b>NEU</b>: Der Artikelbereich heißt jetzt "Nachrichten" mit weiteren Inhalten.<br>
         <b>NEU</b>: Im täglichen Update sind nun Quiz-Fragen enthalten.<br>
         <b>NEU</b>: Es gibt jetzt Nutzeraktionen in den Quiz-Details.<br>
         <b>NEU</b>: Vom Artikel kann direkt zum zugehörigen Quiz gesprungen werden.<br>
-        <b>NEU</b>: Über DKQ Bereich.<br>
+        <b>NEU</b>: Der Bereich: Über DKQ<br>
         <b>BUG-FIX</b>: Geöffnete Antworten von ungelesenen Fragen.<br>
         <b>BUG-FIX</b>: Keine Daten mit Android Pie.<br>
-        Designänderungen<br>
-        Fehlerdialog beim Absturz.
+        <b>BESSER</b>: Design<br>
+        <b>BESSER</b>: Fehlerdialog beim Absturz.<br>
+        <b>BESSER</b>: Benachrichtigungen führend direkt zum Inhalt.
     ]]></string>
 
     <!-- ACRA -->
