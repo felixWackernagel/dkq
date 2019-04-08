@@ -3,6 +3,7 @@ package de.wackernagel.dkq.repository;
 import android.content.Context;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -105,43 +106,53 @@ public class DkqRepository {
     }
 
     public void saveQuizzesWithNotification( @NonNull final List<Quiz> items ) {
-        int quizzesInFuture = 0;
+        final ArrayList<Quiz> futureQuizzesList = new ArrayList<>();
         for( Quiz onlineQuiz : items ) {
-            quizzesInFuture += saveQuiz( onlineQuiz );
+            saveQuiz( futureQuizzesList, onlineQuiz );
         }
-        if( quizzesInFuture > 0 ) {
-            NotificationReceiver.forNextQuiz( context, quizzesInFuture );
+
+        final int newQuizzesCount = futureQuizzesList.size();
+        if( newQuizzesCount == 1 ) {
+            final Quiz quiz = futureQuizzesList.get( 0 );
+            NotificationReceiver.forOneFutureQuiz( context, quiz.id, quiz.number );
+        } else if( newQuizzesCount > 1 ) {
+            NotificationReceiver.forManyFutureQuizzes( context, newQuizzesCount );
         }
     }
 
-    private int saveQuiz( final Quiz onlineQuiz ) {
-        if( onlineQuiz.isInvalid() ) {
-            return 0;
-        }
+    private void saveQuiz( final Quiz onlineQuiz ) {
+        saveQuiz( null, onlineQuiz );
+    }
 
-        final Quiz existingQuiz = quizDao.loadQuizByNumber( onlineQuiz.number );
+    private void saveQuiz( @Nullable final ArrayList<Quiz> futureQuizzesList, final Quiz onlineQuiz) {
+        if( !onlineQuiz.isInvalid() ) {
+            final Quiz existingQuiz = quizDao.loadQuizByNumber( onlineQuiz.number );
 
-        onlineQuiz.quizMasterId = saveQuizzer( onlineQuiz.quizMaster );
-        if( ObjectUtils.equals( onlineQuiz.quizMaster, onlineQuiz.winner )  ) {
-            onlineQuiz.winnerId = onlineQuiz.quizMasterId;
-        } else {
-            onlineQuiz.winnerId = saveQuizzer( onlineQuiz.winner );
-        }
+            onlineQuiz.quizMasterId = saveQuizzer( onlineQuiz.quizMaster );
+            if( ObjectUtils.equals( onlineQuiz.quizMaster, onlineQuiz.winner )  ) {
+                onlineQuiz.winnerId = onlineQuiz.quizMasterId;
+            } else {
+                onlineQuiz.winnerId = saveQuizzer( onlineQuiz.winner );
+            }
 
-        final boolean isNew = existingQuiz == null;
-        if( isNew ) {
-            DkqLog.i(TAG, "Insert new Quiz " + onlineQuiz.number + " " + onlineQuiz.toString() );
-            quizDao.insertQuiz(onlineQuiz);
-            return DateUtils.joomlaDateToJavaDate(onlineQuiz.quizDate, new Date()).after(new Date()) ? 1 : 0;
-        } else if( existingQuiz.version < onlineQuiz.version || ObjectUtils.notEquals( existingQuiz.winnerId, onlineQuiz.winnerId ) || ObjectUtils.notEquals( existingQuiz.quizMasterId, onlineQuiz.quizMasterId ) ) {
-            onlineQuiz.id = existingQuiz.id; // update is ID based so copy existing quiz ID to new one
-            DkqLog.i(TAG, "Update Quiz " + onlineQuiz.number + " from version " + existingQuiz.version + " to " + onlineQuiz.version + " " + onlineQuiz.toString() );
-            quizDao.updateQuiz( onlineQuiz );
-            return DateUtils.notEquals( existingQuiz.quizDate, onlineQuiz.quizDate ) && DateUtils.joomlaDateToJavaDate( onlineQuiz.quizDate, new Date() ).after( new Date() ) ? 1 : 0;
-        } else {
-            DkqLog.i(TAG, "No changes on Quiz " + onlineQuiz.number);
+            final boolean isNew = existingQuiz == null;
+            if( isNew ) {
+                onlineQuiz.id = quizDao.insertQuiz( onlineQuiz );
+                DkqLog.i(TAG, "Quiz inserted " + onlineQuiz.toString() );
+                if( futureQuizzesList != null && DateUtils.isJoomlaDateInFuture( onlineQuiz.quizDate ) ) {
+                    futureQuizzesList.add( onlineQuiz );
+                }
+            } else if( existingQuiz.version < onlineQuiz.version || ObjectUtils.notEquals( existingQuiz.winnerId, onlineQuiz.winnerId ) || ObjectUtils.notEquals( existingQuiz.quizMasterId, onlineQuiz.quizMasterId ) ) {
+                onlineQuiz.id = existingQuiz.id; // update is ID based so copy existing quiz ID to new one
+                quizDao.updateQuiz( onlineQuiz );
+                DkqLog.i(TAG, String.format( Locale.ENGLISH,"Quiz %d updated from version %d to %d", onlineQuiz.number, existingQuiz.version, onlineQuiz.version ) );
+                if( futureQuizzesList != null && DateUtils.notEquals( existingQuiz.quizDate, onlineQuiz.quizDate ) && DateUtils.isJoomlaDateInFuture( onlineQuiz.quizDate ) ) {
+                    futureQuizzesList.add( onlineQuiz );
+                }
+            } else {
+                DkqLog.i(TAG, "No changes on Quiz " + onlineQuiz.number);
+            }
         }
-        return 0;
     }
 
     public LiveData<Resource<Quiz>> loadQuiz( final long quizId, final int quizNumber ) {
@@ -267,36 +278,44 @@ public class DkqRepository {
     }
 
     public void saveMessagesWithNotification(List<Message> items) {
-        int newMessagesCount = 0;
+        final ArrayList<Message> newMessagesList = new ArrayList<>();
         for( Message message : items ) {
-            newMessagesCount += saveMessage( message );
+            saveMessage( newMessagesList, message );
         }
-        if( newMessagesCount > 0 ) {
-            NotificationReceiver.forNewMessages( context, newMessagesCount, null );
+
+        final int newMessagesCount = newMessagesList.size();
+        if( newMessagesCount == 1 ) {
+            final Message message = newMessagesList.get( 0 );
+            NotificationReceiver.forOneNewMessage( context, message.title, message.id, message.number );
+        } else if( newMessagesCount > 1 ) {
+            NotificationReceiver.forManyNewMessages( context, newMessagesCount );
         }
     }
 
-    private int saveMessage( final Message onlineMessage ) {
-        if( onlineMessage.isInvalid() ) {
-            return 0;
+    private void saveMessage( final Message onlineMessage ) {
+        saveMessage( null, onlineMessage );
+    }
+
+    private void saveMessage( @Nullable final List<Message> newMessagesList, final Message onlineMessage ) {
+        if( !onlineMessage.isInvalid() ) {
+            onlineMessage.quizId = getQuizIdByNumber( onlineMessage.quizNumber );
+            onlineMessage.type = Message.Type.ARTICLE;
+            final Message existingMessage = messageDao.loadMessageByNumber( onlineMessage.number );
+            final boolean isNew = existingMessage == null;
+            if( isNew ) {
+                onlineMessage.id = messageDao.insertMessage(onlineMessage);
+                DkqLog.i(TAG, "Message inserted " + onlineMessage);
+                if( newMessagesList != null ) {
+                    newMessagesList.add( onlineMessage );
+                }
+            } else if( existingMessage.version < onlineMessage.version ) {
+                DkqLog.i(TAG, String.format( Locale.ENGLISH, "Message %d updated from version %d to %d", onlineMessage.number, existingMessage.version, onlineMessage.version ) );
+                onlineMessage.id = existingMessage.id; // update is ID based so copy existing quiz ID to new one
+                messageDao.updateMessage( onlineMessage );
+            } else {
+                DkqLog.i(TAG, "Message not changed " + onlineMessage.number);
+            }
         }
-        onlineMessage.quizId = getQuizIdByNumber( onlineMessage.quizNumber );
-        onlineMessage.type = Message.Type.ARTICLE;
-        final Message existingMessage = messageDao.loadMessageByNumber( onlineMessage.number );
-        final boolean isNew = existingMessage == null;
-        if( isNew ) {
-            DkqLog.i(TAG, "Insert new message " + onlineMessage.number);
-            messageDao.insertMessages(onlineMessage);
-            return 1;
-        } else if( existingMessage.version < onlineMessage.version ) {
-            DkqLog.i(TAG, "Update message " + onlineMessage.number + " from version " + existingMessage.version + " to " + onlineMessage.version);
-            onlineMessage.id = existingMessage.id; // update is ID based so copy existing quiz ID to new one
-            messageDao.updateMessage( onlineMessage );
-            return 0;
-        } else {
-            DkqLog.i(TAG, "No changes on message " + onlineMessage.number);
-        }
-        return 0;
     }
 
     private Long getQuizIdByNumber( @Nullable final Integer quizNumber) {
@@ -343,7 +362,7 @@ public class DkqRepository {
 
             @Override
             protected boolean onApiError(int code) {
-                if( code == 404 ) {
+                if( code == 404 && messageId > 0 ) {
                     return messageDao.deleteMessage( messageId ) > 0;
                 }
                 return super.onApiError(code);
@@ -435,20 +454,12 @@ public class DkqRepository {
         executors.diskIO().execute(() -> messageDao.updateMessage(message));
     }
 
-    public void insertMessages(final Message... messages ) {
-        executors.diskIO().execute(() -> messageDao.insertMessages( messages ));
-    }
-
     public LiveData<Integer> getNewMessagesCount() {
         return messageDao.loadNewMessagesCount();
     }
 
     private int getMaxMessageNumber() {
         return messageDao.loadMaxMessageNumber();
-    }
-
-    public void deleteAllMessages() {
-        executors.diskIO().execute( messageDao::deleteAllMessages );
     }
 
     public void insertQuiz(final Quiz quiz ) {
@@ -487,7 +498,7 @@ public class DkqRepository {
 
             final Message[] messages = SampleCreator.createSampleMessages( quizzes[0] );
             for( Message message : messages ) {
-                messageDao.insertMessages( message );
+                messageDao.insertMessage( message );
             }
         });
     }
@@ -519,8 +530,8 @@ public class DkqRepository {
             updateLogMessage.quizId = null;
             updateLogMessage.quizNumber = null;
 
-            messageDao.insertMessages( updateLogMessage );
-            NotificationReceiver.forNewMessages( context, 1, null );
+            updateLogMessage.id = messageDao.insertMessage( updateLogMessage );
+            NotificationReceiver.forOneNewMessage( context, updateLogMessage.title, updateLogMessage.id, updateLogMessage.number );
         });
     }
 

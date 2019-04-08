@@ -3,6 +3,7 @@ package de.wackernagel.dkq.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -32,9 +33,22 @@ import de.wackernagel.dkq.viewmodels.MainViewModel;
 
 public class MainActivity extends AbstractDkqActivity implements HasSupportFragmentInjector, BottomNavigationView.OnNavigationItemSelectedListener {
 
+    public static String FRAGMENT_QUIZZES = "quizzes";
+    public static String FRAGMENT_MESSAGES = "messages";
+    public static String FRAGMENT_QUIZZERS = "quizzers";
+
+    private static String ARG_START_FRAGMENT = "mainStartFragment";
+
     @NonNull
-    static Intent createLaunchIntent( final Context context ) {
-        return new Intent( context, MainActivity.class );
+    public static Intent createLaunchIntent( final Context context ) {
+        return createLaunchIntent( context, FRAGMENT_QUIZZES );
+    }
+
+    @NonNull
+    public static Intent createLaunchIntent( final Context context, final String startFragment ) {
+        final Intent intent = new Intent( context, MainActivity.class );
+        intent.putExtra( ARG_START_FRAGMENT, startFragment );
+        return intent;
     }
 
     @Inject
@@ -42,6 +56,17 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
 
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
+
+    private String getStartFragment() {
+        final Intent intent = getIntent();
+        if( intent != null ) {
+            final String startFragment = intent.getStringExtra( ARG_START_FRAGMENT );
+            if( !TextUtils.isEmpty( startFragment ) ) {
+                return startFragment;
+            }
+        }
+        return FRAGMENT_QUIZZES;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +111,22 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
         });
 
         if( savedInstanceState == null ) {
-            getSupportFragmentManager().beginTransaction()
-                .replace( R.id.fragmentContainer, QuizzesListFragment.newInstance(), "quizzes" )
-                .commit();
+            setStartFragment();
 
             toolbarCard.setAlpha( 0f );
             toolbarCard.animate().alpha( 1f ).setDuration( 400L ).setListener( null ).start();
+        }
+    }
+
+    private void setStartFragment() {
+        final String fragmentTag = getStartFragment();
+        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        if( FRAGMENT_MESSAGES.equals( fragmentTag ) ) {
+            bottomNavigationView.setSelectedItemId( R.id.action_news );
+        } else if( FRAGMENT_QUIZZERS.equals( fragmentTag ) ) {
+            bottomNavigationView.setSelectedItemId( R.id.action_quizzers );
+        } else {
+            bottomNavigationView.setSelectedItemId( R.id.action_quizzes );
         }
     }
 
@@ -132,21 +167,21 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
             case R.id.action_news:
                 if( !( currentFragment instanceof MessagesListFragment ) ) {
                     replacement = MessagesListFragment.newInstance();
-                    tag = "messages";
+                    tag = FRAGMENT_MESSAGES;
                 }
                 break;
 
             case R.id.action_quizzes:
                 if( !( currentFragment instanceof QuizzesListFragment ) ) {
                     replacement = QuizzesListFragment.newInstance();
-                    tag = "quizzes";
+                    tag = FRAGMENT_QUIZZES;
                 }
                 break;
 
             case R.id.action_quizzers:
                 if( !( currentFragment instanceof QuizzersViewPagerFragment) ) {
                     replacement = QuizzersViewPagerFragment.newInstance();
-                    tag = "quizzers";
+                    tag = FRAGMENT_QUIZZERS;
                 }
                 break;
         }

@@ -62,36 +62,28 @@ public class DevelopmentActivity extends AbstractDkqActivity {
         viewModel = ViewModelProviders.of( this, viewModelFactory ).get(DevelopmentViewModel.class);
     }
 
-    public void createSampleMessages(View view) {
-        viewModel.insertMessages( SampleCreator.createSampleMessages( null ) );
-    }
-
-    public void dropSampleMessages(View view) {
-        viewModel.deleteAllMessages();
-    }
-
     public void testNotificationOneNewQuizInline(View view) {
-        NotificationReceiver.forNextQuiz( this,1 );
+        NotificationReceiver.forOneFutureQuiz( this,0L, 0 );
     }
 
     public void testNotificationOneNewQuiz(View view) {
         finish();
-        NotificationReceiver.forNextQuiz( this,1 );
+        NotificationReceiver.forOneFutureQuiz( this,0L, 0 );
     }
 
     public void testNotificationManyNewQuizzes(View view) {
         finish();
-        NotificationReceiver.forNextQuiz( this, 5 );
+        NotificationReceiver.forManyFutureQuizzes( this, 5 );
     }
 
     public void testNotificationOneNewMessage(View view) {
         finish();
-        NotificationReceiver.forNewMessages( this, 1, "Neues von Foo & Bar" );
+        NotificationReceiver.forOneNewMessage( this, "Neues von Foo & Bar", 0L, 0 );
     }
 
     public void testNotificationManyNewMessages(View view) {
         finish();
-        NotificationReceiver.forNewMessages( this, 5, null );
+        NotificationReceiver.forManyNewMessages( this, 5 );
     }
 
     public void insertSampleQuiz( View view ) {

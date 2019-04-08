@@ -21,6 +21,12 @@ public class DateUtils {
         return TextUtils.equals( date, otherDate );
     }
 
+    public static boolean isJoomlaDateInFuture( final String dateTime ) {
+        final Date now = new Date();
+        final Date date = joomlaDateToJavaDate( dateTime, now );
+        return date.after( now );
+    }
+
     /**
      * @param dateTime 'YYYY-MM-DD HH:MM:SS'
      * @return Converted date or null
@@ -35,7 +41,8 @@ public class DateUtils {
      * @param fallback on wrong format
      * @return Converted date or fallback
      */
-    public static Date joomlaDateToJavaDate( final String dateTime, final Date fallback ) {
+    @Nullable
+    private static Date joomlaDateToJavaDate( final String dateTime, @Nullable final Date fallback ) {
         if( dateTime == null || "0000-00-00 00:00:00".equals( dateTime ) || dateTime.length() != 19 ) {
             return fallback;
         }

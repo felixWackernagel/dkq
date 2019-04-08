@@ -37,7 +37,7 @@ public interface MessageDao {
     int deleteMessage( long messageId );
 
     @Insert( onConflict = REPLACE)
-    void insertMessages(Message... message);
+    long insertMessage( Message message );
 
     @Update( onConflict = REPLACE)
     void updateMessage(Message message);

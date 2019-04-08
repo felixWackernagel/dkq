@@ -47,7 +47,7 @@ public class QuizDetailsActivity extends AbstractDkqActivity implements HasSuppo
     private static final String ARG_QUIZ_ID = "quizId";
     private static final String ARG_QUIZ_NUMBER = "quizNumber";
 
-    static Intent createLaunchIntent(final Context context, final long quizId, final int quizNumber ) {
+    public static Intent createLaunchIntent(final Context context, final long quizId, final int quizNumber ) {
         final Intent intent = new Intent( context, QuizDetailsActivity.class );
         intent.putExtra( ARG_QUIZ_ID, quizId );
         intent.putExtra( ARG_QUIZ_NUMBER, quizNumber );

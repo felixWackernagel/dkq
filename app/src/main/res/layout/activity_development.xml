@@ -28,43 +28,13 @@
             android:paddingBottom="8dp">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/subheader_messages"
-                android:textSize="14sp"
-                android:letterSpacing="0.1"
-                android:fontFamily="sans-serif-medium"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/create_sample_messages"
-                android:onClick="createSampleMessages"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="16dp"
-                style="@style/Widget.MaterialComponents.Button.Dkq"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/drop_all_messages"
-                android:onClick="dropSampleMessages"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                style="@style/Widget.MaterialComponents.Button.Dkq"/>
-
-            <TextView
                 android:background="@drawable/divider_full_bleed_top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:paddingTop="7dp"
+                android:paddingTop="16dp"
                 android:text="@string/subheader_notifications"
                 android:textSize="14sp"
                 android:letterSpacing="0.1"

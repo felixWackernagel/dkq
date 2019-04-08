@@ -1,5 +1,7 @@
 package de.wackernagel.dkq.room.daos;
 
+import android.annotation.SuppressLint;
+
 import java.util.List;
 
 import androidx.lifecycle.LiveData;

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="toolbar_height_default">56dp</dimen>
     <dimen name="toolbar_height_main">120dp</dimen>
     <dimen name="toolbar_height_plus_small_space">64dp</dimen>
 

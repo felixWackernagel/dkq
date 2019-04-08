@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 
 import static de.wackernagel.dkq.receiver.NotificationReceiver.NOTIFICATION_CONTENT;
-import static de.wackernagel.dkq.receiver.NotificationReceiver.NOTIFICATION_TITLE;
 
 public class DkqNotificationBroadcastReceiver extends BroadcastReceiver {
 
@@ -37,7 +36,7 @@ public class DkqNotificationBroadcastReceiver extends BroadcastReceiver {
     public void onReceive( Context context, Intent intent ) {
         String message = intent.getStringExtra( NOTIFICATION_CONTENT );
         if( TextUtils.isEmpty( message ) ) {
-            message = intent.getStringExtra( NOTIFICATION_TITLE );
+            message = intent.getStringExtra( NOTIFICATION_CONTENT );
         }
 
         if( !TextUtils.isEmpty( message ) && callback != null ) {
