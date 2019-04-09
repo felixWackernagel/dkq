@@ -114,7 +114,7 @@ public class RoomModule {
     @Provides
     @Singleton
     DkqRepository provideDkqRepository(final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao, final QuizzerDao quizzerDao ) {
-        return new DkqRepository( application.getApplicationContext(), executors, webservice, quizDao, questionDao, messageDao, quizzerDao );
+        return new DkqRepository( application.getApplicationContext(), database, executors, webservice, quizDao, questionDao, messageDao, quizzerDao );
     }
 
     @Provides

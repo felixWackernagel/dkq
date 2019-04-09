@@ -29,9 +29,11 @@
         <b>NEU</b>: Der Bereich: Über DKQ<br>
         <b>BUG-FIX</b>: Geöffnete Antworten von ungelesenen Fragen.<br>
         <b>BUG-FIX</b>: Keine Daten mit Android Pie.<br>
+        <b>BUG-FIX</b>: Unvollständige Daten beim Sync.<br>
         <b>BESSER</b>: Design<br>
+        <b>BESSER</b>: Performance<br>
         <b>BESSER</b>: Fehlerdialog beim Absturz.<br>
-        <b>BESSER</b>: Benachrichtigungen führend direkt zum Inhalt.
+        <b>BESSER</b>: Benachrichtigungen führen direkt zum Inhalt.
     ]]></string>
 
     <!-- ACRA -->

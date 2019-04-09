@@ -16,6 +16,7 @@ import androidx.lifecycle.LiveData;
 import de.wackernagel.dkq.AppExecutors;
 import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.receiver.NotificationReceiver;
+import de.wackernagel.dkq.room.AppDatabase;
 import de.wackernagel.dkq.room.SampleCreator;
 import de.wackernagel.dkq.room.daos.MessageDao;
 import de.wackernagel.dkq.room.daos.QuestionDao;
@@ -44,6 +45,7 @@ public class DkqRepository {
     private static final String TAG = "DkqRepository";
 
     private final Context context;
+    private final AppDatabase db;
     private final AppExecutors executors;
     private final Webservice webservice;
     private final QuizDao quizDao;
@@ -59,8 +61,9 @@ public class DkqRepository {
     private static final String LIMITER_MESSAGE = "message";
     private static final String LIMITER_QUIZZERS = "quizzers";
 
-    public DkqRepository(final Context context, final AppExecutors executors, final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao, final QuizzerDao quizzerDao ) {
+    public DkqRepository( final Context context, final AppDatabase database, final AppExecutors executors, final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao, final QuizzerDao quizzerDao) {
         this.context = context;
+        this.db = database;
         this.executors = executors;
         this.webservice = webservice;
         this.quizDao = quizDao;
@@ -73,7 +76,13 @@ public class DkqRepository {
         return new NetworkBoundResource<List<QuizListItem>,List<Quiz>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Quiz> items) {
-                saveQuizzesWithNotification( items );
+                db.beginTransaction();
+                try {
+                    saveQuizzesWithNotification( items );
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
             }
 
             @Override
@@ -137,20 +146,18 @@ public class DkqRepository {
 
             final boolean isNew = existingQuiz == null;
             if( isNew ) {
-                onlineQuiz.id = quizDao.insertQuiz( onlineQuiz );
-                DkqLog.i(TAG, "Quiz inserted " + onlineQuiz.toString() );
-                if( futureQuizzesList != null && DateUtils.isJoomlaDateInFuture( onlineQuiz.quizDate ) ) {
-                    futureQuizzesList.add( onlineQuiz );
+                onlineQuiz.id = quizDao.insertQuiz(onlineQuiz);
+                DkqLog.i(TAG, "Quiz inserted " + onlineQuiz.toString());
+                if (futureQuizzesList != null && DateUtils.isJoomlaDateInFuture(onlineQuiz.quizDate)) {
+                    futureQuizzesList.add(onlineQuiz);
                 }
-            } else if( existingQuiz.version < onlineQuiz.version || ObjectUtils.notEquals( existingQuiz.winnerId, onlineQuiz.winnerId ) || ObjectUtils.notEquals( existingQuiz.quizMasterId, onlineQuiz.quizMasterId ) ) {
+            } else {
                 onlineQuiz.id = existingQuiz.id; // update is ID based so copy existing quiz ID to new one
                 quizDao.updateQuiz( onlineQuiz );
-                DkqLog.i(TAG, String.format( Locale.ENGLISH,"Quiz %d updated from version %d to %d", onlineQuiz.number, existingQuiz.version, onlineQuiz.version ) );
+                DkqLog.i(TAG, String.format( Locale.ENGLISH,"Quiz %d updated", onlineQuiz.number ) );
                 if( futureQuizzesList != null && DateUtils.notEquals( existingQuiz.quizDate, onlineQuiz.quizDate ) && DateUtils.isJoomlaDateInFuture( onlineQuiz.quizDate ) ) {
                     futureQuizzesList.add( onlineQuiz );
                 }
-            } else {
-                DkqLog.i(TAG, "No changes on Quiz " + onlineQuiz.number);
             }
         }
     }
@@ -159,7 +166,13 @@ public class DkqRepository {
         return new NetworkBoundResource<Quiz,Quiz>(executors) {
             @Override
             protected void saveCallResult(@NonNull Quiz item) {
-                saveQuiz( item );
+                db.beginTransaction();
+                try {
+                    saveQuiz( item );
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
             }
 
             @Override
@@ -195,7 +208,13 @@ public class DkqRepository {
         return new NetworkBoundResource<List<Question>,List<Question>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Question> items) {
-                saveQuestions( items, quizId );
+                db.beginTransaction();
+                try {
+                    saveQuestions( items, quizId );
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
             }
 
             @Override
@@ -234,13 +253,11 @@ public class DkqRepository {
                 DkqLog.i(TAG, "Insert new question " + onlineQuestion.number);
                 onlineQuestion.quizId = quizId;
                 questionDao.insertQuestion(onlineQuestion);
-            } else if( existingQuestion.version < onlineQuestion.version ) {
-                DkqLog.i(TAG, "Update question " + onlineQuestion.number + " from version " + existingQuestion.version + " to " + onlineQuestion.version);
+            } else {
+                DkqLog.i(TAG, "Update question " + onlineQuestion.number );
                 onlineQuestion.id = existingQuestion.id; // update is ID based so copy existing quiz ID to new one
                 onlineQuestion.quizId = existingQuestion.quizId;
                 questionDao.updateQuestion( onlineQuestion );
-            } else {
-                DkqLog.i(TAG, "No changes on Question " + onlineQuestion.number);
             }
         }
     }
@@ -249,7 +266,13 @@ public class DkqRepository {
         return new NetworkBoundResource<List<MessageListItem>,List<Message>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Message> items) {
-                saveMessagesWithNotification( items );
+                db.beginTransaction();
+                try {
+                    saveMessagesWithNotification( items );
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
             }
 
             @Override
@@ -308,12 +331,11 @@ public class DkqRepository {
                 if( newMessagesList != null ) {
                     newMessagesList.add( onlineMessage );
                 }
-            } else if( existingMessage.version < onlineMessage.version ) {
-                DkqLog.i(TAG, String.format( Locale.ENGLISH, "Message %d updated from version %d to %d", onlineMessage.number, existingMessage.version, onlineMessage.version ) );
-                onlineMessage.id = existingMessage.id; // update is ID based so copy existing quiz ID to new one
-                messageDao.updateMessage( onlineMessage );
             } else {
-                DkqLog.i(TAG, "Message not changed " + onlineMessage.number);
+                DkqLog.i(TAG, String.format( Locale.ENGLISH, "Message %d updated", onlineMessage.number ) );
+                onlineMessage.id = existingMessage.id; // update is ID based so copy existing quiz ID to new one
+                onlineMessage.read = existingMessage.read;
+                messageDao.updateMessage( onlineMessage );
             }
         }
     }
@@ -374,7 +396,13 @@ public class DkqRepository {
         return new NetworkBoundResource<List<QuizzerListItem>,List<Quizzer>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Quizzer> items) {
-                saveQuizzers( items );
+                db.beginTransaction();
+                try {
+                    saveQuizzers( items );
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
             }
 
             @Override
@@ -439,14 +467,11 @@ public class DkqRepository {
             final long id = quizzerDao.insertQuizzer(onlineQuizzer);
             DkqLog.i(TAG, "Insert new Quizzer " + onlineQuizzer.number + " (id=" + id + ")");
             return id;
-        } else if( existingQuizzer.version < onlineQuizzer.version ) {
+        } else {
             onlineQuizzer.id = existingQuizzer.id; // update is ID based so copy existing ID to new one
             quizzerDao.updateQuizzer( onlineQuizzer );
-            DkqLog.i(TAG, "Update Quizzer " + onlineQuizzer.number + " from version " + existingQuizzer.version + " to " + onlineQuizzer.version + " (id=" + onlineQuizzer.id + ")" );
+            DkqLog.i(TAG, "Update Quizzer " + onlineQuizzer.number );
             return onlineQuizzer.id;
-        } else {
-            DkqLog.i(TAG, "No changes on Quizzer " + existingQuizzer.number + " (id=" + existingQuizzer.id + ")" );
-            return existingQuizzer.id;
         }
     }
 
@@ -472,33 +497,40 @@ public class DkqRepository {
 
     public void createSamples() {
         executors.diskIO().execute(() -> {
-            messageDao.deleteAllMessages();
-            questionDao.deleteAllQuestions();
-            quizDao.deleteAllQuizzes();
-            quizzerDao.deleteAllQuizzers();
+            db.beginTransaction();
+            try {
+                messageDao.deleteAllMessages();
+                questionDao.deleteAllQuestions();
+                quizDao.deleteAllQuizzes();
+                quizzerDao.deleteAllQuizzers();
 
-            final Quizzer[] quizzers = SampleCreator.createSampleQuizzers();
-            for( Quizzer quizzer : quizzers ) {
-                quizzer.id = quizzerDao.insertQuizzer( quizzer );
-            }
+                final Quizzer[] quizzers = SampleCreator.createSampleQuizzers();
+                for( Quizzer quizzer : quizzers ) {
+                    quizzer.id = quizzerDao.insertQuizzer( quizzer );
+                }
 
-            final Quiz[] quizzes = SampleCreator.createSampleQuizzes( quizzers[0], quizzers[1] );
-            final int count = quizzes.length;
-            for( int index = 0; index < count; index++ ) {
-                final Quiz quiz = quizzes[ index ];
-                quiz.id = quizDao.insertQuiz( quiz );
+                final Quiz[] quizzes = SampleCreator.createSampleQuizzes( quizzers[0], quizzers[1] );
+                final int count = quizzes.length;
+                for( int index = 0; index < count; index++ ) {
+                    final Quiz quiz = quizzes[ index ];
+                    quiz.id = quizDao.insertQuiz( quiz );
 
-                if( index + 1 < count ) {
-                    final Question[] questions = SampleCreator.createSampleQuestions( quiz );
-                    for( Question question : questions ) {
-                        questionDao.insertQuestion( question );
+                    if( index + 1 < count ) {
+                        final Question[] questions = SampleCreator.createSampleQuestions( quiz );
+                        for( Question question : questions ) {
+                            questionDao.insertQuestion( question );
+                        }
                     }
                 }
-            }
 
-            final Message[] messages = SampleCreator.createSampleMessages( quizzes[0] );
-            for( Message message : messages ) {
-                messageDao.insertMessage( message );
+                final Message[] messages = SampleCreator.createSampleMessages( quizzes[0] );
+                for( Message message : messages ) {
+                    messageDao.insertMessage( message );
+                }
+
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
             }
         });
     }
@@ -520,7 +552,7 @@ public class DkqRepository {
         executors.diskIO().execute(() -> {
             final Message updateLogMessage = new Message();
             updateLogMessage.type = Message.Type.UPDATE_LOG;
-            updateLogMessage.number = getMaxMessageNumber() + 1;
+            updateLogMessage.number = getMaxMessageNumber();
             updateLogMessage.title = context.getString( titleResId );
             updateLogMessage.content = context.getString( contentResId );
             updateLogMessage.image = null;
@@ -531,6 +563,7 @@ public class DkqRepository {
             updateLogMessage.quizNumber = null;
 
             updateLogMessage.id = messageDao.insertMessage( updateLogMessage );
+            DkqLog.i("DkqRepo", "Update log message created " + updateLogMessage.toString());
             NotificationReceiver.forOneNewMessage( context, updateLogMessage.title, updateLogMessage.id, updateLogMessage.number );
         });
     }

@@ -23,8 +23,11 @@ public class AppUpdatedReceiver extends BroadcastReceiver {
 
         if( Intent.ACTION_MY_PACKAGE_REPLACED.equals( intent.getAction() ) ) {
             final int newVersionCode = AppUtils.getVersionCode( context );
-            DkqLog.d("AppUpdatedReceiver","App was updated to version code " + newVersionCode);
-            updatedToVersion( newVersionCode );
+            final int oldVersionCode = DkqPreferences.getLastVersionCode( context );
+            DkqLog.i("AppUpdatedReceiver","App was updated from version code " + oldVersionCode + " to version code " + newVersionCode);
+            if( newVersionCode != oldVersionCode ) {
+                updatedToVersion( newVersionCode );
+            }
             DkqPreferences.setLastVersionCode( context, newVersionCode );
         }
     }
