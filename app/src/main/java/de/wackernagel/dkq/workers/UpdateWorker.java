@@ -17,12 +17,17 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.DkqPreferences;
+import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.dagger.workerinjector.AndroidWorkerInjection;
+import de.wackernagel.dkq.receiver.NotificationReceiver;
 import de.wackernagel.dkq.repository.DkqRepository;
+import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.webservice.ApiResult;
 import retrofit2.Response;
 
+/* DON'T RENAME THIS CLASS */
+/* OTHERWISE THE WORK MANAGER CAN'T FIND THE CLASS BY NAME FOR ALWAYS SCHEDULED TASKS */
 public class UpdateWorker extends Worker {
     private static final String TAG = "UpdateWorker";
 
@@ -40,8 +45,12 @@ public class UpdateWorker extends Worker {
         updateLog();
 
         updateQuizzes();
-        updateMessages();
+        final String logMessage = updateMessages();
         updateQuestions();
+
+        if( getApplicationContext().getResources().getBoolean( R.bool.development ) ) {
+            NotificationReceiver.forDevelopment( getApplicationContext(), "Daily update is done.", logMessage );
+        }
 
         return Worker.Result.success();
     }
@@ -67,11 +76,14 @@ public class UpdateWorker extends Worker {
         }
     }
 
-    private void updateMessages() {
+    private String updateMessages() {
         try {
-            handleApiResult( repository.requestMessagesIfNotLimited(), repository::saveMessagesWithNotification );
+            final Response<ApiResult<List<Message>>> response = repository.requestMessagesIfNotLimited();
+            handleApiResult( response, repository::saveMessagesWithNotification );
+            return response == null ? "Maybe Limiter blocks request." : "Request is done";
         } catch (IOException e) {
             DkqLog.e(TAG, "Messages Update-Request Error", e);
+            return "Exception happened";
         }
     }
 

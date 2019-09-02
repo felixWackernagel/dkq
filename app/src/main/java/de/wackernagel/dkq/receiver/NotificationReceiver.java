@@ -36,6 +36,13 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     private static final String CHANNEL_ID = "dkq";
 
+    public static void forDevelopment( @NonNull final Context context, final String title, final String message ) {
+        final Intent notification = new Intent( ACTION_DKQ_NOTIFICATION );
+        notification.putExtra( NOTIFICATION_TITLE, title );
+        notification.putExtra( NOTIFICATION_CONTENT, message );
+        context.sendOrderedBroadcast( notification, null ); // null means no permissions required by the receiver
+    }
+
     public static void forOneFutureQuiz( @NonNull final Context context, final long quizId, final int quizNumber ) {
         final Intent notification = new Intent( ACTION_DKQ_NOTIFICATION );
         notification.putExtra( NOTIFICATION_TITLE, context.getString(R.string.next_quiz_title) );
