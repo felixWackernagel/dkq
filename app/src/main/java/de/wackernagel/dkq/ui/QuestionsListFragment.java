@@ -14,11 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.inject.Inject;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -29,9 +24,16 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.DkqLog;
-import de.wackernagel.dkq.GlideApp;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.ui.widgets.CollapsibleCard;
@@ -235,7 +237,7 @@ public class QuestionsListFragment extends Fragment {
                 }
             }
             else {
-                GlideApp.with( holder.image ).clear( holder.image );
+                Glide.with( holder.image ).clear( holder.image );
                 holder.image.setVisibility( GONE );
                 holder.image.setOnClickListener( null );
                 holder.image.setOnLongClickListener( null );

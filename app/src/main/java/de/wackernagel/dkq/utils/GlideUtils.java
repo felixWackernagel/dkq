@@ -3,28 +3,33 @@ package de.wackernagel.dkq.utils;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import de.wackernagel.dkq.GlideApp;
 import de.wackernagel.dkq.R;
 
 import static de.wackernagel.dkq.utils.AnimUtils.getFastOutSlowInInterpolator;
 
 public class GlideUtils {
     public static void loadImage(final ImageView view, final String url) {
-        GlideApp.with( view )
+        final RequestOptions options = new RequestOptions()
+                .centerCrop()
+                .placeholder( R.drawable.image_placeholder );
+
+        Glide.with( view )
             .load( url )
             .listener( new RequestListener<Drawable>() {
                 @Override
@@ -32,12 +37,7 @@ public class GlideUtils {
                     view.setHasTransientState(true);
                     final ObservableColorMatrix cm = new ObservableColorMatrix();
                     final ObjectAnimator saturation = ObjectAnimator.ofFloat(cm, ObservableColorMatrix.SATURATION, 0f, 1f);
-                    saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animation) {
-                            view.setColorFilter(new ColorMatrixColorFilter(cm));
-                        }
-                    } );
+                    saturation.addUpdateListener(animation -> view.setColorFilter(new ColorMatrixColorFilter(cm)));
                     saturation.setDuration(2000L);
                     saturation.setInterpolator(getFastOutSlowInInterpolator(view.getContext()));
                     saturation.addListener(new AnimatorListenerAdapter() {
@@ -56,9 +56,8 @@ public class GlideUtils {
                     return false;
                 }
             } )
-            .centerCrop()
+            .apply(options)
             .transition(DrawableTransitionOptions.withCrossFade())
-            .placeholder( R.drawable.image_placeholder )
             .into( view );
     }
 
@@ -68,7 +67,11 @@ public class GlideUtils {
             final Drawable drawable = ContextCompat.getDrawable( view.getContext(), resId );
             view.setImageDrawable( drawable );
         } else {
-            GlideApp.with( view )
+            final RequestOptions options = new RequestOptions()
+                    .circleCrop()
+                    .placeholder( white ? R.drawable.ic_account_circle_white_40dp : R.drawable.ic_account_circle_38_black_40dp );
+
+            Glide.with( view )
                 .load(url)
                 .listener( new RequestListener<Drawable>() {
                     @Override
@@ -76,12 +79,7 @@ public class GlideUtils {
                         view.setHasTransientState(true);
                         final ObservableColorMatrix cm = new ObservableColorMatrix();
                         final ObjectAnimator saturation = ObjectAnimator.ofFloat(cm, ObservableColorMatrix.SATURATION, 0f, 1f);
-                        saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                            @Override
-                            public void onAnimationUpdate(ValueAnimator animation) {
-                                view.setColorFilter(new ColorMatrixColorFilter(cm));
-                            }
-                        } );
+                        saturation.addUpdateListener(animation -> view.setColorFilter(new ColorMatrixColorFilter(cm)));
                         saturation.setDuration(2000L);
                         saturation.setInterpolator(getFastOutSlowInInterpolator(view.getContext()));
                         saturation.addListener(new AnimatorListenerAdapter() {
@@ -100,8 +98,7 @@ public class GlideUtils {
                         return false;
                     }
                 } )
-                .placeholder( white ? R.drawable.ic_account_circle_white_40dp : R.drawable.ic_account_circle_38_black_40dp )
-                .circleCrop()
+                .apply( options )
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into( view );
         }

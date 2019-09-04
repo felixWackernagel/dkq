@@ -8,6 +8,8 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 @Entity(tableName = "messages",
         indices = { @Index( value = { "number", "type" }, unique = true ),
                     @Index( value = { "quizId" } ) },
@@ -73,5 +75,28 @@ public class Message {
                 ", type=" + type + '\'' +
                 ", quizId=" + quizId +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return id == message.id &&
+                number == message.number &&
+                version == message.version &&
+                read == message.read &&
+                Objects.equals(title, message.title) &&
+                Objects.equals(content, message.content) &&
+                Objects.equals(image, message.image) &&
+                Objects.equals(lastUpdate, message.lastUpdate) &&
+                type == message.type &&
+                Objects.equals(quizId, message.quizId) &&
+                Objects.equals(quizNumber, message.quizNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, number, title, content, image, version, lastUpdate, read, type, quizId, quizNumber);
     }
 }

@@ -13,21 +13,23 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-import javax.inject.Inject;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.text.HtmlCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+
+import com.bumptech.glide.Glide;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import javax.inject.Inject;
+
 import dagger.android.AndroidInjection;
 import de.wackernagel.dkq.DkqLog;
-import de.wackernagel.dkq.GlideApp;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.Quiz;
@@ -160,7 +162,7 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
         final TextView title = findViewById(R.id.title);
         final TextView content = findViewById(R.id.content);
 
-        GlideApp.with( image ).clear( image );
+        Glide.with( image ).clear( image );
         image.setOnClickListener( null );
         lastUpdate.setText( R.string.unknown_word );
         title.setText( R.string.unknown_word );
