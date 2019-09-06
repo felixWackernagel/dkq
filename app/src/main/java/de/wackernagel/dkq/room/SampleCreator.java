@@ -1,14 +1,15 @@
 package de.wackernagel.dkq.room;
 
+import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.Nullable;
 import de.wackernagel.dkq.DkqLog;
-import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.Quizzer;
+import de.wackernagel.dkq.room.message.Message;
 
 public final class SampleCreator {
 
@@ -51,7 +52,7 @@ public final class SampleCreator {
         return questions.toArray( new Question[60] );
     }
 
-    public static Message[] createSampleMessages( @Nullable final Quiz quiz ) {
+    public static Message[] createSampleMessages(@Nullable final Quiz quiz ) {
         final Long quizId = quiz != null ? quiz.id : null;
         return new Message[] {
                 newMessage(1, Message.Type.ARTICLE,"Wir gratulieren zu Bilbo B. Sieg.", "Nach einem langen Quiz hat Bilbo B. mit den meisten richtigen Antworten gesiegt.", null, quizId ),
@@ -112,15 +113,13 @@ public final class SampleCreator {
     private static Message newMessage(final int number, final Message.Type type, final String title, final String content, final String image, final Long quizId )
     {
         final Message theMessage = new Message();
-        theMessage.number = number;
-        theMessage.type = type;
-        theMessage.title = title;
-        theMessage.content = content;
-        theMessage.image = image;
-        theMessage.quizId = quizId;
-        theMessage.read = false;
-        theMessage.version = 0;
-        theMessage.lastUpdate = "2018-01-01 20:00:00";
+        theMessage.setNumber( number );
+        theMessage.setType( type );
+        theMessage.setTitle( title );
+        theMessage.setContent( content );
+        theMessage.setImage( image );
+        theMessage.setQuizId( quizId );
+        theMessage.setLastUpdate( "2018-01-01 20:00:00" );
         return theMessage;
     }
 }

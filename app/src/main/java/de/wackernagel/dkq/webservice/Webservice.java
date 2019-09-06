@@ -3,7 +3,7 @@ package de.wackernagel.dkq.webservice;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
-import de.wackernagel.dkq.room.entities.Message;
+import de.wackernagel.dkq.room.message.Message;
 import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.Quizzer;

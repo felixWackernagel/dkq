@@ -2,6 +2,11 @@ package de.wackernagel.dkq.repository;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.lifecycle.LiveData;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,26 +14,22 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.lifecycle.LiveData;
 import de.wackernagel.dkq.AppExecutors;
 import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.receiver.NotificationReceiver;
 import de.wackernagel.dkq.room.AppDatabase;
 import de.wackernagel.dkq.room.SampleCreator;
-import de.wackernagel.dkq.room.daos.MessageDao;
 import de.wackernagel.dkq.room.daos.QuestionDao;
 import de.wackernagel.dkq.room.daos.QuizDao;
 import de.wackernagel.dkq.room.daos.QuizzerDao;
-import de.wackernagel.dkq.room.entities.Message;
-import de.wackernagel.dkq.room.entities.MessageListItem;
 import de.wackernagel.dkq.room.entities.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.QuizListItem;
 import de.wackernagel.dkq.room.entities.Quizzer;
 import de.wackernagel.dkq.room.entities.QuizzerListItem;
+import de.wackernagel.dkq.room.message.Message;
+import de.wackernagel.dkq.room.message.MessageDao;
+import de.wackernagel.dkq.room.message.MessageListItem;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.ObjectUtils;
 import de.wackernagel.dkq.utils.RateLimiter;
@@ -309,34 +310,43 @@ public class DkqRepository {
         final int newMessagesCount = newMessagesList.size();
         if( newMessagesCount == 1 ) {
             final Message message = newMessagesList.get( 0 );
-            NotificationReceiver.forOneNewMessage( context, message.title, message.id, message.number );
+            NotificationReceiver.forOneNewMessage( context, message.getTitle(), message.getId(), message.getNumber() );
         } else if( newMessagesCount > 1 ) {
             NotificationReceiver.forManyNewMessages( context, newMessagesCount );
         }
     }
 
-    private void saveMessage( final Message onlineMessage ) {
-        saveMessage( null, onlineMessage );
-    }
-
     private void saveMessage( @Nullable final List<Message> newMessagesList, final Message onlineMessage ) {
-        if( !onlineMessage.isInvalid() ) {
-            onlineMessage.quizId = getQuizIdByNumber( onlineMessage.quizNumber );
-            onlineMessage.type = Message.Type.ARTICLE;
-            final Message existingMessage = messageDao.loadMessageByNumber( onlineMessage.number );
-            final boolean isNew = existingMessage == null;
-            if( isNew ) {
-                onlineMessage.id = messageDao.insertMessage(onlineMessage);
-                DkqLog.i(TAG, "Message inserted " + onlineMessage);
-                if( newMessagesList != null ) {
-                    newMessagesList.add( onlineMessage );
-                }
-            } else {
-                DkqLog.i(TAG, String.format( Locale.ENGLISH, "Message %d updated", onlineMessage.number ) );
-                onlineMessage.id = existingMessage.id; // update is ID based so copy existing quiz ID to new one
-                onlineMessage.read = existingMessage.read;
-                messageDao.updateMessage( onlineMessage );
+        if( onlineMessage.isInvalid() )
+            return;
+
+        onlineMessage.setQuizId( getQuizIdByNumber( onlineMessage.getQuizNumber() ) );
+        onlineMessage.setType( Message.Type.ARTICLE );
+
+        final Message existingMessage = messageDao.loadMessageByNumber( onlineMessage.getNumber() );
+        if( existingMessage == null ) {
+
+            final Message createdMessage = messageDao.insertMessage( onlineMessage );
+
+            final boolean success = createdMessage.getId() > 0;
+            DkqLog.i( TAG, String.format( Locale.ENGLISH, "Message[id=%d]%s inserted", createdMessage.getId(), success ? "" : " NOT" ) );
+
+            if( newMessagesList != null ) {
+                newMessagesList.add( createdMessage );
             }
+
+        } else {
+
+            existingMessage.setTitle( onlineMessage.getTitle() );
+            existingMessage.setContent( onlineMessage.getContent() );
+            existingMessage.setImage( onlineMessage.getImage() );
+            existingMessage.setVersion( onlineMessage.getVersion() );
+            existingMessage.setLastUpdate( onlineMessage.getLastUpdate() );
+            existingMessage.setQuizId( onlineMessage.getQuizId() );
+
+            final boolean success = messageDao.updateMessage( existingMessage ) == 1;
+            DkqLog.i( TAG, String.format( Locale.ENGLISH, "Message[id=%d]%s updated", existingMessage.getId(), success ? "" : " NOT" ) );
+
         }
     }
 
@@ -356,12 +366,12 @@ public class DkqRepository {
         return new NetworkBoundResource<Message, Message>(executors) {
             @Override
             protected void saveCallResult(@NonNull Message item) {
-                saveMessage( item );
+                saveMessage( null, item );
             }
 
             @Override
             protected boolean shouldFetch(@Nullable Message data) {
-                return ( ( rateLimiter.shouldFetch( LIMITER_MESSAGE + ":" + messageNumber ) && data != null && data.type == Message.Type.ARTICLE ) ) || data == null;
+                return ( ( rateLimiter.shouldFetch( LIMITER_MESSAGE + ":" + messageNumber ) && data != null && Message.Type.ARTICLE.equals( data.getType() ) ) ) || data == null;
             }
 
             @NonNull
@@ -551,20 +561,17 @@ public class DkqRepository {
     public void saveUpdateLogMessage( @StringRes final int titleResId, @StringRes final int contentResId ) {
         executors.diskIO().execute(() -> {
             final Message updateLogMessage = new Message();
-            updateLogMessage.type = Message.Type.UPDATE_LOG;
-            updateLogMessage.number = getMaxMessageNumber();
-            updateLogMessage.title = context.getString( titleResId );
-            updateLogMessage.content = context.getString( contentResId );
-            updateLogMessage.image = null;
-            updateLogMessage.version = 1;
-            updateLogMessage.lastUpdate = DateUtils.javaDateToJoomlaDate( new Date() );
-            updateLogMessage.read = false;
-            updateLogMessage.quizId = null;
-            updateLogMessage.quizNumber = null;
+            updateLogMessage.setType( Message.Type.UPDATE_LOG );
+            updateLogMessage.setNumber( getMaxMessageNumber() );
+            updateLogMessage.setTitle( context.getString( titleResId ) );
+            updateLogMessage.setContent( context.getString( contentResId ) );
+            updateLogMessage.setVersion( 1 );
+            updateLogMessage.setLastUpdate( DateUtils.javaDateToJoomlaDate( new Date() ) );
+            updateLogMessage.setRead( false );
 
-            updateLogMessage.id = messageDao.insertMessage( updateLogMessage );
-            DkqLog.i("DkqRepo", "Update log message created " + updateLogMessage.toString());
-            NotificationReceiver.forOneNewMessage( context, updateLogMessage.title, updateLogMessage.id, updateLogMessage.number );
+            final Message persistedUpdateLogMessage = messageDao.insertMessage( updateLogMessage );
+            DkqLog.i("DkqRepo", "Update log message created " + persistedUpdateLogMessage.toString());
+            NotificationReceiver.forOneNewMessage( context, persistedUpdateLogMessage.getTitle(), persistedUpdateLogMessage.getId(), persistedUpdateLogMessage.getNumber() );
         });
     }
 

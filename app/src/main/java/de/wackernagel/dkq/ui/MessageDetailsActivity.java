@@ -31,8 +31,8 @@ import javax.inject.Inject;
 import dagger.android.AndroidInjection;
 import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.R;
-import de.wackernagel.dkq.room.entities.Message;
 import de.wackernagel.dkq.room.entities.Quiz;
+import de.wackernagel.dkq.room.message.Message;
 import de.wackernagel.dkq.ui.widgets.IconImageView;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.DeviceUtils;
@@ -94,14 +94,14 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
                     final Message message = resource.data;
                     bindViews( message );
 
-                    if( message.quizId == null ) {
+                    if( message.getQuizId() == null ) {
                         bindQuizButton( null );
                     } else {
-                        viewModel.loadQuiz( message.quizId ).observe(MessageDetailsActivity.this, this::bindQuizButton);
+                        viewModel.loadQuiz( message.getQuizId() ).observe(MessageDetailsActivity.this, this::bindQuizButton);
                     }
 
-                    if( !message.read ) {
-                        message.read = true;
+                    if( !message.isRead() ) {
+                        message.setRead( true );
                         viewModel.updateMessage( message );
                     }
                 } else {
@@ -129,10 +129,10 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
         final TextView title = findViewById(R.id.title);
         final TextView content = findViewById(R.id.content);
 
-        GlideUtils.loadImage( image, message.image );
-        if( !TextUtils.isEmpty( message.image ) ) {
+        GlideUtils.loadImage( image, message.getImage() );
+        if( !TextUtils.isEmpty( message.getImage() ) ) {
             final Intent viewImageIntent = new Intent(Intent.ACTION_VIEW);
-            viewImageIntent.setDataAndType(Uri.parse(message.image), "image/*");
+            viewImageIntent.setDataAndType(Uri.parse(message.getImage()), "image/*");
             if (getPackageManager().queryIntentActivities(viewImageIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0) {
                 image.setOnClickListener(v -> v.getContext().startActivity(viewImageIntent));
                 image.setOnLongClickListener(view -> {
@@ -147,13 +147,13 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
             }
         }
 
-        final Date lastUpdateDate = DateUtils.joomlaDateToJavaDate( message.lastUpdate );
+        final Date lastUpdateDate = DateUtils.joomlaDateToJavaDate( message.getLastUpdate() );
         if( lastUpdateDate != null ) {
             lastUpdate.setText( new SimpleDateFormat( "dd. MMMM yyyy", Locale.getDefault() ).format( lastUpdateDate ) );
         }
-        title.setText( message.title );
+        title.setText( message.getTitle() );
         content.setMovementMethod(LinkMovementMethod.getInstance() );
-        content.setText( HtmlCompat.fromHtml( message.content, HtmlCompat.FROM_HTML_MODE_COMPACT ) );
+        content.setText( HtmlCompat.fromHtml( message.getContent(), HtmlCompat.FROM_HTML_MODE_COMPACT ) );
     }
 
     private void clearViews() {

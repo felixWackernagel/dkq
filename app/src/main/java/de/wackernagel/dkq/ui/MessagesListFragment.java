@@ -21,11 +21,14 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Objects;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.R;
-import de.wackernagel.dkq.room.entities.Message;
-import de.wackernagel.dkq.room.entities.MessageListItem;
+import de.wackernagel.dkq.room.message.Message;
+import de.wackernagel.dkq.room.message.MessageListItem;
 import de.wackernagel.dkq.ui.widgets.BadgedFourThreeImageView;
 import de.wackernagel.dkq.ui.widgets.BadgedView;
 import de.wackernagel.dkq.utils.DeviceUtils;
@@ -61,7 +64,7 @@ public class MessagesListFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( @NonNull final View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById( R.id.recyclerView );
         emptyView = view.findViewById( R.id.emptyView );
@@ -86,12 +89,12 @@ public class MessagesListFragment extends Fragment {
             recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );
             recyclerView.addItemDecoration( new GridGutterDecoration(
-                    DeviceUtils.dpToPx(16, getContext()),
+                    DeviceUtils.dpToPx(16, requireContext() ),
                     1,
                     false,
                     true,
                     true ) );
-            recyclerView.addItemDecoration( new SectionItemDecoration( getContext(),false, new SectionItemDecoration.SectionCallback() {
+            recyclerView.addItemDecoration( new SectionItemDecoration( requireContext(),false, new SectionItemDecoration.SectionCallback() {
                 @Override
                 public boolean isSection(int position) {
                     return position < 1;
@@ -124,16 +127,16 @@ public class MessagesListFragment extends Fragment {
     static class MessageItemCallback extends DiffUtil.ItemCallback<MessageListItem> {
         @Override
         public boolean areItemsTheSame(@NonNull MessageListItem oldItem, @NonNull MessageListItem newItem) {
-            return oldItem.id == newItem.id;
+            return oldItem.getId() == newItem.getId();
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull MessageListItem oldItem, @NonNull MessageListItem newItem) {
-            return TextUtils.equals( oldItem.image, newItem.image )
-                    && TextUtils.equals( oldItem.title, newItem.title )
-                    && TextUtils.equals( oldItem.content, newItem.content )
-                    && oldItem.read == newItem.read
-                    && oldItem.type == newItem.type;
+            return TextUtils.equals( oldItem.getImage(), newItem.getImage() )
+                    && TextUtils.equals( oldItem.getTitle(), newItem.getTitle() )
+                    && TextUtils.equals( oldItem.getContent(), newItem.getContent() )
+                    && oldItem.isRead() == newItem.isRead()
+                    && Objects.equals( oldItem.getType(), newItem.getType() );
         }
     }
 
@@ -160,12 +163,12 @@ public class MessagesListFragment extends Fragment {
 
         @Override
         public long getItemId(int position) {
-            return getItem( position ).id;
+            return getItem( position ).getId();
         }
 
         @Override
         public int getItemViewType(int position) {
-            switch( getItem( position ).type ) {
+            switch( getItem( position ).getType() ) {
                 case UPDATE_LOG:
                     return R.layout.item_message_update_log;
 
@@ -175,28 +178,29 @@ public class MessagesListFragment extends Fragment {
             }
         }
 
+        @NonNull
         @Override
         public MessagesListFragment.MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new MessagesListFragment.MessageViewHolder( LayoutInflater.from( parent.getContext() ).inflate( viewType, parent, false ) );
         }
 
         @Override
-        public void onBindViewHolder( final MessagesListFragment.MessageViewHolder holder, final int position) {
+        public void onBindViewHolder( @NonNull final MessagesListFragment.MessageViewHolder holder, final int position) {
             if( position != RecyclerView.NO_POSITION ) {
                 final MessageListItem message = getItem( position);
 
-                holder.title.setText( message.title );
-                if( message.type == Message.Type.ARTICLE ) {
-                    GlideUtils.loadImage(holder.image, message.image);
-                    holder.image.drawBadge(!message.read);
-                    holder.content.setText( message.content );
+                holder.title.setText( message.getTitle() );
+                if( Message.Type.ARTICLE.equals( message.getType() ) ) {
+                    GlideUtils.loadImage(holder.image, message.getImage());
+                    holder.image.drawBadge(!message.isRead());
+                    holder.content.setText( message.getContent() );
                 } else {
-                    holder.badge.drawBadge(!message.read);
+                    holder.badge.drawBadge(!message.isRead());
                 }
 
                 holder.itemView.setOnClickListener(view -> {
                     final Context context = holder.itemView.getContext();
-                    context.startActivity( MessageDetailsActivity.createLaunchIntent( context, message.id, message.number ) );
+                    context.startActivity( MessageDetailsActivity.createLaunchIntent( context, message.getId(), message.getNumber() ) );
                 });
             }
         }

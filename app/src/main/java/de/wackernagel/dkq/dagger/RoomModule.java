@@ -16,7 +16,7 @@ import de.wackernagel.dkq.AppExecutors;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.AppDatabase;
 import de.wackernagel.dkq.room.SampleCreator;
-import de.wackernagel.dkq.room.daos.MessageDao;
+import de.wackernagel.dkq.room.message.MessageDao;
 import de.wackernagel.dkq.room.daos.QuestionDao;
 import de.wackernagel.dkq.room.daos.QuizDao;
 import de.wackernagel.dkq.room.daos.QuizzerDao;

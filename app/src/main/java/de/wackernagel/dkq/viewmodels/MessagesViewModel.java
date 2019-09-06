@@ -5,7 +5,7 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.wackernagel.dkq.repository.DkqRepository;
-import de.wackernagel.dkq.room.entities.MessageListItem;
+import de.wackernagel.dkq.room.message.MessageListItem;
 import de.wackernagel.dkq.webservice.Resource;
 
 public class MessagesViewModel extends ViewModel {

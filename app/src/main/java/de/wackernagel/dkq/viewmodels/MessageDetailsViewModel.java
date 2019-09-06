@@ -3,7 +3,7 @@ package de.wackernagel.dkq.viewmodels;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.wackernagel.dkq.repository.DkqRepository;
-import de.wackernagel.dkq.room.entities.Message;
+import de.wackernagel.dkq.room.message.Message;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.webservice.Resource;
 

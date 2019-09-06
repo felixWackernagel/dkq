@@ -15,9 +15,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 import de.wackernagel.dkq.room.AppDatabase;
-import de.wackernagel.dkq.room.daos.MessageDao;
-import de.wackernagel.dkq.room.entities.Message;
+import de.wackernagel.dkq.room.message.MessageDao;
+import de.wackernagel.dkq.room.message.Message;
+import de.wackernagel.dkq.room.message.MessageListItem;
 
 import static de.wackernagel.dkq.TestUtils.getValue;
 
@@ -44,28 +47,54 @@ public class RoomTest {
 
     @Test
     public void insertAndQueryMessage() throws Exception {
-        Message expected = createMessage( 1, Message.Type.ARTICLE );
-        long newId = messageDao.insertMessage( expected );
-        expected.id = newId;
+        Assert.assertEquals( 0, messageDao.loadMaxMessageNumber() );
 
-        Message numberMessage = messageDao.loadMessageByNumber( 1 );
+        final int messageNumber = 1;
+        Message expected = messageDao.insertMessage( createMessage( messageNumber, Message.Type.ARTICLE ) );
+
+        Assert.assertEquals( messageNumber, messageDao.loadMaxMessageNumber() );
+
+        Message numberMessage = messageDao.loadMessageByNumber( messageNumber );
         Assert.assertEquals( expected, numberMessage );
 
-        LiveData<Message> idMessage = messageDao.loadMessage( newId );
+        LiveData<Message> idMessage = messageDao.loadMessage( expected.getId() );
         Assert.assertEquals( expected, getValue( idMessage ) );
+    }
+
+    @Test
+    public void checkMessageConstraints() throws Exception {
+        // create a message
+        Message firstArticle = createMessage( 1, Message.Type.ARTICLE );
+        messageDao.insertMessage( firstArticle );
+        Assert.assertEquals(1, firstArticle.getId() );
+
+        // create a second message
+        Message secondArticle = createMessage( 2, Message.Type.ARTICLE );
+        messageDao.insertMessage( secondArticle );
+        Assert.assertEquals(2, secondArticle.getId() );
+
+        // query all message and check size
+        LiveData<List<MessageListItem>> persistedMessages = messageDao.loadMessages();
+        Assert.assertEquals(2, getValue( persistedMessages ).size() );
+
+        // insertion of a already persisted entity is ignored
+        messageDao.insertMessage( firstArticle );
+        Assert.assertEquals("The DAO-Method should us onConflict.IGNORE to return -1 on a already existing row.",-1, firstArticle.getId() );
+        persistedMessages = messageDao.loadMessages();
+        Assert.assertEquals(2, getValue( persistedMessages ).size() );
+
+        // number and type are unique so the insertion should be ignored
+        Message duplicateFirstArticle = createMessage( 1, Message.Type.ARTICLE );
+        messageDao.insertMessage( duplicateFirstArticle );
+        Assert.assertEquals(-1, duplicateFirstArticle.getId() );
+        persistedMessages = messageDao.loadMessages();
+        Assert.assertEquals(2, getValue( persistedMessages ).size() );
     }
 
     private Message createMessage( int number, Message.Type type ) {
         final Message message = new Message();
-        message.type = type;
-        message.number = number;
-        message.title = "A";
-        message.content = "B";
-        message.image = null;
-        message.lastUpdate = null;
-        message.version = 1;
-        message.read = false;
-        message.quizId = null;
+        message.setType( type );
+        message.setNumber( number );
         return message;
     }
 }
