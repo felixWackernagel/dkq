@@ -35,7 +35,7 @@ import javax.inject.Inject;
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.R;
-import de.wackernagel.dkq.room.entities.Question;
+import de.wackernagel.dkq.room.question.Question;
 import de.wackernagel.dkq.ui.widgets.CollapsibleCard;
 import de.wackernagel.dkq.utils.DeviceUtils;
 import de.wackernagel.dkq.utils.GlideUtils;
@@ -93,7 +93,7 @@ public class QuestionsListFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( @NonNull final View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById( R.id.recyclerView );
         emptyView = view.findViewById( R.id.emptyView );
@@ -117,12 +117,12 @@ public class QuestionsListFragment extends Fragment {
             recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );
             recyclerView.addItemDecoration( new GridGutterDecoration(
-                    DeviceUtils.dpToPx(16, getContext()),
+                    DeviceUtils.dpToPx(16, requireContext()),
                     1,
                     false,
                     true,
                     true ) );
-            recyclerView.addItemDecoration( new SectionItemDecoration( getContext(),false, new SectionItemDecoration.SectionCallback() {
+            recyclerView.addItemDecoration( new SectionItemDecoration( requireContext(),false, new SectionItemDecoration.SectionCallback() {
                 @Override
                 public boolean isSection(int position) {
                     return position == 0 || position == 20 || position == 40 || position == 60;
@@ -173,15 +173,15 @@ public class QuestionsListFragment extends Fragment {
     static class QuestionItemCallback extends DiffUtil.ItemCallback<Question> {
         @Override
         public boolean areItemsTheSame(@NonNull Question oldItem, @NonNull Question newItem) {
-            return oldItem.id == newItem.id;
+            return oldItem.getId() == newItem.getId();
         }
 
         @Override
         public boolean areContentsTheSame(@NonNull Question oldItem, @NonNull Question newItem) {
-            return oldItem.number == newItem.number &&
-                    TextUtils.equals(oldItem.question, newItem.question) &&
-                    TextUtils.equals(oldItem.answer, newItem.answer) &&
-                    TextUtils.equals(oldItem.image, newItem.image);
+            return oldItem.getNumber() == newItem.getNumber() &&
+                    TextUtils.equals(oldItem.getQuestion(), newItem.getQuestion()) &&
+                    TextUtils.equals(oldItem.getAnswer(), newItem.getAnswer()) &&
+                    TextUtils.equals(oldItem.getImage(), newItem.getImage());
         }
     }
 
@@ -195,9 +195,10 @@ public class QuestionsListFragment extends Fragment {
 
         @Override
         public long getItemId(int position) {
-            return getItem( position ).id;
+            return getItem( position ).getId();
         }
 
+        @NonNull
         @Override
         public QuestionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new QuestionViewHolder( LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_question, parent, false ) );
@@ -206,9 +207,9 @@ public class QuestionsListFragment extends Fragment {
         @Override
         public void onBindViewHolder( final QuestionViewHolder holder, final int position) {
             final Question question = getItem(position);
-            holder.name.setText( holder.itemView.getContext().getString( R.string.question_number, question.number ) );
-            holder.question.setText( question.question );
-            holder.answer.setCardDescription( question.answer );
+            holder.name.setText( holder.itemView.getContext().getString( R.string.question_number, question.getNumber() ) );
+            holder.question.setText( question.getQuestion() );
+            holder.answer.setCardDescription( question.getAnswer() );
             holder.answer.setExpanded( openCards.contains( position ) );
             holder.answer.setOnToggleListener(isExpanded -> {
                 if( isExpanded ) {
@@ -218,11 +219,11 @@ public class QuestionsListFragment extends Fragment {
                 }
             });
 
-            if( !TextUtils.isEmpty( question.image ) ) {
-                GlideUtils.loadImage( holder.image, question.image );
+            if( !TextUtils.isEmpty( question.getImage() ) ) {
+                GlideUtils.loadImage( holder.image, question.getImage() );
                 holder.image.setVisibility( VISIBLE );
                 final Intent viewImageIntent = new Intent(Intent.ACTION_VIEW);
-                viewImageIntent.setDataAndType(Uri.parse(question.image), "image/*");
+                viewImageIntent.setDataAndType(Uri.parse(question.getImage()), "image/*");
                 if ( holder.itemView.getContext().getPackageManager().queryIntentActivities( viewImageIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0 ) {
                     holder.image.setOnClickListener(v -> v.getContext().startActivity(viewImageIntent));
                     holder.image.setOnLongClickListener(view -> {

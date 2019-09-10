@@ -6,17 +6,17 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.Index;
-import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
+import de.wackernagel.dkq.room.BaseEntity;
 import de.wackernagel.dkq.room.entities.Quiz;
 
 @Entity(tableName = "messages",
         indices = { @Index( value = { "number", "type" }, unique = true ),
                     @Index( value = { "quizId" } ) },
         foreignKeys = @ForeignKey(entity = Quiz.class, parentColumns = "id", childColumns = "quizId" ) )
-public class Message {
+public class Message extends BaseEntity {
 
     public enum Type {
         ARTICLE(0),
@@ -42,8 +42,6 @@ public class Message {
         }
     }
 
-    @PrimaryKey( autoGenerate = true)
-    private long id;
     private int number;
     private String title;
     private String content;
@@ -62,7 +60,7 @@ public class Message {
 
     @Ignore
     public Message() {
-        this.id = 0;
+        super( 0 );
         this.number = 0;
         this.title = null;
         this.content = null;
@@ -79,7 +77,7 @@ public class Message {
      * This constructor is used by Room
      */
     protected Message( final long id, final int number, final String title, final String content, final String image, final int version, final String lastUpdate, final boolean read, @NonNull final Type type, @Nullable final Long quizId ) {
-        this.id = id;
+        super( id );
         this.number = number;
         this.title = title;
         this.content = content;
@@ -90,14 +88,6 @@ public class Message {
         this.type = type;
         this.quizId = quizId;
         this.quizNumber = null;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    protected void setId(long id ) {
-        this.id = id;
     }
 
     public int getNumber() {
@@ -192,7 +182,7 @@ public class Message {
     @Override
     public String toString() {
         return "Message {" +
-                "id=" + id +
+                "id=" + getId() +
                 ", number=" + number +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
@@ -210,9 +200,9 @@ public class Message {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Message message = (Message) o;
-        return id == message.id &&
-                number == message.number &&
+        return number == message.number &&
                 version == message.version &&
                 read == message.read &&
                 Objects.equals(title, message.title) &&
@@ -226,6 +216,6 @@ public class Message {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, number, title, content, image, version, lastUpdate, read, type, quizId, quizNumber);
+        return Objects.hash(super.hashCode(), number, title, content, image, version, lastUpdate, read, type, quizId, quizNumber);
     }
 }

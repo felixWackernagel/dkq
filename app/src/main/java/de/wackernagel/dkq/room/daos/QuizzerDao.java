@@ -1,14 +1,13 @@
 package de.wackernagel.dkq.room.daos;
 
-import android.annotation.SuppressLint;
-
-import java.util.List;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
+
+import java.util.List;
+
 import de.wackernagel.dkq.room.entities.Quizzer;
 import de.wackernagel.dkq.room.entities.QuizzerListItem;
 
@@ -45,13 +44,13 @@ public interface QuizzerDao {
     @Query( "SELECT * FROM quizzers WHERE number = :quizzerNumber" )
     Quizzer loadQuizzerByNumber(int quizzerNumber);
 
+    @Query( "DELETE FROM quizzers" )
+    void deleteAllQuizzers();
+
     @Insert( onConflict = REPLACE)
     long insertQuizzer(Quizzer quizzer);
 
     @Update( onConflict = REPLACE)
     void updateQuizzer(Quizzer quizzer);
-
-    @Query( "DELETE FROM quizzers" )
-    void deleteAllQuizzers();
 
 }

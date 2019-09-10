@@ -19,10 +19,10 @@ import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.receiver.NotificationReceiver;
 import de.wackernagel.dkq.room.AppDatabase;
 import de.wackernagel.dkq.room.SampleCreator;
-import de.wackernagel.dkq.room.daos.QuestionDao;
+import de.wackernagel.dkq.room.question.QuestionDao;
 import de.wackernagel.dkq.room.daos.QuizDao;
 import de.wackernagel.dkq.room.daos.QuizzerDao;
-import de.wackernagel.dkq.room.entities.Question;
+import de.wackernagel.dkq.room.question.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.QuizListItem;
 import de.wackernagel.dkq.room.entities.Quizzer;
@@ -243,22 +243,33 @@ public class DkqRepository {
         }.getAsLiveData();
     }
 
-    public void saveQuestions( final List<Question> items, final long quizId ) {
-        for( Question onlineQuestion : items ) {
+    public void saveQuestions( final List<Question> onlineQuestions, final long quizId ) {
+        for( Question onlineQuestion : onlineQuestions ) {
             if( onlineQuestion.isInvalid() ) {
+                DkqLog.i( TAG, String.format( Locale.ENGLISH, "Skip invalid %s", onlineQuestion ) );
                 continue;
             }
-            final Question existingQuestion = questionDao.loadQuestionByQuizAndNumber( quizId, onlineQuestion.number );
-            final boolean isNew = existingQuestion == null;
-            if( isNew ) {
-                DkqLog.i(TAG, "Insert new question " + onlineQuestion.number);
-                onlineQuestion.quizId = quizId;
-                questionDao.insertQuestion(onlineQuestion);
+
+            final Question existingQuestion = questionDao.loadQuestionByQuizAndNumber( quizId, onlineQuestion.getNumber() );
+            if( existingQuestion == null ) {
+
+                onlineQuestion.setQuizId( quizId );
+
+                final Question createdQuestion = questionDao.insert( onlineQuestion );
+                final boolean success = createdQuestion.getId() > 0;
+                DkqLog.i( TAG, String.format( Locale.ENGLISH, "Question[id=%d]%s inserted", createdQuestion.getId(), success ? "" : " NOT" ) );
+
             } else {
-                DkqLog.i(TAG, "Update question " + onlineQuestion.number );
-                onlineQuestion.id = existingQuestion.id; // update is ID based so copy existing quiz ID to new one
-                onlineQuestion.quizId = existingQuestion.quizId;
-                questionDao.updateQuestion( onlineQuestion );
+
+                existingQuestion.setAnswer( onlineQuestion.getAnswer() );
+                existingQuestion.setQuestion( onlineQuestion.getQuestion() );
+                existingQuestion.setImage( onlineQuestion.getImage() );
+                existingQuestion.setVersion( onlineQuestion.getVersion() );
+                existingQuestion.setLastUpdate( onlineQuestion.getLastUpdate() );
+
+                final boolean success = questionDao.update( existingQuestion ) == 1;
+                DkqLog.i( TAG, String.format( Locale.ENGLISH, "Question[id=%d]%s updated", existingQuestion.getId(), success ? "" : " NOT" ) );
+
             }
         }
     }
@@ -326,7 +337,7 @@ public class DkqRepository {
         final Message existingMessage = messageDao.loadMessageByNumber( onlineMessage.getNumber() );
         if( existingMessage == null ) {
 
-            final Message createdMessage = messageDao.insertMessage( onlineMessage );
+            final Message createdMessage = messageDao.insert( onlineMessage );
 
             final boolean success = createdMessage.getId() > 0;
             DkqLog.i( TAG, String.format( Locale.ENGLISH, "Message[id=%d]%s inserted", createdMessage.getId(), success ? "" : " NOT" ) );
@@ -344,7 +355,7 @@ public class DkqRepository {
             existingMessage.setLastUpdate( onlineMessage.getLastUpdate() );
             existingMessage.setQuizId( onlineMessage.getQuizId() );
 
-            final boolean success = messageDao.updateMessage( existingMessage ) == 1;
+            final boolean success = messageDao.update( existingMessage ) == 1;
             DkqLog.i( TAG, String.format( Locale.ENGLISH, "Message[id=%d]%s updated", existingMessage.getId(), success ? "" : " NOT" ) );
 
         }
@@ -486,7 +497,7 @@ public class DkqRepository {
     }
 
     public void updateMessage(final Message message ) {
-        executors.diskIO().execute(() -> messageDao.updateMessage(message));
+        executors.diskIO().execute(() -> messageDao.update(message));
     }
 
     public LiveData<Integer> getNewMessagesCount() {
@@ -528,14 +539,14 @@ public class DkqRepository {
                     if( index + 1 < count ) {
                         final Question[] questions = SampleCreator.createSampleQuestions( quiz );
                         for( Question question : questions ) {
-                            questionDao.insertQuestion( question );
+                            questionDao.insert( question );
                         }
                     }
                 }
 
                 final Message[] messages = SampleCreator.createSampleMessages( quizzes[0] );
                 for( Message message : messages ) {
-                    messageDao.insertMessage( message );
+                    messageDao.insert( message );
                 }
 
                 db.setTransactionSuccessful();
@@ -569,7 +580,7 @@ public class DkqRepository {
             updateLogMessage.setLastUpdate( DateUtils.javaDateToJoomlaDate( new Date() ) );
             updateLogMessage.setRead( false );
 
-            final Message persistedUpdateLogMessage = messageDao.insertMessage( updateLogMessage );
+            final Message persistedUpdateLogMessage = messageDao.insert( updateLogMessage );
             DkqLog.i("DkqRepo", "Update log message created " + persistedUpdateLogMessage.toString());
             NotificationReceiver.forOneNewMessage( context, persistedUpdateLogMessage.getTitle(), persistedUpdateLogMessage.getId(), persistedUpdateLogMessage.getNumber() );
         });

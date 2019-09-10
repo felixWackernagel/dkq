@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.wackernagel.dkq.DkqLog;
-import de.wackernagel.dkq.room.entities.Question;
+import de.wackernagel.dkq.room.question.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.Quizzer;
 import de.wackernagel.dkq.room.message.Message;
@@ -75,13 +75,13 @@ public final class SampleCreator {
 
     private static Question newQuestion( final int number, final long quizId, final String question, final String answer, final String image ) {
         final Question newQuestion = new Question();
-        newQuestion.number = number;
-        newQuestion.quizId = quizId;
-        newQuestion.question = question;
-        newQuestion.answer = answer;
-        newQuestion.image = image;
-        newQuestion.version = 0;
-        newQuestion.lastUpdate = "2018-01-01 20:00:00";
+        newQuestion.setNumber(number);
+        newQuestion.setQuizId(quizId);
+        newQuestion.setQuestion(question);
+        newQuestion.setAnswer(answer);
+        newQuestion.setImage(image);
+        newQuestion.setVersion(0);
+        newQuestion.setLastUpdate("2018-01-01 20:00:00");
         return newQuestion;
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import de.wackernagel.dkq.repository.DkqRepository;
-import de.wackernagel.dkq.room.entities.Question;
+import de.wackernagel.dkq.room.question.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.Quizzer;
 import de.wackernagel.dkq.webservice.Resource;

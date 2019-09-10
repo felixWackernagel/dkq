@@ -49,7 +49,7 @@ public class RoomTest {
         Assert.assertEquals( 0, messageDao.loadMaxMessageNumber() );
 
         final int messageNumber = 1;
-        Message expected = messageDao.insertMessage( createMessage( messageNumber, Message.Type.ARTICLE ) );
+        Message expected = messageDao.insert( createMessage( messageNumber, Message.Type.ARTICLE ) );
 
         Assert.assertEquals( messageNumber, messageDao.loadMaxMessageNumber() );
 
@@ -64,31 +64,31 @@ public class RoomTest {
     public void checkMessageConstraints() throws Exception {
         // create a message
         Message firstArticle = createMessage( 1, Message.Type.ARTICLE );
-        messageDao.insertMessage( firstArticle );
+        messageDao.insert( firstArticle );
         Assert.assertEquals(1, firstArticle.getId() );
 
         // create a second message
         Message secondArticle = createMessage( 2, Message.Type.ARTICLE );
-        messageDao.insertMessage( secondArticle );
+        messageDao.insert( secondArticle );
         Assert.assertEquals(2, secondArticle.getId() );
 
         // query all message and check size
         assertListSize( 2, messageDao.loadMessages() );
 
         // insertion of a already persisted entity is ignored
-        messageDao.insertMessage( firstArticle );
+        messageDao.insert( firstArticle );
         Assert.assertEquals("Unique message.id constraint failed.",-1, firstArticle.getId() );
         assertListSize( 2, messageDao.loadMessages() );
 
         // number and type are unique so the insertion should be ignored
         Message duplicateFirstArticle = createMessage( 1, Message.Type.ARTICLE );
-        messageDao.insertMessage( duplicateFirstArticle );
+        messageDao.insert( duplicateFirstArticle );
         Assert.assertEquals("Unique message.type and message.number constraint failed.", -1, duplicateFirstArticle.getId() );
         assertListSize( 2, messageDao.loadMessages() );
 
         // create message of another type which is part of unique constraint
         Message ofOtherType = createMessage( 1, Message.Type.UPDATE_LOG );
-        messageDao.insertMessage( ofOtherType );
+        messageDao.insert( ofOtherType );
         // NOTE: The existing messages have the id's 1, 2 and 4.
         // 3 is skipped because the number & type constraint brokes the insert but the auto-increment id was already triggered.
         Assert.assertEquals( 4, ofOtherType.getId() );

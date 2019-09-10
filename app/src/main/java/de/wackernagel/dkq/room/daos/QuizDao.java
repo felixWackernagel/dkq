@@ -1,13 +1,13 @@
 package de.wackernagel.dkq.room.daos;
 
-import java.util.List;
-
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
+
+import java.util.List;
+
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.QuizListItem;
 
@@ -40,16 +40,13 @@ public interface QuizDao {
     @Query( "DELETE FROM quizzes" )
     void deleteAllQuizzes();
 
+    @Query( "DELETE FROM quizzes WHERE number IN  (:quizNumbers)" )
+    void deleteQuizzesByNumber( final int[] quizNumbers );
+
     @Insert( onConflict = REPLACE)
     long insertQuiz( Quiz quiz );
 
     @Update( onConflict = REPLACE)
     void updateQuiz( Quiz quiz );
-
-    @Delete
-    void deleteQuiz( Quiz quiz );
-
-    @Query( "DELETE FROM quizzes WHERE number IN  (:quizNumbers)" )
-    void deleteQuizzesByNumber( final int[] quizNumbers );
 
 }
