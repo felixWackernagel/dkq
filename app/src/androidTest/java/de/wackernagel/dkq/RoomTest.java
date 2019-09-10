@@ -18,9 +18,8 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import de.wackernagel.dkq.room.AppDatabase;
-import de.wackernagel.dkq.room.message.MessageDao;
 import de.wackernagel.dkq.room.message.Message;
-import de.wackernagel.dkq.room.message.MessageListItem;
+import de.wackernagel.dkq.room.message.MessageDao;
 
 import static de.wackernagel.dkq.TestUtils.getValue;
 
@@ -74,21 +73,30 @@ public class RoomTest {
         Assert.assertEquals(2, secondArticle.getId() );
 
         // query all message and check size
-        LiveData<List<MessageListItem>> persistedMessages = messageDao.loadMessages();
-        Assert.assertEquals(2, getValue( persistedMessages ).size() );
+        assertListSize( 2, messageDao.loadMessages() );
 
         // insertion of a already persisted entity is ignored
         messageDao.insertMessage( firstArticle );
-        Assert.assertEquals("The DAO-Method should us onConflict.IGNORE to return -1 on a already existing row.",-1, firstArticle.getId() );
-        persistedMessages = messageDao.loadMessages();
-        Assert.assertEquals(2, getValue( persistedMessages ).size() );
+        Assert.assertEquals("Unique message.id constraint failed.",-1, firstArticle.getId() );
+        assertListSize( 2, messageDao.loadMessages() );
 
         // number and type are unique so the insertion should be ignored
         Message duplicateFirstArticle = createMessage( 1, Message.Type.ARTICLE );
         messageDao.insertMessage( duplicateFirstArticle );
-        Assert.assertEquals(-1, duplicateFirstArticle.getId() );
-        persistedMessages = messageDao.loadMessages();
-        Assert.assertEquals(2, getValue( persistedMessages ).size() );
+        Assert.assertEquals("Unique message.type and message.number constraint failed.", -1, duplicateFirstArticle.getId() );
+        assertListSize( 2, messageDao.loadMessages() );
+
+        // create message of another type which is part of unique constraint
+        Message ofOtherType = createMessage( 1, Message.Type.UPDATE_LOG );
+        messageDao.insertMessage( ofOtherType );
+        // NOTE: The existing messages have the id's 1, 2 and 4.
+        // 3 is skipped because the number & type constraint brokes the insert but the auto-increment id was already triggered.
+        Assert.assertEquals( 4, ofOtherType.getId() );
+        assertListSize( 3, messageDao.loadMessages() );
+    }
+
+    private <T> void assertListSize( final int expectedSize, final LiveData<List<T>> listLiveData ) throws InterruptedException {
+        Assert.assertEquals( expectedSize, getValue( listLiveData ).size() );
     }
 
     private Message createMessage( int number, Message.Type type ) {
