@@ -59,6 +59,9 @@ public class Message extends BaseEntity {
     private Integer quizNumber;
 
     @Ignore
+    private static final Message INVALID = new Message();
+
+    @Ignore
     public Message() {
         super( 0 );
         this.number = 0;
@@ -175,7 +178,7 @@ public class Message extends BaseEntity {
     }
 
     public boolean isInvalid() {
-        return new Message().equals( this );
+        return INVALID.equals( this );
     }
 
     @NonNull

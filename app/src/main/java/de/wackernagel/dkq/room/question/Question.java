@@ -25,6 +25,9 @@ public class Question extends BaseEntity {
     private String lastUpdate;
 
     @Ignore
+    private static final Question INVALID = new Question();
+
+    @Ignore
     public Question() {
         super( 0 );
         this.quizId = 0;
@@ -107,7 +110,7 @@ public class Question extends BaseEntity {
     }
 
     public boolean isInvalid() {
-        return new Question().equals( this );
+        return INVALID.equals( this );
     }
 
     @NonNull

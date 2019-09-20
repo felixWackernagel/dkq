@@ -20,7 +20,9 @@
             app:badgePadding="16dp"
             app:badgeGravity="top|end"
             app:badgeText="@string/badge_new"
-            tools:scaleType="centerCrop"/>
+            tools:scaleType="centerCrop"
+            tools:src="@tools:sample/backgrounds/scenic"
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -53,7 +55,7 @@
             android:maxLines="2"
             android:ellipsize="end"
             android:textColor="@color/textSecondary"
-            tools:text="Hier entsteht ganz viel Inhalt um Linebreaks und mehr zu demonstrieren."/>
+            tools:text="@tools:sample/lorem/random"/>
 
     </LinearLayout>
 
