@@ -2,10 +2,11 @@ package de.wackernagel.dkq.viewmodels;
 
 import android.app.Application;
 
-import javax.inject.Singleton;
-
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+
+import javax.inject.Singleton;
+
 import de.wackernagel.dkq.repository.DkqRepository;
 
 @Singleton

@@ -11,7 +11,7 @@ public class AppExecutors {
     private final Executor mDiskIO;
     private final Executor mMainThread;
 
-    AppExecutors() {
+    public AppExecutors() {
         this(Executors.newSingleThreadExecutor(), new MainThreadExecutor());
     }
 

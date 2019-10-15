@@ -5,20 +5,15 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.wackernagel.dkq.DkqLog;
-import de.wackernagel.dkq.room.question.Question;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.Quizzer;
 import de.wackernagel.dkq.room.message.Message;
+import de.wackernagel.dkq.room.question.Question;
 
 public final class SampleCreator {
 
     private SampleCreator() {
         // no instance needed
-    }
-
-    public static void createSamples( final AppDatabase db ) {
-        DkqLog.i("SampleCreator", "create samples for db " + db.getOpenHelper().getDatabaseName() );
     }
 
     public static Quizzer[] createSampleQuizzers() {

@@ -16,10 +16,10 @@ public abstract class UIModule {
     @ContributesAndroidInjector(modules = FragmentBuildersModule.class)
     abstract QuizDetailsActivity contributeQuizActivityInjector();
 
-    @ContributesAndroidInjector()
+    @ContributesAndroidInjector
     abstract MessageDetailsActivity contributeMessageDetailsActivityInjector();
 
-    @ContributesAndroidInjector()
+    @ContributesAndroidInjector
     abstract DevelopmentActivity contributeDevelopmentActivityInjector();
 
 }

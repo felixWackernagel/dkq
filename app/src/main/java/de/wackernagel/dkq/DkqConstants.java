@@ -15,5 +15,6 @@ public final class DkqConstants {
 
     public static final class Database {
         public static final int VERSION = 4;
+        public static final String NAME = "dkq.db";
     }
 }

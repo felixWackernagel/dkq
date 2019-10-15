@@ -2,26 +2,35 @@ package de.wackernagel.dkq.dagger;
 
 import android.app.Application;
 
-import javax.inject.Singleton;
-
-import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
-import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import de.wackernagel.dkq.AppExecutors;
+import de.wackernagel.dkq.BuildConfig;
+import de.wackernagel.dkq.DkqConstants;
+import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.AppDatabase;
-import de.wackernagel.dkq.room.SampleCreator;
-import de.wackernagel.dkq.room.message.MessageDao;
-import de.wackernagel.dkq.room.question.QuestionDao;
 import de.wackernagel.dkq.room.daos.QuizDao;
 import de.wackernagel.dkq.room.daos.QuizzerDao;
+import de.wackernagel.dkq.room.message.MessageDao;
+import de.wackernagel.dkq.room.question.QuestionDao;
+import de.wackernagel.dkq.utils.ConnectivityInterceptor;
 import de.wackernagel.dkq.viewmodels.ViewModelFactory;
+import de.wackernagel.dkq.webservice.LiveDataCallAdapterFactory;
 import de.wackernagel.dkq.webservice.Webservice;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static de.wackernagel.dkq.DkqConstants.API.BASE_URL;
 
 @Module
 public class RoomModule {
@@ -92,28 +101,17 @@ public class RoomModule {
         }
     };
 
-    private final AppDatabase database;
-    private final Application application;
-    private final AppExecutors executors;
-
-    public RoomModule( final Application application, final AppExecutors executors ) {
-        this.application = application;
-        this.executors = executors;
-        this.database = Room
-            .databaseBuilder( application, AppDatabase.class, "dkq.db" )
-            .addMigrations( MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4 )
-            .addCallback(new RoomDatabase.Callback() {
-                @Override
-                public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                executors.diskIO().execute(() -> SampleCreator.createSamples( database ));
-                }
-            })
-            .build();
+    @Provides
+    @Singleton
+    AppDatabase providerAppDatabase( final Application application ) {
+        return Room.databaseBuilder( application, AppDatabase.class, DkqConstants.Database.NAME)
+                .addMigrations( MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4 )
+                .build();
     }
 
     @Provides
     @Singleton
-    DkqRepository provideDkqRepository(final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao, final QuizzerDao quizzerDao ) {
+    DkqRepository provideDkqRepository( final Application application, final AppExecutors executors, final AppDatabase database, final Webservice webservice, final QuizDao quizDao, final QuestionDao questionDao, final MessageDao messageDao, final QuizzerDao quizzerDao ) {
         return new DkqRepository( application.getApplicationContext(), database, executors, webservice, quizDao, questionDao, messageDao, quizzerDao );
     }
 
@@ -143,25 +141,34 @@ public class RoomModule {
 
     @Provides
     @Singleton
-    AppDatabase provideAppDatabase() {
-        return database;
-    }
-
-    @Provides
-    @Singleton
-    AppExecutors provideAppExecutors() {
-        return executors;
-    }
-
-    @Provides
-    @Singleton
-    Application provideApplication() {
-        return application;
-    }
-
-    @Provides
-    @Singleton
     ViewModelProvider.Factory providerViewModelFactory( final DkqRepository repository, final Application application ) {
         return new ViewModelFactory( repository, application );
+    }
+
+    @Provides
+    @Singleton
+    Webservice provideWebservice( final Application application ) {
+        final OkHttpClient.Builder client = new OkHttpClient.Builder();
+        client.addInterceptor( new ConnectivityInterceptor( application ) );
+
+        if (BuildConfig.DEBUG) {
+            final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(message -> DkqLog.i("RetrofitModule", message));
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            client.addInterceptor(interceptor);
+        }
+
+        final Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(new LiveDataCallAdapterFactory())
+                .client(client.build())
+                .build();
+        return retrofit.create(Webservice.class);
+    }
+
+    @Provides
+    @Singleton
+    AppExecutors providerAppExecuters() {
+        return new AppExecutors();
     }
 }

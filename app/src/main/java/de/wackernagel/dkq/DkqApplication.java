@@ -19,8 +19,6 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import dagger.android.HasBroadcastReceiverInjector;
 import de.wackernagel.dkq.dagger.DaggerApplicationComponent;
-import de.wackernagel.dkq.dagger.RetrofitModule;
-import de.wackernagel.dkq.dagger.RoomModule;
 import de.wackernagel.dkq.dagger.workerinjector.HasWorkerInjector;
 
 @AcraCore(
@@ -58,8 +56,7 @@ public class DkqApplication extends Application implements HasActivityInjector, 
 
         DaggerApplicationComponent
                 .builder()
-                .roomModule( new RoomModule( this, new AppExecutors() ) )
-                .retrofitModule( new RetrofitModule( this ) )
+                .application( this )
                 .build()
                 .inject( this );
     }
