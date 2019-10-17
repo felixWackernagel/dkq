@@ -9,21 +9,19 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.R;
@@ -35,7 +33,6 @@ import de.wackernagel.dkq.utils.SectionItemDecoration;
 import de.wackernagel.dkq.utils.SlideUpAlphaAnimator;
 import de.wackernagel.dkq.viewmodels.QuizzerRole;
 import de.wackernagel.dkq.viewmodels.QuizzersViewModel;
-import de.wackernagel.dkq.webservice.Resource;
 import de.wackernagel.dkq.webservice.Status;
 
 import static android.view.View.GONE;
@@ -76,7 +73,7 @@ public class QuizzersListFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( @NonNull final View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById( R.id.recyclerView );
         emptyView = view.findViewById( R.id.emptyView );
@@ -101,12 +98,12 @@ public class QuizzersListFragment extends Fragment {
             recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );
             recyclerView.addItemDecoration( new GridGutterDecoration(
-                    DeviceUtils.dpToPx(16, getContext()),
+                    DeviceUtils.dpToPx(16, requireContext()),
                     1,
                     false,
                     true,
                     true ) );
-            recyclerView.addItemDecoration( new SectionItemDecoration( getContext(),false, new SectionItemDecoration.SectionCallback() {
+            recyclerView.addItemDecoration( new SectionItemDecoration( requireContext(),false, new SectionItemDecoration.SectionCallback() {
                 @Override
                 public boolean isSection(int position) {
                     return position == 0;
@@ -126,17 +123,14 @@ public class QuizzersListFragment extends Fragment {
             }) );
 
             final QuizzersViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(QuizzersViewModel.class);
-            viewModel.loadQuizzers( getQuizzersSearchCriteria() ).observe(this, new Observer<Resource<List<QuizzerListItem>>>() {
-                @Override
-                public void onChanged(@Nullable Resource<List<QuizzerListItem>> quizzers) {
-                    if( quizzers != null ) {
-                        DkqLog.i("QuizzersListFragment", "Status=" + quizzers.status + ", Items=" + (quizzers.data != null ? quizzers.data.size() : "null" ) + ", Message=" + quizzers.message );
+            viewModel.loadQuizzers( getQuizzersSearchCriteria() ).observe(this, quizzers -> {
+                if( quizzers != null ) {
+                    DkqLog.i("QuizzersListFragment", "Status=" + quizzers.status + ", Items=" + (quizzers.data != null ? quizzers.data.size() : "null" ) + ", Message=" + quizzers.message );
 
-                        progressBar.setVisibility( quizzers.status == Status.LOADING ? VISIBLE : GONE );
-                        emptyView.setVisibility( quizzers.status != Status.LOADING && ( quizzers.data == null || quizzers.data.isEmpty() ) ? VISIBLE : GONE );
+                    progressBar.setVisibility( quizzers.status == Status.LOADING ? VISIBLE : GONE );
+                    emptyView.setVisibility( quizzers.status != Status.LOADING && ( quizzers.data == null || quizzers.data.isEmpty() ) ? VISIBLE : GONE );
 
-                        adapter.submitList( quizzers.data );
-                    }
+                    adapter.submitList( quizzers.data );
                 }
             });
         }
@@ -183,17 +177,18 @@ public class QuizzersListFragment extends Fragment {
             return getItem( position ).id;
         }
 
+        @NonNull
         @Override
         public QuizzersListFragment.QuizzerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new QuizzersListFragment.QuizzerViewHolder( LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_quizzer, parent, false ) );
         }
 
         @Override
-        public void onBindViewHolder(final QuizzersListFragment.QuizzerViewHolder holder, final int position) {
+        public void onBindViewHolder( @NonNull final QuizzersListFragment.QuizzerViewHolder holder, final int position) {
             if( position != RecyclerView.NO_POSITION ) {
                 final QuizzerListItem quizzer = getItem( position);
 
-                GlideUtils.loadCircleImage( holder.image, quizzer.image, false );
+                GlideUtils.loadCircleImage( holder.image, quizzer.image, false, quizzer.version );
                 holder.name.setText( quizzer.name );
                 final int textRes = criteria == QuizzerRole.WINNER ? R.plurals.quizzers_win_count : R.plurals.quizzers_quiz_master_count;
                 holder.ranking.setText( holder.itemView.getResources().getQuantityString( textRes, quizzer.ranking, quizzer.ranking) );

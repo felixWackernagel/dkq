@@ -220,7 +220,7 @@ public class QuestionsListFragment extends Fragment {
             });
 
             if( !TextUtils.isEmpty( question.getImage() ) ) {
-                GlideUtils.loadImage( holder.image, question.getImage() );
+                GlideUtils.loadImage( holder.image, question.getImage(), question.getVersion() );
                 holder.image.setVisibility( VISIBLE );
                 final Intent viewImageIntent = new Intent(Intent.ACTION_VIEW);
                 viewImageIntent.setDataAndType(Uri.parse(question.getImage()), "image/*");

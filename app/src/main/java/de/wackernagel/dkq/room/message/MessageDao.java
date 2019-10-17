@@ -11,7 +11,7 @@ import de.wackernagel.dkq.room.BaseDao;
 @Dao
 public abstract class MessageDao extends BaseDao<Message> {
 
-    @Query( "SELECT id, number, title, content, image, read, type FROM messages ORDER BY number DESC, type DESC" )
+    @Query( "SELECT id, number, title, content, image, read, type, version FROM messages ORDER BY number DESC, type DESC" )
     public abstract LiveData<List<MessageListItem>> loadMessages();
 
     @Query( "SELECT * FROM messages WHERE id = :messageId" )

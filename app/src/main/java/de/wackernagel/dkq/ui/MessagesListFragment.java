@@ -191,7 +191,7 @@ public class MessagesListFragment extends Fragment {
 
                 holder.title.setText( message.getTitle() );
                 if( Message.Type.ARTICLE.equals( message.getType() ) ) {
-                    GlideUtils.loadImage(holder.image, message.getImage());
+                    GlideUtils.loadImage(holder.image, message.getImage(), message.getVersion());
                     holder.image.drawBadge(!message.isRead());
                     holder.content.setText( message.getContent() );
                 } else {

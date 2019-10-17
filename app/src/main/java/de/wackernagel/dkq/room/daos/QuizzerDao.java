@@ -16,7 +16,7 @@ import static androidx.room.OnConflictStrategy.REPLACE;
 @Dao
 public interface QuizzerDao {
 
-    @Query( "SELECT quizzers.id, quizzers.name, quizzers.image, COUNT(quizzes.winnerId) AS ranking " +
+    @Query( "SELECT quizzers.id, quizzers.name, quizzers.image, COUNT(quizzes.winnerId) AS ranking, quizzers.version " +
             "FROM quizzers " +
             "LEFT JOIN quizzes ON quizzers.id = quizzes.winnerId " +
             "WHERE quizzes.winnerId IS NOT NULL " +
@@ -24,7 +24,7 @@ public interface QuizzerDao {
             "ORDER BY ranking DESC" )
     LiveData<List<QuizzerListItem>> loadWinners();
 
-    @Query( "SELECT quizzers.id, quizzers.name, quizzers.image, COUNT(quizzes.quizMasterId) AS ranking " +
+    @Query( "SELECT quizzers.id, quizzers.name, quizzers.image, COUNT(quizzes.quizMasterId) AS ranking, quizzers.version " +
             "FROM quizzers " +
             "LEFT JOIN quizzes ON quizzers.id = quizzes.quizMasterId " +
             "WHERE quizzes.quizMasterId IS NOT NULL " +

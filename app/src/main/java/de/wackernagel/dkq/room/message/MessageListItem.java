@@ -17,8 +17,9 @@ public class MessageListItem {
     private boolean read;
     @NonNull
     private Message.Type type;
+    private int version;
 
-    MessageListItem( long id, int number, String title, String content, String image, boolean read, @NonNull Message.Type type ) {
+    MessageListItem( long id, int number, String title, String content, String image, boolean read, @NonNull Message.Type type, int version ) {
         this.id = id;
         this.number = number;
         this.title = title;
@@ -26,6 +27,7 @@ public class MessageListItem {
         this.image = image;
         this.read = read;
         this.type = type;
+        this.version = version;
     }
 
     public long getId() {
@@ -57,6 +59,10 @@ public class MessageListItem {
         return type;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,12 +74,13 @@ public class MessageListItem {
                 Objects.equals(title, that.title) &&
                 Objects.equals(content, that.content) &&
                 Objects.equals(image, that.image) &&
-                type == that.type;
+                type == that.type &&
+                version == that.version;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, number, title, content, image, read, type);
+        return Objects.hash(id, number, title, content, image, read, type, version);
     }
 
     @NonNull
@@ -87,6 +94,7 @@ public class MessageListItem {
                 ", image='" + image + '\'' +
                 ", read=" + read +
                 ", type=" + type +
+                ", version=" + version +
                 '}';
     }
 }

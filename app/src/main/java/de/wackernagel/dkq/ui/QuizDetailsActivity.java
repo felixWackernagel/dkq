@@ -229,8 +229,9 @@ public class QuizDetailsActivity extends AbstractDkqActivity implements HasSuppo
         final TextView name = findViewById( textId );
         final String nameData = quizzer != null ? quizzer.name : getString( R.string.unknown_word );
         final String imageData = quizzer != null ? quizzer.image : null;
+        final int version = quizzer != null ? quizzer.version : 0;
 
-        GlideUtils.loadCircleImage( image, imageData, true );
+        GlideUtils.loadCircleImage( image, imageData, true, version );
         final SpannableString ss = new SpannableString( quizzerRole + "\n" + nameData );
         ss.setSpan( new AbsoluteSizeSpan(10, true), 0, quizzerRole.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE );
         name.setText( ss, TextView.BufferType.SPANNABLE );

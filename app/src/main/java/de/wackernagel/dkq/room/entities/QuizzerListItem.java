@@ -5,4 +5,5 @@ public class QuizzerListItem {
     public String name;
     public String image;
     public int ranking;
+    public int version;
 }
