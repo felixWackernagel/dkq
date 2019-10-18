@@ -141,8 +141,8 @@ public class RoomModule {
 
     @Provides
     @Singleton
-    ViewModelProvider.Factory providerViewModelFactory( final DkqRepository repository, final Application application ) {
-        return new ViewModelFactory( repository, application );
+    ViewModelProvider.Factory providerViewModelFactory( final DkqRepository repository ) {
+        return new ViewModelFactory( repository );
     }
 
     @Provides

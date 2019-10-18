@@ -1,26 +1,21 @@
 package de.wackernagel.dkq.viewmodels;
 
-import android.app.Application;
-
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import javax.inject.Singleton;
-
 import de.wackernagel.dkq.repository.DkqRepository;
 
-@Singleton
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
     private final DkqRepository repository;
-    private final Application application;
 
-    public ViewModelFactory(final DkqRepository repository, final Application application) {
+    public ViewModelFactory(final DkqRepository repository) {
         this.repository = repository;
-        this.application = application;
     }
 
     @SuppressWarnings("unchecked")
+    @NonNull
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
         if( modelClass.isAssignableFrom( QuizzesViewModel.class ) ) {
@@ -34,7 +29,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if( modelClass.isAssignableFrom( MessageDetailsViewModel.class ) ) {
             return (T) new MessageDetailsViewModel( repository );
         } else if( modelClass.isAssignableFrom( MainViewModel.class ) ) {
-            return (T) new MainViewModel( application, repository );
+            return (T) new MainViewModel( repository );
         } else if( modelClass.isAssignableFrom( QuizzersViewModel.class ) ) {
             return (T) new QuizzersViewModel( repository );
         }

@@ -48,9 +48,9 @@ public class UpdateWorker extends Worker {
         final String logMessage = updateMessages();
         updateQuestions();
 
-//        if( getApplicationContext().getResources().getBoolean( R.bool.development ) ) {
-//            NotificationReceiver.forDevelopment( getApplicationContext(), "Daily update is done.", logMessage );
-//        }
+        if( getApplicationContext().getResources().getBoolean( R.bool.development ) ) {
+            NotificationReceiver.forDevelopment( getApplicationContext(), "Daily update is done.", logMessage );
+        }
 
         return Worker.Result.success();
     }

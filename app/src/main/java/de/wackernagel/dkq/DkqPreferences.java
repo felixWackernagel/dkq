@@ -32,4 +32,12 @@ public class DkqPreferences {
     public static void setLastUpdateWorkerExecutionTime( final Context context, final String readableTime ) {
         PreferenceUtils.setString( context, "last_update_worker_execution_time", readableTime);
     }
+
+    public static boolean isDailyUpdateScheduled( final Context context ) {
+        return PreferenceUtils.getBoolean( context, "daily_update_scheduled", false );
+    }
+
+    public static void setDailyUpdateScheduled( final Context context ) {
+        PreferenceUtils.setBoolean( context, "daily_update_scheduled", true );
+    }
 }

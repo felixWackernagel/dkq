@@ -82,7 +82,7 @@ public class MainActivity extends AbstractDkqActivity implements HasSupportFragm
 
         final CardView toolbarCard = findViewById(R.id.toolbarCard);
         final MainViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(MainViewModel.class);
-        viewModel.installUpdateChecker();
+        viewModel.installUpdateChecker( this );
         viewModel.loadNextQuiz().observe(this, quiz -> {
             final TextView nextQuizTextView = findViewById(R.id.nextQuizTextView);
             if( quiz != null ) {

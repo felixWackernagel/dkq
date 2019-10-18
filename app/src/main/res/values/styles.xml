@@ -1,9 +1,12 @@
-<resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textViewStyle">@style/NoHyphenationTextViewStyle</item>
     </style>
 
     <style name="AppTheme.About">
@@ -18,6 +21,10 @@
         <item name="android:textSize">16sp</item>
         <item name="android:listSeparatorTextViewStyle">@style/Preference.Category.Dkq</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+
+    <style name="NoHyphenationTextViewStyle">
+        <item name="android:hyphenationFrequency" tools:targetApi="m">none</item>
     </style>
 
     <style name="Widget.MaterialComponents.Button.Dkq">
