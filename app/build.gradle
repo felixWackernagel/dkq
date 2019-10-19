@@ -48,6 +48,7 @@ ext {
     roomVersion = "2.1.0-alpha04"
     acraVersion = "5.1.3"
     glideVersion = "4.9.0"
+    daggerVersion = "2.24"
 }
 
 dependencies {
@@ -77,11 +78,11 @@ dependencies {
     implementation 'android.arch.work:work-runtime:1.0.0'
 
     // Dagger
-    implementation 'com.google.dagger:dagger:2.16'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
-    implementation 'com.google.dagger:dagger-android:2.15'
-    implementation 'com.google.dagger:dagger-android-support:2.11'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.16'
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+    implementation "com.google.dagger:dagger-android:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'

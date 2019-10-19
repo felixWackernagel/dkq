@@ -14,13 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.Date;
-
-import javax.inject.Inject;
-
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,10 +23,16 @@ import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Date;
+
+import javax.inject.Inject;
+
 import dagger.android.AndroidInjection;
-import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
-import dagger.android.support.HasSupportFragmentInjector;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.Quizzer;
@@ -42,7 +41,7 @@ import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.GlideUtils;
 import de.wackernagel.dkq.viewmodels.QuestionsViewModel;
 
-public class QuizDetailsActivity extends AbstractDkqActivity implements HasSupportFragmentInjector {
+public class QuizDetailsActivity extends AbstractDkqActivity {
 
     private static final String ARG_QUIZ_ID = "quizId";
     private static final String ARG_QUIZ_NUMBER = "quizNumber";
@@ -263,10 +262,5 @@ public class QuizDetailsActivity extends AbstractDkqActivity implements HasSuppo
             value = quiz.address.replaceAll(",", "\n");
         }
         location.setText( value );
-    }
-
-    @Override
-    public AndroidInjector<Fragment> supportFragmentInjector() {
-        return fragmentDispatchingAndroidInjector;
     }
 }

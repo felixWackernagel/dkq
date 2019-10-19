@@ -13,6 +13,8 @@ import androidx.work.WorkManager;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.entities.Quiz;
@@ -23,6 +25,7 @@ public class MainViewModel extends ViewModel {
     private final DkqRepository repository;
     private final WorkManager workManager;
 
+    @Inject
     MainViewModel( @NonNull final DkqRepository repository ) {
         this.repository = repository;
         workManager = WorkManager.getInstance();

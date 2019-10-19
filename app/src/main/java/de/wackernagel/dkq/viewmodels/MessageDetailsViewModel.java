@@ -2,6 +2,9 @@ package de.wackernagel.dkq.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+
+import javax.inject.Inject;
+
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.message.Message;
 import de.wackernagel.dkq.room.entities.Quiz;
@@ -11,6 +14,7 @@ public class MessageDetailsViewModel extends ViewModel {
 
     private final DkqRepository repository;
 
+    @Inject
     MessageDetailsViewModel(DkqRepository repository) {
         this.repository = repository;
     }

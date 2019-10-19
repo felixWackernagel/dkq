@@ -15,9 +15,9 @@ import javax.inject.Inject;
 
 import androidx.work.Worker;
 import dagger.android.AndroidInjector;
+import dagger.android.DaggerApplication;
 import dagger.android.DispatchingAndroidInjector;
-import dagger.android.HasActivityInjector;
-import dagger.android.HasBroadcastReceiverInjector;
+import de.wackernagel.dkq.dagger.ApplicationComponent;
 import de.wackernagel.dkq.dagger.DaggerApplicationComponent;
 import de.wackernagel.dkq.dagger.workerinjector.HasWorkerInjector;
 
@@ -33,15 +33,10 @@ import de.wackernagel.dkq.dagger.workerinjector.HasWorkerInjector;
     resText = R.string.acra_dialog_text,
     resTitle = R.string.acra_dialog_title,
     resTheme = R.style.DkqDialogTheme )
-public class DkqApplication extends Application implements HasActivityInjector, HasWorkerInjector, HasBroadcastReceiverInjector {
-    @Inject
-    DispatchingAndroidInjector<Activity> dispatchingActivityInjector;
+public class DkqApplication extends DaggerApplication implements HasWorkerInjector {
 
     @Inject
     DispatchingAndroidInjector<Worker> workerInjector;
-
-    @Inject
-    DispatchingAndroidInjector<BroadcastReceiver> broadcastReceiverInjector;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -51,19 +46,13 @@ public class DkqApplication extends Application implements HasActivityInjector, 
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-
-        DaggerApplicationComponent
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        final ApplicationComponent component = DaggerApplicationComponent
                 .builder()
                 .application( this )
-                .build()
-                .inject( this );
-    }
-
-    @Override
-    public AndroidInjector<Activity> activityInjector() {
-        return dispatchingActivityInjector;
+                .build();
+        component.inject( this );
+        return component;
     }
 
     @Override
@@ -71,8 +60,4 @@ public class DkqApplication extends Application implements HasActivityInjector, 
         return workerInjector;
     }
 
-    @Override
-    public AndroidInjector<BroadcastReceiver> broadcastReceiverInjector() {
-        return broadcastReceiverInjector;
-    }
 }

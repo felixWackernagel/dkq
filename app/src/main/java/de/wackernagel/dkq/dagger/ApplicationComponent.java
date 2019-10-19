@@ -19,7 +19,8 @@ import de.wackernagel.dkq.dagger.workerinjector.WorkerModule;
         UIModule.class,
         AndroidWorkerInjectionModule.class,
         WorkerModule.class,
-        BroadcastReceiverModule.class})
+        BroadcastReceiverModule.class,
+        ViewModelModule.class})
 public interface ApplicationComponent extends AndroidInjector<DkqApplication> {
     @Component.Builder
     interface Builder {

@@ -2,7 +2,6 @@ package de.wackernagel.dkq.dagger;
 
 import android.app.Application;
 
-import androidx.lifecycle.ViewModelProvider;
 import androidx.room.Room;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
@@ -22,7 +21,6 @@ import de.wackernagel.dkq.room.daos.QuizzerDao;
 import de.wackernagel.dkq.room.message.MessageDao;
 import de.wackernagel.dkq.room.question.QuestionDao;
 import de.wackernagel.dkq.utils.ConnectivityInterceptor;
-import de.wackernagel.dkq.viewmodels.ViewModelFactory;
 import de.wackernagel.dkq.webservice.LiveDataCallAdapterFactory;
 import de.wackernagel.dkq.webservice.Webservice;
 import okhttp3.OkHttpClient;
@@ -137,12 +135,6 @@ public class RoomModule {
     @Singleton
     QuizzerDao provideQuizzerDao( final AppDatabase database ) {
         return database.quizzerDao();
-    }
-
-    @Provides
-    @Singleton
-    ViewModelProvider.Factory providerViewModelFactory( final DkqRepository repository ) {
-        return new ViewModelFactory( repository );
     }
 
     @Provides
