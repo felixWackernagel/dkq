@@ -9,19 +9,20 @@ import dagger.Component;
 import dagger.android.AndroidInjectionModule;
 import dagger.android.AndroidInjector;
 import de.wackernagel.dkq.DkqApplication;
-import de.wackernagel.dkq.dagger.workerinjector.AndroidWorkerInjectionModule;
-import de.wackernagel.dkq.dagger.workerinjector.WorkerModule;
+import de.wackernagel.dkq.dagger.workerfactory.AssistedInjectModule;
+import de.wackernagel.dkq.dagger.workerfactory.WorkerBindingModule;
 
 @Singleton
 @Component(modules = {
         AndroidInjectionModule.class,
         RoomModule.class,
         UIModule.class,
-        AndroidWorkerInjectionModule.class,
-        WorkerModule.class,
         BroadcastReceiverModule.class,
-        ViewModelModule.class})
+        ViewModelModule.class,
+        AssistedInjectModule.class,
+        WorkerBindingModule.class })
 public interface ApplicationComponent extends AndroidInjector<DkqApplication> {
+
     @Component.Builder
     interface Builder {
 

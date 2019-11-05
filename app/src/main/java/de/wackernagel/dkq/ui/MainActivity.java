@@ -24,13 +24,15 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasAndroidInjector;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.utils.BottomNavigationUtils;
 import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.viewmodels.MainViewModel;
 
-public class MainActivity extends AbstractDkqActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AbstractDkqActivity implements BottomNavigationView.OnNavigationItemSelectedListener, HasAndroidInjector {
 
     public static String FRAGMENT_QUIZZES = "quizzes";
     public static String FRAGMENT_MESSAGES = "messages";
@@ -54,7 +56,7 @@ public class MainActivity extends AbstractDkqActivity implements BottomNavigatio
     ViewModelProvider.Factory viewModelFactory;
 
     @Inject
-    DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
+    DispatchingAndroidInjector<Object> dispatchingAndroidInjector;
 
     private String getStartFragment() {
         final Intent intent = getIntent();
@@ -81,7 +83,7 @@ public class MainActivity extends AbstractDkqActivity implements BottomNavigatio
 
         final CardView toolbarCard = findViewById(R.id.toolbarCard);
         final MainViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(MainViewModel.class);
-        viewModel.installUpdateChecker( this );
+        viewModel.installUpdateChecker();
         viewModel.loadNextQuiz().observe(this, quiz -> {
             final TextView nextQuizTextView = findViewById(R.id.nextQuizTextView);
             if( quiz != null ) {
@@ -190,5 +192,10 @@ public class MainActivity extends AbstractDkqActivity implements BottomNavigatio
         }
 
         return true;
+    }
+
+    @Override
+    public AndroidInjector<Object> androidInjector() {
+        return dispatchingAndroidInjector;
     }
 }

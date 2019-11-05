@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
@@ -71,47 +72,46 @@ public class GlideUtils {
     }
 
     public static void loadCircleImage(final ImageView view, @Nullable final String url, final boolean white, final int version ) {
-        if( TextUtils.isEmpty( url ) ) {
-            final int resId = white ? R.drawable.ic_account_circle_white_40dp : R.drawable.ic_account_circle_38_black_40dp;
-            final Drawable drawable = ContextCompat.getDrawable( view.getContext(), resId );
-            view.setImageDrawable( drawable );
-        } else {
-            final RequestOptions options = new RequestOptions()
-                    .circleCrop()
-                    .signature( new ObjectKey( version ) )
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .placeholder( white ? R.drawable.ic_account_circle_white_40dp : R.drawable.ic_account_circle_38_black_40dp );
+        final int fallbackResId = white ? R.drawable.ic_account_circle_white_40dp : R.drawable.ic_account_circle_38_black_40dp;
 
-            Glide.with( view )
-                .load(url)
-                .listener( new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        view.setHasTransientState(true);
-                        final ObservableColorMatrix cm = new ObservableColorMatrix();
-                        final ObjectAnimator saturation = ObjectAnimator.ofFloat(cm, ObservableColorMatrix.SATURATION, 0f, 1f);
-                        saturation.addUpdateListener(animation -> view.setColorFilter(new ColorMatrixColorFilter(cm)));
-                        saturation.setDuration(2000L);
-                        saturation.setInterpolator(getFastOutSlowInInterpolator(view.getContext()));
-                        saturation.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                view.clearColorFilter();
-                                view.setHasTransientState(false);
-                            }
-                        });
-                        saturation.start();
-                        return false;
-                    }
+        final RequestOptions options = new RequestOptions()
+                .circleCrop()
+                .signature( new ObjectKey( version ) )
+                .fallback( fallbackResId )
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
 
-                    @Override
-                    public boolean onLoadFailed(@Nullable final GlideException e, final Object model, final Target<Drawable> target, final boolean isFirstResource) {
-                        return false;
-                    }
-                } )
-                .apply( options )
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into( view );
-        }
+        Glide.with( view )
+            .load(url)
+            .listener( new RequestListener<Drawable>() {
+                @Override
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    Log.e("GlideUtils", "onResourceReady: model=" + model);
+
+//                    view.setHasTransientState(true);
+//                    final ObservableColorMatrix cm = new ObservableColorMatrix();
+//                    final ObjectAnimator saturation = ObjectAnimator.ofFloat(cm, ObservableColorMatrix.SATURATION, 0f, 1f);
+//                    saturation.addUpdateListener(animation -> view.setColorFilter(new ColorMatrixColorFilter(cm)));
+//                    saturation.setDuration(2000L);
+//                    saturation.setInterpolator(getFastOutSlowInInterpolator(view.getContext()));
+//                    saturation.addListener(new AnimatorListenerAdapter() {
+//                        @Override
+//                        public void onAnimationEnd(Animator animation) {
+//                            view.clearColorFilter();
+//                            view.setHasTransientState(false);
+//                        }
+//                    });
+//                    saturation.start();
+                    return false;
+                }
+
+                @Override
+                public boolean onLoadFailed(@Nullable final GlideException e, final Object model, final Target<Drawable> target, final boolean isFirstResource) {
+                    Log.e("GlideUtils", "onLoadFailed: model=" + model);
+                    return false;
+                }
+            } )
+            .apply( options )
+            .transition( DrawableTransitionOptions.withCrossFade() )
+            .into( view );
     }
 }

@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.room.Room;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.work.WorkerFactory;
 
 import javax.inject.Singleton;
 
@@ -14,6 +15,7 @@ import de.wackernagel.dkq.AppExecutors;
 import de.wackernagel.dkq.BuildConfig;
 import de.wackernagel.dkq.DkqConstants;
 import de.wackernagel.dkq.DkqLog;
+import de.wackernagel.dkq.dagger.workerfactory.DkqWorkerFactory;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.AppDatabase;
 import de.wackernagel.dkq.room.daos.QuizDao;

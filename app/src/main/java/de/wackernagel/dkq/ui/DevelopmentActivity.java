@@ -8,12 +8,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import javax.inject.Inject;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+
+import javax.inject.Inject;
+
 import dagger.android.AndroidInjection;
 import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.R;

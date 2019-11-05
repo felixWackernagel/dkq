@@ -8,18 +8,19 @@ import androidx.core.util.Consumer;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import com.squareup.inject.assisted.Assisted;
+import com.squareup.inject.assisted.AssistedInject;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import javax.inject.Inject;
-
 import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.R;
-import de.wackernagel.dkq.dagger.workerinjector.AndroidWorkerInjection;
+import de.wackernagel.dkq.dagger.workerfactory.ChildWorkerFactory;
 import de.wackernagel.dkq.receiver.NotificationReceiver;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.entities.Quiz;
@@ -29,28 +30,35 @@ import retrofit2.Response;
 /* DON'T RENAME THIS CLASS */
 /* OTHERWISE THE WORK MANAGER CAN'T FIND THE CLASS BY NAME FOR ALWAYS SCHEDULED TASKS */
 public class UpdateWorker extends Worker {
+
+    @AssistedInject.Factory
+    public interface Factory extends ChildWorkerFactory {}
+
     private static final String TAG = "UpdateWorker";
 
-    @Inject
-    DkqRepository repository;
+    private final DkqRepository repository;
 
-    public UpdateWorker( @NonNull final Context appContext, @NonNull final WorkerParameters workerParams ) {
-        super(appContext, workerParams);
+    @AssistedInject
+    UpdateWorker(
+            @Assisted @NonNull final Context appContext,
+            @Assisted @NonNull final WorkerParameters workerParameters,
+            final DkqRepository repository ) {
+        super(appContext, workerParameters);
+        this.repository = repository;
     }
 
     @NonNull
     @Override
     public Result doWork() {
-        AndroidWorkerInjection.inject(this);
         updateLog();
 
         updateQuizzes();
         final String logMessage = updateMessages();
         updateQuestions();
 
-        if( getApplicationContext().getResources().getBoolean( R.bool.development ) ) {
-            NotificationReceiver.forDevelopment( getApplicationContext(), "Daily update is done.", logMessage );
-        }
+//        if( getApplicationContext().getResources().getBoolean( R.bool.development ) ) {
+//            NotificationReceiver.forDevelopment( getApplicationContext(), "Daily update is done.", logMessage );
+//        }
 
         return Worker.Result.success();
     }

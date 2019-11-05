@@ -20,7 +20,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ShareCompat;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -32,7 +31,9 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasAndroidInjector;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.room.entities.Quizzer;
@@ -41,7 +42,7 @@ import de.wackernagel.dkq.utils.DateUtils;
 import de.wackernagel.dkq.utils.GlideUtils;
 import de.wackernagel.dkq.viewmodels.QuestionsViewModel;
 
-public class QuizDetailsActivity extends AbstractDkqActivity {
+public class QuizDetailsActivity extends AbstractDkqActivity implements HasAndroidInjector {
 
     private static final String ARG_QUIZ_ID = "quizId";
     private static final String ARG_QUIZ_NUMBER = "quizNumber";
@@ -54,10 +55,10 @@ public class QuizDetailsActivity extends AbstractDkqActivity {
     }
 
     @Inject
-    DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
+    ViewModelProvider.Factory viewModelFactory;
 
     @Inject
-    ViewModelProvider.Factory viewModelFactory;
+    DispatchingAndroidInjector<Object> dispatchingAndroidInjector;
 
     private long getQuizId() {
         final Intent intent = getIntent();
@@ -262,5 +263,10 @@ public class QuizDetailsActivity extends AbstractDkqActivity {
             value = quiz.address.replaceAll(",", "\n");
         }
         location.setText( value );
+    }
+
+    @Override
+    public AndroidInjector<Object> androidInjector() {
+        return dispatchingAndroidInjector;
     }
 }

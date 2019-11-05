@@ -1,9 +1,9 @@
 package de.wackernagel.dkq;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.Context;
+
+import androidx.annotation.NonNull;
+import androidx.work.Configuration;
 
 import org.acra.ACRA;
 import org.acra.annotation.AcraCore;
@@ -13,13 +13,11 @@ import org.acra.data.StringFormat;
 
 import javax.inject.Inject;
 
-import androidx.work.Worker;
 import dagger.android.AndroidInjector;
 import dagger.android.DaggerApplication;
-import dagger.android.DispatchingAndroidInjector;
 import de.wackernagel.dkq.dagger.ApplicationComponent;
 import de.wackernagel.dkq.dagger.DaggerApplicationComponent;
-import de.wackernagel.dkq.dagger.workerinjector.HasWorkerInjector;
+import de.wackernagel.dkq.dagger.workerfactory.DkqWorkerFactory;
 
 @AcraCore(
     buildConfigClass = BuildConfig.class,
@@ -33,15 +31,14 @@ import de.wackernagel.dkq.dagger.workerinjector.HasWorkerInjector;
     resText = R.string.acra_dialog_text,
     resTitle = R.string.acra_dialog_title,
     resTheme = R.style.DkqDialogTheme )
-public class DkqApplication extends DaggerApplication implements HasWorkerInjector {
+public class DkqApplication extends DaggerApplication implements Configuration.Provider {
 
     @Inject
-    DispatchingAndroidInjector<Worker> workerInjector;
+    DkqWorkerFactory workerFactory;
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-
         ACRA.init(this);
     }
 
@@ -55,9 +52,11 @@ public class DkqApplication extends DaggerApplication implements HasWorkerInject
         return component;
     }
 
+    @NonNull
     @Override
-    public AndroidInjector<Worker> workerInjector() {
-        return workerInjector;
+    public Configuration getWorkManagerConfiguration() {
+        return new Configuration.Builder()
+                .setWorkerFactory( workerFactory )
+                .build();
     }
-
 }

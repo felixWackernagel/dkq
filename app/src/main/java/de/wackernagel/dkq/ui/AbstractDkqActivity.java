@@ -3,11 +3,13 @@ package de.wackernagel.dkq.ui;
 import android.os.Bundle;
 import android.view.Window;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import dagger.android.AndroidInjection;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.utils.DkqNotificationBroadcastReceiver;
 
@@ -18,6 +20,7 @@ public abstract class AbstractDkqActivity extends AppCompatActivity implements D
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         // Placeholder UI
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         super.onCreate(savedInstanceState);
     }
 

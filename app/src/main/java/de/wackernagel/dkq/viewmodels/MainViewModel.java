@@ -1,10 +1,10 @@
 package de.wackernagel.dkq.viewmodels;
 
-import android.content.Context;
+import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
@@ -20,19 +20,20 @@ import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.workers.UpdateWorker;
 
-public class MainViewModel extends ViewModel {
+public class MainViewModel extends AndroidViewModel {
     @NonNull
     private final DkqRepository repository;
     private final WorkManager workManager;
 
     @Inject
-    MainViewModel( @NonNull final DkqRepository repository ) {
+    MainViewModel(final @NonNull Application application, @NonNull final DkqRepository repository) {
+        super( application );
         this.repository = repository;
-        workManager = WorkManager.getInstance();
+        workManager = WorkManager.getInstance( application );
     }
 
-    public void installUpdateChecker( @NonNull final Context context ) {
-        if( !DkqPreferences.isDailyUpdateScheduled( context ) ) {
+    public void installUpdateChecker() {
+        if( !DkqPreferences.isDailyUpdateScheduled( getApplication() ) ) {
             workManager.enqueueUniquePeriodicWork(
                     "dkqUpdateChecker",
                     ExistingPeriodicWorkPolicy.KEEP,
@@ -40,7 +41,7 @@ public class MainViewModel extends ViewModel {
                             new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
                     ).build()
             );
-            DkqPreferences.setDailyUpdateScheduled( context );
+            DkqPreferences.setDailyUpdateScheduled( getApplication() );
         }
     }
 

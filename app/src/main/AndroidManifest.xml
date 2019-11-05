@@ -61,10 +61,18 @@
                 <action android:name="dkq.notification" />
             </intent-filter>
         </receiver>
+
         <receiver android:name=".receiver.AppUpdatedReceiver" >
             <intent-filter >
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
+
+        <!-- With the line tools:node="remove" is the default WorkManagerInitializer removed. We init a custom one inside DkqApplication. -->
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            android:exported="false"
+            tools:node="remove"/>
     </application>
 </manifest>
