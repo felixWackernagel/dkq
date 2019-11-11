@@ -6,7 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
+
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.utils.DeviceUtils;
 
@@ -24,7 +25,7 @@ public class IconImageView extends FourThreeImageView {
     private void initialize( final Context context) {
         iconSize = DeviceUtils.dpToPx(24f, context );
         iconSpace = DeviceUtils.dpToPx(16f, context );
-        icon = ContextCompat.getDrawable( context, R.drawable.ic_crop_free_white_48dp);
+        icon = VectorDrawableCompat.create( context.getResources(), R.drawable.ic_crop_free_white_48dp, context.getTheme() );
     }
 
     @Override

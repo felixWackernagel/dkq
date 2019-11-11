@@ -4,4 +4,5 @@
     <dimen name="toolbar_height_plus_small_space">64dp</dimen>
 
     <dimen name="section_height">48dp</dimen>
+    <dimen name="thumbnail_image_size">40dp</dimen>
 </resources>

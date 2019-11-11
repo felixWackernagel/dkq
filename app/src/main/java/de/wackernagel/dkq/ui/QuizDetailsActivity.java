@@ -231,7 +231,7 @@ public class QuizDetailsActivity extends AbstractDkqActivity implements HasAndro
         final String imageData = quizzer != null ? quizzer.image : null;
         final int version = quizzer != null ? quizzer.version : 0;
 
-        GlideUtils.loadCircleImage( image, imageData, true, version );
+        GlideUtils.loadCircleThumbnailImage( image, imageData, true, version );
         final SpannableString ss = new SpannableString( quizzerRole + "\n" + nameData );
         ss.setSpan( new AbsoluteSizeSpan(10, true), 0, quizzerRole.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE );
         name.setText( ss, TextView.BufferType.SPANNABLE );

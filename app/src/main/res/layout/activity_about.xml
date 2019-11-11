@@ -31,7 +31,7 @@
                 android:id="@+id/version"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@mipmap/ic_launcher"
+                app:drawableStartCompat="@mipmap/ic_launcher"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
                 android:textColor="@color/textPrimary"

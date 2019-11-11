@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/quizMasterImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/thumbnail_image_size"
+            android:layout_height="@dimen/thumbnail_image_size"
             android:layout_marginEnd="16dp"
             android:contentDescription="@null"
             tools:src="@drawable/ic_account_circle_white_40dp"/>
@@ -46,8 +46,8 @@
 
         <ImageView
             android:id="@+id/winnerImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="@dimen/thumbnail_image_size"
+            android:layout_height="@dimen/thumbnail_image_size"
             android:layout_marginEnd="16dp"
             android:contentDescription="@null"
             tools:src="@drawable/ic_account_circle_white_40dp"/>
@@ -76,7 +76,7 @@
             android:id="@+id/quiz_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_insert_invitation_white_24dp"
+            app:drawableStartCompat="@drawable/ic_insert_invitation_white_24dp"
             android:drawablePadding="24dp"
             android:textSize="16sp"
             android:textColor="@android:color/white"
@@ -87,7 +87,7 @@
             android:id="@+id/quiz_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_access_time_black_24dp"
+            app:drawableStartCompat="@drawable/ic_access_time_black_24dp"
             android:drawablePadding="24dp"
             android:textSize="16sp"
             android:textColor="@android:color/white"
@@ -97,7 +97,7 @@
             android:id="@+id/quiz_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_location_on_white_24dp"
+            app:drawableStartCompat="@drawable/ic_location_on_white_24dp"
             android:drawablePadding="24dp"
             android:layout_marginTop="8dp"
             android:textSize="16sp"

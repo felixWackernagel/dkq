@@ -5,17 +5,16 @@ import android.app.Application;
 import androidx.room.Room;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
-import androidx.work.WorkerFactory;
 
 import javax.inject.Singleton;
 
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import de.wackernagel.dkq.AppExecutors;
 import de.wackernagel.dkq.BuildConfig;
 import de.wackernagel.dkq.DkqConstants;
 import de.wackernagel.dkq.DkqLog;
-import de.wackernagel.dkq.dagger.workerfactory.DkqWorkerFactory;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.AppDatabase;
 import de.wackernagel.dkq.room.daos.QuizDao;
@@ -25,6 +24,7 @@ import de.wackernagel.dkq.room.question.QuestionDao;
 import de.wackernagel.dkq.utils.ConnectivityInterceptor;
 import de.wackernagel.dkq.webservice.LiveDataCallAdapterFactory;
 import de.wackernagel.dkq.webservice.Webservice;
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -141,21 +141,35 @@ public class RoomModule {
 
     @Provides
     @Singleton
-    Webservice provideWebservice( final Application application ) {
+    Cache provideCache(final Application application ) {
+        // 10 MB response cache
+        final long cacheSize = 10 * 1024 * 1024;
+        return new Cache( application.getCacheDir(), cacheSize );
+    }
+
+    @Provides
+    @Singleton
+    OkHttpClient provideOkHttpClient( final Application application, final Cache cache ) {
         final OkHttpClient.Builder client = new OkHttpClient.Builder();
         client.addInterceptor( new ConnectivityInterceptor( application ) );
+        client.cache( cache );
 
         if (BuildConfig.DEBUG) {
             final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor(message -> DkqLog.i("RetrofitModule", message));
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             client.addInterceptor(interceptor);
         }
+        return client.build();
+    }
 
+    @Provides
+    @Singleton
+    Webservice provideWebservice( final Lazy<OkHttpClient> okHttpClient ) {
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(new LiveDataCallAdapterFactory())
-                .client(client.build())
+                .addCallAdapterFactory( new LiveDataCallAdapterFactory() )
+                .callFactory( (request) -> okHttpClient.get().newCall( request ) )
                 .build();
         return retrofit.create(Webservice.class);
     }

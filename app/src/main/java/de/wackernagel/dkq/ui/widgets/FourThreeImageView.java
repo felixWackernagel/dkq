@@ -18,5 +18,4 @@ public class FourThreeImageView extends ForegroundImageView {
         final int fourThreeHeight = makeMeasureSpec(getSize(widthSpec) * 3 / 4, EXACTLY);
         super.onMeasure(widthSpec, fourThreeHeight);
     }
-
 }

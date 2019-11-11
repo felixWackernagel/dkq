@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import javax.inject.Inject;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -18,11 +16,12 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Objects;
+
+import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.DkqLog;
@@ -83,8 +82,7 @@ public class MessagesListFragment extends Fragment {
             animator.setMoveDuration( 400 );
             animator.setRemoveDuration( 400 );
 
-            adapter = new MessagesListFragment.MessageAdapter( new MessageItemCallback() );
-            recyclerView.setLayoutManager( new GridLayoutManager( getContext(), 1 ) );
+            adapter = new MessagesListFragment.MessageAdapter( requireContext(), new MessageItemCallback() );
             recyclerView.setHasFixedSize( true );
             recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );
@@ -156,9 +154,17 @@ public class MessagesListFragment extends Fragment {
     }
 
     static class MessageAdapter extends ListAdapter<MessageListItem, MessageViewHolder> {
-        MessageAdapter(@NonNull DiffUtil.ItemCallback<MessageListItem> diffCallback) {
+        private final int width;
+        private final int height;
+
+        MessageAdapter( final Context context, @NonNull DiffUtil.ItemCallback<MessageListItem> diffCallback) {
             super(diffCallback);
             setHasStableIds( true );
+
+            final int margin = DeviceUtils.dpToPx(16, context );
+            final int deviceWidth = DeviceUtils.getDeviceWidth( context );
+            width = deviceWidth - ( margin * 2 );
+            height = GlideUtils.fourThreeHeightOf( width );
         }
 
         @Override
@@ -191,7 +197,7 @@ public class MessagesListFragment extends Fragment {
 
                 holder.title.setText( message.getTitle() );
                 if( Message.Type.ARTICLE.equals( message.getType() ) ) {
-                    GlideUtils.loadImage(holder.image, message.getImage(), message.getVersion());
+                    GlideUtils.loadImage( holder.image, message.getImage(), message.getVersion(), width, height );
                     holder.image.drawBadge(!message.isRead());
                     holder.content.setText( message.getContent() );
                 } else {
