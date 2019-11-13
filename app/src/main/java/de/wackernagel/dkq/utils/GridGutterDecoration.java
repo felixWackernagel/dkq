@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.view.View;
 
 import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class GridGutterDecoration extends RecyclerView.ItemDecoration {
@@ -65,7 +66,7 @@ public class GridGutterDecoration extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void getItemOffsets( Rect outRect, View view, RecyclerView parent, RecyclerView.State state ) {
+    public void getItemOffsets( @NonNull Rect outRect, @NonNull View view, RecyclerView parent, @NonNull RecyclerView.State state ) {
         int itemPosition = parent.getChildAdapterPosition( view );
         int column = itemPosition % spanCount;
         int itemCount = parent.getAdapter() != null ? parent.getAdapter().getItemCount() : 0;

@@ -52,7 +52,7 @@ public class MessagesListFragment extends Fragment {
 
     static MessagesListFragment newInstance() {
         final MessagesListFragment fragment = new MessagesListFragment();
-        fragment.setArguments( new Bundle(0) );
+        fragment.setArguments( Bundle.EMPTY );
         return fragment;
     }
 

@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import javax.inject.Inject;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -17,9 +15,11 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
+import javax.inject.Inject;
+
 import dagger.android.support.AndroidSupportInjection;
 import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.R;
@@ -56,7 +56,7 @@ public class QuizzesListFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( @NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = view.findViewById( R.id.recyclerView );
         emptyView = view.findViewById( R.id.emptyView );
@@ -76,17 +76,16 @@ public class QuizzesListFragment extends Fragment {
             animator.setRemoveDuration( 400 );
 
             adapter = new QuizAdapter( new QuizItemCallback() );
-            recyclerView.setLayoutManager( new GridLayoutManager( getContext(), 1 ) );
             recyclerView.setHasFixedSize( true );
             recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );
             recyclerView.addItemDecoration( new GridGutterDecoration(
-                    DeviceUtils.dpToPx(16, getContext()),
+                    DeviceUtils.dpToPx(16, requireContext()),
                     1,
                     false,
                     true,
                     true ) );
-            recyclerView.addItemDecoration( new SectionItemDecoration( getContext(),false, new SectionItemDecoration.SectionCallback() {
+            recyclerView.addItemDecoration( new SectionItemDecoration( requireContext(),false, new SectionItemDecoration.SectionCallback() {
                 @Override
                 public boolean isSection(int position) {
                     return position == 0;
@@ -147,13 +146,14 @@ public class QuizzesListFragment extends Fragment {
             return getItem( position ).id;
         }
 
+        @NonNull
         @Override
         public QuizViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new QuizViewHolder( LayoutInflater.from( parent.getContext() ).inflate( R.layout.item_quiz, parent, false ) );
         }
 
         @Override
-        public void onBindViewHolder(QuizViewHolder holder, int position) {
+        public void onBindViewHolder( @NonNull final QuizViewHolder holder, int position) {
             if( position != RecyclerView.NO_POSITION ) {
                 final QuizListItem quiz = getItem( position );
 

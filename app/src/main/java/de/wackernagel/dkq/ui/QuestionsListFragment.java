@@ -1,5 +1,6 @@
 package de.wackernagel.dkq.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -21,7 +22,6 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -112,8 +112,7 @@ public class QuestionsListFragment extends Fragment {
             animator.setMoveDuration( 400 );
             animator.setRemoveDuration( 400 );
 
-            adapter = new QuestionAdapter( new QuestionItemCallback() );
-            recyclerView.setLayoutManager( new GridLayoutManager( getContext(), 1 ) );
+            adapter = new QuestionAdapter( requireContext(), new QuestionItemCallback() );
             recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );
             recyclerView.addItemDecoration( new GridGutterDecoration(
@@ -188,9 +187,17 @@ public class QuestionsListFragment extends Fragment {
     static class QuestionAdapter extends ListAdapter<Question, QuestionViewHolder> {
         private Set<Integer> openCards = new HashSet<>();
 
-        QuestionAdapter(@NonNull DiffUtil.ItemCallback<Question> diffCallback) {
+        private final int width;
+        private final int height;
+
+        QuestionAdapter(@NonNull final Context context, @NonNull final DiffUtil.ItemCallback<Question> diffCallback) {
             super(diffCallback);
             setHasStableIds( true );
+
+            final int margin = DeviceUtils.dpToPx(16, context );
+            final int deviceWidth = DeviceUtils.getDeviceWidth( context );
+            width = deviceWidth - ( margin * 2 );
+            height = GlideUtils.fourThreeHeightOf( width );
         }
 
         @Override
@@ -220,7 +227,7 @@ public class QuestionsListFragment extends Fragment {
             });
 
             if( !TextUtils.isEmpty( question.getImage() ) ) {
-                GlideUtils.loadImage( holder.image, question.getImage(), question.getVersion() );
+                GlideUtils.loadImage( holder.image, question.getImage(), question.getVersion(), width, height );
                 holder.image.setVisibility( VISIBLE );
                 final Intent viewImageIntent = new Intent(Intent.ACTION_VIEW);
                 viewImageIntent.setDataAndType(Uri.parse(question.getImage()), "image/*");

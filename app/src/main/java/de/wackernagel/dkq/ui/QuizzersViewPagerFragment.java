@@ -21,7 +21,7 @@ public class QuizzersViewPagerFragment extends Fragment {
 
     static QuizzersViewPagerFragment newInstance() {
         final QuizzersViewPagerFragment fragment = new QuizzersViewPagerFragment();
-        fragment.setArguments( new Bundle(0) );
+        fragment.setArguments( Bundle.EMPTY );
         return fragment;
     }
 
@@ -32,7 +32,7 @@ public class QuizzersViewPagerFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated( @NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final ViewPager pager = view.findViewById(R.id.viewpager);
         pager.setAdapter( new QuizzersFragmentPagerAdapter( getContext(), getChildFragmentManager() ) );
@@ -44,7 +44,7 @@ public class QuizzersViewPagerFragment extends Fragment {
         private final Context context;
 
         QuizzersFragmentPagerAdapter( final Context context, @NonNull final FragmentManager fm ) {
-            super(fm);
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             this.context = context;
         }
 

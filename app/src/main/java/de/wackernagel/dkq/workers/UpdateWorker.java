@@ -19,9 +19,7 @@ import java.util.Locale;
 
 import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.DkqPreferences;
-import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.dagger.workerfactory.ChildWorkerFactory;
-import de.wackernagel.dkq.receiver.NotificationReceiver;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.webservice.ApiResult;

@@ -20,7 +20,7 @@ public class ForegroundImageView extends AppCompatImageView {
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ForegroundImageView);
 
-        final Drawable d = a.getDrawable(R.styleable.ForegroundImageView_android_foreground);
+        final Drawable d = a.getDrawable(R.styleable.ForegroundImageView_foreground);
         if (d != null) {
             setForeground(d);
         }

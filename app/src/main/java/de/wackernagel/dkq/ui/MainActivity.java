@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.SimpleDateFormat;
@@ -74,6 +77,19 @@ public class MainActivity extends AbstractDkqActivity implements BottomNavigatio
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final LinearLayout toolbarInfo = findViewById(R.id.toolbarInfo);
+        final AppBarLayout appBarLayout = findViewById(R.id.appBarLayout);
+        appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                if( state == State.COLLAPSED ) {
+                    toolbarInfo.setVisibility(View.INVISIBLE);
+                } else {
+                    toolbarInfo.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar( toolbar );

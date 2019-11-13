@@ -16,7 +16,6 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -93,7 +92,6 @@ public class QuizzersListFragment extends Fragment {
             animator.setRemoveDuration( 400 );
 
             adapter = new QuizzersListFragment.QuizzerAdapter( new QuizzerItemCallback(), getQuizzersSearchCriteria() );
-            recyclerView.setLayoutManager( new GridLayoutManager( getContext(), 1 ) );
             recyclerView.setHasFixedSize( true );
             recyclerView.setItemAnimator( animator );
             recyclerView.setAdapter( adapter );

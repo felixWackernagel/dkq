@@ -24,9 +24,6 @@ import de.wackernagel.dkq.R;
 import static de.wackernagel.dkq.utils.AnimUtils.getFastOutSlowInInterpolator;
 
 public class GlideUtils {
-    public static void loadImage( final ImageView view, @Nullable final String url, final int version ) {
-        loadImage( view, url,  version, 0, 0 );
-    }
 
     public static void loadImage( final ImageView view, @Nullable final String url, final int version, final int width, final int height ) {
         RequestOptions options = new RequestOptions()
@@ -34,10 +31,6 @@ public class GlideUtils {
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .signature( new ObjectKey( version + "-" + width + "-" + height ) )
                 .fallback( R.drawable.image_placeholder );
-
-        if( width > 0 && height > 0 ) {
-            options = options.override( width, height );
-        }
 
         Glide.with( view )
             .load( url )
@@ -48,7 +41,7 @@ public class GlideUtils {
                     final ObservableColorMatrix cm = new ObservableColorMatrix();
                     final ObjectAnimator saturation = ObjectAnimator.ofFloat(cm, ObservableColorMatrix.SATURATION, 0f, 1f);
                     saturation.addUpdateListener(animation -> view.setColorFilter(new ColorMatrixColorFilter(cm)));
-                    saturation.setDuration(2000L);
+                    saturation.setDuration(1000L);
                     saturation.setInterpolator(getFastOutSlowInInterpolator(view.getContext()));
                     saturation.addListener(new AnimatorListenerAdapter() {
                         @Override

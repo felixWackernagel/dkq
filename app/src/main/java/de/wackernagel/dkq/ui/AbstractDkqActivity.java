@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import dagger.android.AndroidInjection;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.utils.DkqNotificationBroadcastReceiver;
 

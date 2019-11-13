@@ -36,6 +36,7 @@ import androidx.annotation.AttrRes;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.content.res.AppCompatResources;
+
 import de.wackernagel.dkq.R;
 
 import static android.os.Build.VERSION.SDK_INT;
@@ -91,12 +92,7 @@ public class CollapsibleCard extends FrameLayout {
             expandIcon.setImageTintList(AppCompatResources.getColorStateList(context, R.color.collapsing_section));
         }
         toggle = TransitionInflater.from(context).inflateTransition(R.transition.info_card_toggle);
-        titleContainer.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleExpanded();
-            }
-        });
+        titleContainer.setOnClickListener(v -> toggleExpanded());
     }
 
     public void setCardTitle( final String title ) {

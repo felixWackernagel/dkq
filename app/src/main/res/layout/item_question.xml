@@ -47,7 +47,7 @@
             android:layout_height="0dp"
             android:contentDescription="@null"
             tools:src="@mipmap/ic_launcher"
-            android:foreground="?selectableItemBackground"/>
+            app:foreground="?attr/selectableItemBackground"/>
 
         <View
             android:layout_width="match_parent"

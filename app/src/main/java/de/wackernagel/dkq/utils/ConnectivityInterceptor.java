@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import androidx.annotation.NonNull;
+
 import java.io.IOException;
 
 import de.wackernagel.dkq.R;
@@ -19,8 +21,9 @@ public class ConnectivityInterceptor implements Interceptor {
         mContext = context;
     }
 
+    @NonNull
     @Override
-    public Response intercept( final Chain chain ) throws IOException {
+    public Response intercept( @NonNull final Chain chain ) throws IOException {
         ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
 

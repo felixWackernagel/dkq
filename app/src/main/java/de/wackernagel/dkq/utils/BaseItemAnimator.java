@@ -5,9 +5,6 @@ import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.animation.Interpolator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.ViewPropertyAnimatorCompat;
@@ -15,6 +12,9 @@ import androidx.core.view.ViewPropertyAnimatorListener;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This implementation of {@link RecyclerView.ItemAnimator} provides basic
@@ -74,6 +74,7 @@ public abstract class BaseItemAnimator<T> extends SimpleItemAnimator {
             this.toY = toY;
         }
 
+        @NonNull
         @Override
         public String toString() {
             return "ChangeInfo{" +
@@ -102,7 +103,7 @@ public abstract class BaseItemAnimator<T> extends SimpleItemAnimator {
     /**
      * @return the interpolator used for the animations
      */
-    public Interpolator getInterpolator() {
+    Interpolator getInterpolator() {
         return this.mInterpolator;
     }
 
@@ -553,25 +554,21 @@ public abstract class BaseItemAnimator<T> extends SimpleItemAnimator {
         }
 
         // animations should be ended by the cancel above.
-        //noinspection PointlessBooleanExpression,ConstantConditions
         if (mRemoveAnimations.remove(item) && DEBUG) {
             throw new IllegalStateException("after animation is cancelled, item should not be in "
                     + "mRemoveAnimations list");
         }
 
-        //noinspection PointlessBooleanExpression,ConstantConditions
         if (mAddAnimations.remove(item) && DEBUG) {
             throw new IllegalStateException("after animation is cancelled, item should not be in "
                     + "mAddAnimations list");
         }
 
-        //noinspection PointlessBooleanExpression,ConstantConditions
         if (mChangeAnimations.remove(item) && DEBUG) {
             throw new IllegalStateException("after animation is cancelled, item should not be in "
                     + "mChangeAnimations list");
         }
 
-        //noinspection PointlessBooleanExpression,ConstantConditions
         if (mMoveAnimations.remove(item) && DEBUG) {
             throw new IllegalStateException("after animation is cancelled, item should not be in "
                     + "mMoveAnimations list");

@@ -1,5 +1,6 @@
 package de.wackernagel.dkq.webservice;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import java.lang.annotation.Annotation;
@@ -12,7 +13,7 @@ import retrofit2.Retrofit;
 public class LiveDataCallAdapterFactory extends CallAdapter.Factory {
 
     @Override
-    public CallAdapter<?, ?> get( final Type returnType, final Annotation[] annotations, final Retrofit retrofit ) {
+    public CallAdapter<?, ?> get( @NonNull final Type returnType, @NonNull final Annotation[] annotations, @NonNull final Retrofit retrofit ) {
         if( getRawType( returnType ) != LiveData.class ) {
             return null;
         }

@@ -1,5 +1,6 @@
 package de.wackernagel.dkq.webservice;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import java.lang.reflect.Type;
@@ -21,13 +22,15 @@ public class LiveDataCallAdapter<R> implements CallAdapter<R, LiveData<ApiRespon
         this.responseType = responseType;
     }
 
+    @NonNull
     @Override
     public Type responseType() {
         return responseType;
     }
 
+    @NonNull
     @Override
-    public LiveData<ApiResponse<R>> adapt( final Call<R> call ) {
+    public LiveData<ApiResponse<R>> adapt( @NonNull final Call<R> call ) {
         return new LiveData<ApiResponse<R>>() {
             AtomicBoolean started = new AtomicBoolean(false);
             @Override
@@ -36,12 +39,12 @@ public class LiveDataCallAdapter<R> implements CallAdapter<R, LiveData<ApiRespon
                 if (started.compareAndSet(false, true)) {
                     call.enqueue(new Callback<R>() {
                         @Override
-                        public void onResponse(Call<R> call, Response<R> response) {
+                        public void onResponse( @NonNull Call<R> call, @NonNull Response<R> response) {
                             postValue(new ApiResponse<>(response));
                         }
 
                         @Override
-                        public void onFailure(Call<R> call, Throwable throwable) {
+                        public void onFailure( @NonNull Call<R> call, @NonNull Throwable throwable) {
                             postValue(new ApiResponse<>(throwable));
                         }
                     });

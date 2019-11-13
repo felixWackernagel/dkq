@@ -129,7 +129,10 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
         final TextView title = findViewById(R.id.title);
         final TextView content = findViewById(R.id.content);
 
-        GlideUtils.loadImage( image, message.getImage(), message.getVersion() );
+        final int width = DeviceUtils.getDeviceWidth( this );
+        final int height = GlideUtils.fourThreeHeightOf( width );
+
+        GlideUtils.loadImage( image, message.getImage(), message.getVersion(), width, height );
         if( !TextUtils.isEmpty( message.getImage() ) ) {
             final Intent viewImageIntent = new Intent(Intent.ACTION_VIEW);
             viewImageIntent.setDataAndType(Uri.parse(message.getImage()), "image/*");

@@ -28,7 +28,7 @@ public class BaselineGridTextView extends AppCompatTextView {
 
     private float lineHeightMultiplierHint = 1f;
     private float lineHeightHint = 0f;
-    private boolean maxLinesByHeight = false;
+    private boolean maxLinesByHeight;
     private int extraTopPadding = 0;
     private int extraBottomPadding = 0;
     private @FontRes int fontResId = 0;

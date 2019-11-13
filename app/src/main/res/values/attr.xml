@@ -2,7 +2,7 @@
 <resources>
 
     <declare-styleable name="ForegroundImageView">
-        <attr name="android:foreground" />
+        <attr name="foreground" />
     </declare-styleable>
 
     <attr name="badgeGravity">

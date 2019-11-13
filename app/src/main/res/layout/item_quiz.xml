@@ -6,30 +6,22 @@
     android:foreground="?attr/selectableItemBackground"
     tools:layout_margin="16dp">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textColor="@color/textPrimary"
+        android:layout_gravity="center_vertical|start"
+        tools:text="Quiz 40"/>
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:textColor="@color/textPrimary"
-            android:layout_gravity="center_vertical"
-            tools:text="Quiz 40"/>
-
-        <TextView
-            android:id="@+id/questionsHint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/textSecondary"
-            android:layout_gravity="center_vertical"
-            android:gravity="end"
-            android:layout_marginEnd="16dp"
-            tools:text="0/60"/>
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/questionsHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textSecondary"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="16dp"
+        tools:text="0/60"/>
 
 </androidx.cardview.widget.CardView>

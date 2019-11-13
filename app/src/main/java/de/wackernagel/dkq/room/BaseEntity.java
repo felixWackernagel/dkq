@@ -1,5 +1,6 @@
 package de.wackernagel.dkq.room;
 
+import androidx.annotation.NonNull;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
@@ -34,6 +35,7 @@ public abstract class BaseEntity {
         return Objects.hash(id);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "BaseEntity{" +

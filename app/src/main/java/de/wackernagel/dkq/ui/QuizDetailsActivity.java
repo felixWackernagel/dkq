@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import androidx.core.app.ShareCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -81,6 +83,19 @@ public class QuizDetailsActivity extends AbstractDkqActivity implements HasAndro
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
+
+        final LinearLayout toolbarQuizDetails = findViewById(R.id.toolbarQuizDetails);
+        final AppBarLayout appBarLayout = findViewById(R.id.appBarLayout);
+        appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                if( state == State.COLLAPSED ) {
+                    toolbarQuizDetails.setVisibility(View.INVISIBLE);
+                } else {
+                    toolbarQuizDetails.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar( toolbar );

@@ -1,5 +1,6 @@
 package de.wackernagel.dkq.room.entities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
@@ -37,6 +38,7 @@ public class Quiz {
                 quizDate == null && version == 0 && longitude == 0.0D && latitude == 0.0D && lastUpdate == null;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Quiz{" +

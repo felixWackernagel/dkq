@@ -1,5 +1,6 @@
 package de.wackernagel.dkq.room.entities;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
@@ -18,6 +19,7 @@ public class Quizzer {
         return id == 0L && number == 0 && name == null && image == null && version == 0 && lastUpdate == null;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Quizzer{" +

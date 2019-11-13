@@ -131,15 +131,13 @@ public class NotificationReceiver extends BroadcastReceiver {
             case NOTIFICATION_TYPE_ONE_FUTURE_QUIZ:
                 return QuizDetailsActivity.createLaunchIntent( context, itemId, itemNumber );
 
-            case NOTIFICATION_TYPE_MANY_FUTURE_QUIZZES:
-                return MainActivity.createLaunchIntent( context );
-
             case NOTIFICATION_TYPE_ONE_NEW_MESSAGE:
                 return MessageDetailsActivity.createLaunchIntent( context, itemId, itemNumber );
 
             case NOTIFICATION_TYPE_MANY_NEW_MESSAGES:
                 return MainActivity.createLaunchIntent( context, MainActivity.FRAGMENT_MESSAGES );
 
+            case NOTIFICATION_TYPE_MANY_FUTURE_QUIZZES:
             default:
                 return MainActivity.createLaunchIntent( context );
         }
