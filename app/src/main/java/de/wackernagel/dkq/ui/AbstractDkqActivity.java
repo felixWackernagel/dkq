@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import de.wackernagel.dkq.R;
-import de.wackernagel.dkq.utils.DkqNotificationBroadcastReceiver;
+import de.wackernagel.dkq.receiver.DkqNotificationBroadcastReceiver;
 
 public abstract class AbstractDkqActivity extends AppCompatActivity implements DkqNotificationBroadcastReceiver.DkqNotificationCallback {
     private static DkqNotificationBroadcastReceiver receiver = new DkqNotificationBroadcastReceiver();

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
@@ -131,7 +132,7 @@ public class MainActivity extends AbstractDkqActivity implements BottomNavigatio
             setStartFragment();
 
             toolbarCard.setAlpha( 0f );
-            toolbarCard.animate().alpha( 1f ).setDuration( 400L ).setListener( null ).start();
+            ViewCompat.animate( toolbarCard ).alpha( 1f ).setDuration( 400L ).start();
         }
     }
 

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import de.wackernagel.dkq.AppExecutors;
@@ -31,7 +32,6 @@ import de.wackernagel.dkq.room.message.MessageListItem;
 import de.wackernagel.dkq.room.question.Question;
 import de.wackernagel.dkq.room.question.QuestionDao;
 import de.wackernagel.dkq.utils.DateUtils;
-import de.wackernagel.dkq.utils.ObjectUtils;
 import de.wackernagel.dkq.utils.RateLimiter;
 import de.wackernagel.dkq.viewmodels.QuizzerRole;
 import de.wackernagel.dkq.webservice.ApiResponse;
@@ -139,7 +139,7 @@ public class DkqRepository {
             final Quiz existingQuiz = quizDao.loadQuizByNumber( onlineQuiz.number );
 
             onlineQuiz.quizMasterId = saveQuizzer( onlineQuiz.quizMaster );
-            if( ObjectUtils.equals( onlineQuiz.quizMaster, onlineQuiz.winner )  ) {
+            if( Objects.equals( onlineQuiz.quizMaster, onlineQuiz.winner )  ) {
                 onlineQuiz.winnerId = onlineQuiz.quizMasterId;
             } else {
                 onlineQuiz.winnerId = saveQuizzer( onlineQuiz.winner );
