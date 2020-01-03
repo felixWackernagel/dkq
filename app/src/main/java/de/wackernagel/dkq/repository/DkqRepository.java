@@ -77,13 +77,7 @@ public class DkqRepository {
         return new NetworkBoundResource<List<QuizListItem>,List<Quiz>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Quiz> items) {
-                db.beginTransaction();
-                try {
-                    saveQuizzesWithNotification( items );
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
+                db.runInTransaction( () -> saveQuizzesWithNotification( items ) );
             }
 
             @Override
@@ -167,13 +161,7 @@ public class DkqRepository {
         return new NetworkBoundResource<Quiz,Quiz>(executors) {
             @Override
             protected void saveCallResult(@NonNull Quiz item) {
-                db.beginTransaction();
-                try {
-                    saveQuiz( item );
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
+                db.runInTransaction( () -> saveQuiz( item ) );
             }
 
             @Override
@@ -209,13 +197,7 @@ public class DkqRepository {
         return new NetworkBoundResource<List<Question>,List<Question>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Question> items) {
-                db.beginTransaction();
-                try {
-                    saveQuestions( items, quizId );
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
+                db.runInTransaction( () -> saveQuestions( items, quizId ) );
             }
 
             @Override
@@ -278,13 +260,7 @@ public class DkqRepository {
         return new NetworkBoundResource<List<MessageListItem>,List<Message>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Message> items) {
-                db.beginTransaction();
-                try {
-                    saveMessagesWithNotification( items );
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
+                db.runInTransaction( () -> saveMessagesWithNotification( items ) );
             }
 
             @Override
@@ -417,13 +393,7 @@ public class DkqRepository {
         return new NetworkBoundResource<List<QuizzerListItem>,List<Quizzer>>(executors) {
             @Override
             protected void saveCallResult(@NonNull List<Quizzer> items) {
-                db.beginTransaction();
-                try {
-                    saveQuizzers( items );
-                    db.setTransactionSuccessful();
-                } finally {
-                    db.endTransaction();
-                }
+                db.runInTransaction( () -> saveQuizzers( items ) );
             }
 
             @Override
@@ -517,43 +487,36 @@ public class DkqRepository {
     }
 
     public void createSamples() {
-        executors.diskIO().execute(() -> {
-            db.beginTransaction();
-            try {
-                messageDao.deleteAllMessages();
-                questionDao.deleteAllQuestions();
-                quizDao.deleteAllQuizzes();
-                quizzerDao.deleteAllQuizzers();
+        executors.diskIO().execute( () -> db.runInTransaction( () -> {
+            messageDao.deleteAllMessages();
+            questionDao.deleteAllQuestions();
+            quizDao.deleteAllQuizzes();
+            quizzerDao.deleteAllQuizzers();
 
-                final Quizzer[] quizzers = SampleCreator.createSampleQuizzers();
-                for( Quizzer quizzer : quizzers ) {
-                    quizzer.id = quizzerDao.insertQuizzer( quizzer );
-                }
+            final Quizzer[] quizzers = SampleCreator.createSampleQuizzers();
+            for( Quizzer quizzer : quizzers ) {
+                quizzer.id = quizzerDao.insertQuizzer( quizzer );
+            }
 
-                final Quiz[] quizzes = SampleCreator.createSampleQuizzes( quizzers[0], quizzers[1] );
-                final int count = quizzes.length;
-                for( int index = 0; index < count; index++ ) {
-                    final Quiz quiz = quizzes[ index ];
-                    quiz.id = quizDao.insertQuiz( quiz );
+            final Quiz[] quizzes = SampleCreator.createSampleQuizzes( quizzers[0], quizzers[1] );
+            final int count = quizzes.length;
+            for( int index = 0; index < count; index++ ) {
+                final Quiz quiz = quizzes[ index ];
+                quiz.id = quizDao.insertQuiz( quiz );
 
-                    if( index + 1 < count ) {
-                        final Question[] questions = SampleCreator.createSampleQuestions( quiz );
-                        for( Question question : questions ) {
-                            questionDao.insert( question );
-                        }
+                if( index + 1 < count ) {
+                    final Question[] questions = SampleCreator.createSampleQuestions( quiz );
+                    for( Question question : questions ) {
+                        questionDao.insert( question );
                     }
                 }
-
-                final Message[] messages = SampleCreator.createSampleMessages( quizzes[0] );
-                for( Message message : messages ) {
-                    messageDao.insert( message );
-                }
-
-                db.setTransactionSuccessful();
-            } finally {
-                db.endTransaction();
             }
-        });
+
+            final Message[] messages = SampleCreator.createSampleMessages( quizzes[0] );
+            for( Message message : messages ) {
+                messageDao.insert( message );
+            }
+        } ));
     }
 
     public void dropAll() {
