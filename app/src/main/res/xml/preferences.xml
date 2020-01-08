@@ -22,4 +22,13 @@
         android:summary="@string/pref_sounds_enabled_summary"
         android:defaultValue="true" />
 
+    <androidx.preference.PreferenceCategory
+        android:title="@string/pref_category_update" />
+
+    <androidx.preference.CheckBoxPreference
+        android:key="daily_update_notification_enabled"
+        android:title="@string/pref_daily_update_notification_enabled_title"
+        android:summary="@string/pref_daily_update_notification_enabled_summary"
+        android:defaultValue="false" />
+
 </androidx.preference.PreferenceScreen>

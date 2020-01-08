@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- https://material.io/resources/color/#!/?view.left=0&view.right=0 -->
 <resources>
     <color name="colorPrimary">#9c27b0</color>        <!-- Purple 500 -->
     <color name="colorPrimaryDark">#7b1fa2</color>    <!-- Purple 700 -->
     <color name="colorAccent">#ffd600</color>         <!-- Yellow A 700 -->
+    <color name="colorAccentDark">#c7a500</color>     <!-- Yellow A 700 Dark -->
     <color name="error">#B00020</color>
 
     <color name="divider">#1E000000</color>           <!-- 12% black-->

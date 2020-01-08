@@ -40,4 +40,8 @@ public class DkqPreferences {
     public static void setDailyUpdateScheduled( final Context context ) {
         PreferenceUtils.setBoolean( context, "daily_update_scheduled", true );
     }
+
+    public static boolean isDailyUpdateNotificationEnabled( final Context context ) {
+        return PreferenceUtils.getBoolean( context, "daily_update_notification_enabled", false );
+    }
 }

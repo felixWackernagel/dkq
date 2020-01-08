@@ -13,6 +13,7 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
 import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.R;
 import de.wackernagel.dkq.ui.MainActivity;
@@ -33,15 +34,9 @@ public class NotificationReceiver extends BroadcastReceiver {
     private static final int NOTIFICATION_TYPE_MANY_FUTURE_QUIZZES = 2;
     private static final int NOTIFICATION_TYPE_ONE_NEW_MESSAGE = 3;
     private static final int NOTIFICATION_TYPE_MANY_NEW_MESSAGES = 4;
+    private static final int NOTIFICATION_TYPE_DAILY_UPDATE = 5;
 
     private static final String CHANNEL_ID = "dkq";
-
-    public static void forDevelopment( @NonNull final Context context, final String title, final String message ) {
-        final Intent notification = new Intent( ACTION_DKQ_NOTIFICATION );
-        notification.putExtra( NOTIFICATION_TITLE, title );
-        notification.putExtra( NOTIFICATION_CONTENT, message );
-        context.sendOrderedBroadcast( notification, null ); // null means no permissions required by the receiver
-    }
 
     public static void forOneFutureQuiz( @NonNull final Context context, final long quizId, final int quizNumber ) {
         final Intent notification = new Intent( ACTION_DKQ_NOTIFICATION );
@@ -76,6 +71,14 @@ public class NotificationReceiver extends BroadcastReceiver {
         notification.putExtra( NOTIFICATION_TITLE, context.getString(R.string.new_messages_title) );
         notification.putExtra( NOTIFICATION_CONTENT, context.getResources().getQuantityString(R.plurals.new_messages_description, newMessagesCount, newMessagesCount) );
         notification.putExtra( NOTIFICATION_TYPE, NOTIFICATION_TYPE_MANY_NEW_MESSAGES);
+        context.sendOrderedBroadcast( notification, null ); // null means no permissions required by the receiver
+    }
+
+    public static void forDailyUpdate( @NonNull final Context context, final String messages, final String quizzes ) {
+        final Intent notification = new Intent( ACTION_DKQ_NOTIFICATION );
+        notification.putExtra( NOTIFICATION_TITLE, context.getString( R.string.daily_update_title ) );
+        notification.putExtra( NOTIFICATION_CONTENT, context.getString( R.string.daily_update_description, messages, quizzes ) );
+        notification.putExtra( NOTIFICATION_TYPE, NOTIFICATION_TYPE_DAILY_UPDATE );
         context.sendOrderedBroadcast( notification, null ); // null means no permissions required by the receiver
     }
 
@@ -138,6 +141,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 return MainActivity.createLaunchIntent( context, MainActivity.FRAGMENT_MESSAGES );
 
             case NOTIFICATION_TYPE_MANY_FUTURE_QUIZZES:
+            case NOTIFICATION_TYPE_DAILY_UPDATE:
             default:
                 return MainActivity.createLaunchIntent( context );
         }

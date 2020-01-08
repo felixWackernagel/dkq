@@ -36,6 +36,13 @@
         <b>BESSER</b>: Fehlerdialog beim Absturz.<br>
         <b>BESSER</b>: Benachrichtigungen führen direkt zum Inhalt.
     ]]></string>
+    <string name="update_log_version_code_5_title">Version 5.0</string>
+    <string name="update_log_version_code_5_content"><![CDATA[
+        <b>NEU</b>: Einstellung für einen täglichen Update Report<br>
+        <b>BESSER</b>: Performance<br>
+        <br>
+        Mit der Einstellung \"Täglicher Report\" könnt Ihr überprüfen, ob die App bei euch jeden Tag nach neuen Inhalten im Hintergrund sucht. Die Nachricht die Ihr erhaltet wird in zukunft noch verbessert werden. Sollte jeden Tag eine Nachricht mit \"(fail)\" erscheinen, bitte eine E-Mail an mich schreiben.
+    ]]></string>
 
     <!-- ACRA -->
     <string name="acra_dialog_title">DKQ Fehler</string>
@@ -85,6 +92,8 @@
         <item quantity="one">Du hast eine neue Nachricht erhalten.</item>
         <item quantity="other">Du hast %1$d neue Nachrichten erhalten.</item>
     </plurals>
+    <string name="daily_update_title">Tägliches Update fertig</string>
+    <string name="daily_update_description">Nachrichten: %1$s\nQuizze: %2$s</string>
 
     <!-- Login -->
     <string name="username">Benutzer</string>
@@ -108,6 +117,9 @@
     <string name="pref_notification_enabled_summary">Erhalte Benachrichtigungen bei Quiz updates.</string>
     <string name="pref_sounds_enabled_title">Töne aktiv</string>
     <string name="pref_sounds_enabled_summary">Töne können mit dieser Option stumm geschalten werden.</string>
+    <string name="pref_category_update">Updates</string>
+    <string name="pref_daily_update_notification_enabled_title">Täglicher Report</string>
+    <string name="pref_daily_update_notification_enabled_summary">Eine kurze Zusammenfassung zum täglichen Datenabgleich wird als Benachrichtigung verschickt.</string>
 
     <!-- Development -->
     <string name="test_single_quiz_snackbar">1 neues Quiz (Snackbar)</string>

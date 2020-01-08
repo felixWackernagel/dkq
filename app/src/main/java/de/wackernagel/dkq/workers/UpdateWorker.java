@@ -20,6 +20,7 @@ import java.util.Locale;
 import de.wackernagel.dkq.DkqLog;
 import de.wackernagel.dkq.DkqPreferences;
 import de.wackernagel.dkq.dagger.workerfactory.ChildWorkerFactory;
+import de.wackernagel.dkq.receiver.NotificationReceiver;
 import de.wackernagel.dkq.repository.DkqRepository;
 import de.wackernagel.dkq.room.entities.Quiz;
 import de.wackernagel.dkq.webservice.ApiResult;
@@ -50,13 +51,13 @@ public class UpdateWorker extends Worker {
     public Result doWork() {
         updateLog();
 
-        updateQuizzes();
+        final String logQuizzes = updateQuizzes();
         final String logMessage = updateMessages();
         updateQuestions();
 
-//        if( getApplicationContext().getResources().getBoolean( R.bool.development ) ) {
-//            NotificationReceiver.forDevelopment( getApplicationContext(), "Daily update is done.", logMessage );
-//        }
+        if( DkqPreferences.isDailyUpdateNotificationEnabled( getApplicationContext() ) ) {
+            NotificationReceiver.forDailyUpdate( getApplicationContext(), logMessage, logQuizzes );
+        }
 
         return Worker.Result.success();
     }
@@ -74,11 +75,12 @@ public class UpdateWorker extends Worker {
         DkqPreferences.setLastUpdateWorkerExecutionTime( getApplicationContext(), newLogs );
     }
 
-    private void updateQuizzes() {
+    private String updateQuizzes() {
         try {
-            handleApiResult( repository.requestQuizzesIfNotLimited(), repository::saveQuizzesWithNotification );
+            return handleApiResult( repository.requestQuizzesIfNotLimited(), repository::saveQuizzesWithNotification );
         } catch (IOException e) {
             DkqLog.e(TAG, "Quizzes Update-Request Error", e);
+            return "Exception happened";
         }
     }
 
@@ -105,22 +107,22 @@ public class UpdateWorker extends Worker {
         }
     }
 
-    private <T> String handleApiResult( @Nullable final Response<ApiResult<T>> response, Consumer<? super T> successConsumer ){
+    private <T> String handleApiResult( @Nullable final Response<ApiResult<T>> response, @NonNull final Consumer<? super T> successConsumer ){
         if( response != null && response.isSuccessful() && response.body() != null ) {
             final ApiResult<T> api = response.body();
             if( api.isStatusOk() ) {
                 if( api.result != null ) {
                     successConsumer.accept( api.result );
-                    return "Response is valid for processing";
+                    return "data processed (ok)";
                 } else {
-                    return "No api result";
+                    return "No API result (fail)";
                 }
             } else {
                 // No error handling required because list results return no 404.
                 DkqLog.e( TAG, String.format( Locale.ENGLISH, "API Error %d: %s", api.code, api.message) );
-                return "api error " + api.code;
+                return "API error " + api.code + " (fail)";
             }
         }
-        return response == null ? "Response is null and maybe limited" : "Response not successful";
+        return response == null ? "Request count was limited (fail)" : "Response error (fail)";
     }
 }

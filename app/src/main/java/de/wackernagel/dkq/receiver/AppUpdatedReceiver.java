@@ -20,7 +20,7 @@ public class AppUpdatedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         AndroidInjection.inject(this,context);
-
+        DkqLog.i("AppUpdatedReceiver","onReceive");
         if( Intent.ACTION_MY_PACKAGE_REPLACED.equals( intent.getAction() ) ) {
             final int newVersionCode = AppUtils.getVersionCode( context );
             final int oldVersionCode = DkqPreferences.getLastVersionCode( context );
@@ -35,6 +35,9 @@ public class AppUpdatedReceiver extends BroadcastReceiver {
     private void updatedToVersion( final int newVersionCode ) {
         if( newVersionCode == 4 ) {
             repository.saveUpdateLogMessage( R.string.update_log_version_code_4_title, R.string.update_log_version_code_4_content );
+        }
+        if( newVersionCode == 5 ) {
+            repository.saveUpdateLogMessage( R.string.update_log_version_code_5_title, R.string.update_log_version_code_5_content );
         }
     }
 }
