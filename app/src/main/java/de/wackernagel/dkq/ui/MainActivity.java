@@ -16,7 +16,6 @@ import androidx.cardview.widget.CardView;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -99,7 +98,7 @@ public class MainActivity extends AbstractDkqActivity implements BottomNavigatio
         bottomNavigationView.setOnNavigationItemSelectedListener( this );
 
         final CardView toolbarCard = findViewById(R.id.toolbarCard);
-        final MainViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(MainViewModel.class);
+        final MainViewModel viewModel = new ViewModelProvider( this, viewModelFactory ).get(MainViewModel.class);
         viewModel.installUpdateChecker();
         viewModel.loadNextQuiz().observe(this, quiz -> {
             final TextView nextQuizTextView = findViewById(R.id.nextQuizTextView);

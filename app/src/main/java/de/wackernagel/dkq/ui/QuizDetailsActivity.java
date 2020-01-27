@@ -22,7 +22,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ShareCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -82,7 +81,7 @@ public class QuizDetailsActivity extends AbstractDkqActivity implements HasAndro
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz);
+        setContentView(R.layout.activity_quiz_details);
 
         final LinearLayout toolbarQuizDetails = findViewById(R.id.toolbarQuizDetails);
         final AppBarLayout appBarLayout = findViewById(R.id.appBarLayout);
@@ -108,7 +107,7 @@ public class QuizDetailsActivity extends AbstractDkqActivity implements HasAndro
         }
 
         setFabBehavior( null );
-        final QuestionsViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(QuestionsViewModel.class);
+        final QuestionsViewModel viewModel = new ViewModelProvider( this, viewModelFactory ).get(QuestionsViewModel.class);
         viewModel.loadQuiz( getQuizId(), getQuizNumber() ).observe(this, resource -> {
             if( resource != null && resource.data != null ) {
                 setQuizDate( resource.data );

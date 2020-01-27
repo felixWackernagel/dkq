@@ -69,7 +69,7 @@ public class UpdateWorker extends Worker {
         if( !prevLogs.contains("|") ) {
             newLogs = prevLogs + " | " + currentTimestamp;
         } else {
-            final String prevLog = prevLogs.split("\\|")[1];
+            final String prevLog = prevLogs.split(" \\| ")[1];
             newLogs = prevLog  + " | " + currentTimestamp;
         }
         DkqPreferences.setLastUpdateWorkerExecutionTime( getApplicationContext(), newLogs );

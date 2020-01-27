@@ -18,7 +18,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.text.HtmlCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 
@@ -86,7 +85,7 @@ public class MessageDetailsActivity extends AbstractDkqActivity {
             actionBar.setTitle( "" );
         }
 
-        final MessageDetailsViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(MessageDetailsViewModel.class);
+        final MessageDetailsViewModel viewModel = new ViewModelProvider( this, viewModelFactory ).get(MessageDetailsViewModel.class);
         viewModel.loadMessage( getMessageId(), getMessageNumber() ).observe(this, resource -> {
             if( resource != null ) {
                 DkqLog.i("MessageDetailActivity", resource.status + ": " + " Item=" + resource.data + (resource.message != null ? " , " + resource.message : "" )  );

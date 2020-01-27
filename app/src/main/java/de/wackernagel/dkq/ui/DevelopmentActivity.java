@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import javax.inject.Inject;
 
@@ -60,7 +59,7 @@ public class DevelopmentActivity extends AbstractDkqActivity {
             networkInfo.setText( getString( R.string.network_info_text, false, "No NetworkInfo" ) );
         }
 
-        viewModel = ViewModelProviders.of( this, viewModelFactory ).get(DevelopmentViewModel.class);
+        viewModel = new ViewModelProvider( this, viewModelFactory ).get(DevelopmentViewModel.class);
     }
 
     public void testNotificationOneNewQuizInline(View view) {

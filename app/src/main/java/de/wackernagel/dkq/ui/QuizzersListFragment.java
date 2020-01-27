@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -120,8 +119,8 @@ public class QuizzersListFragment extends Fragment {
                 }
             }) );
 
-            final QuizzersViewModel viewModel = ViewModelProviders.of( this, viewModelFactory ).get(QuizzersViewModel.class);
-            viewModel.loadQuizzers( getQuizzersSearchCriteria() ).observe(this, quizzers -> {
+            final QuizzersViewModel viewModel = new ViewModelProvider( this, viewModelFactory ).get(QuizzersViewModel.class);
+            viewModel.loadQuizzers( getQuizzersSearchCriteria() ).observe(getViewLifecycleOwner(), quizzers -> {
                 if( quizzers != null ) {
                     DkqLog.i("QuizzersListFragment", "Status=" + quizzers.status + ", Items=" + (quizzers.data != null ? quizzers.data.size() : "null" ) + ", Message=" + quizzers.message );
 
